@@ -1,1 +1,0 @@
-ALTER TABLE fault_veh_risk_notice CHANGE `vid` vehicle_id varchar(36) DEFAULT NULL COMMENT '车辆id',DROP COLUMN vin;

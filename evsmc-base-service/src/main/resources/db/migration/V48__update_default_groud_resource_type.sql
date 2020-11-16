@@ -1,1 +1,0 @@
-update sys_group set resource_type_id='1111' where resource_type_id is null;

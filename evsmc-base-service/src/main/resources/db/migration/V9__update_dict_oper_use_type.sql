@@ -1,1 +1,0 @@
-UPDATE sys_dict SET `name` = '个人使用' WHERE type = 'VEH_USE_DICT' AND `name` = '个人运营';

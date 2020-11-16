@@ -1,1 +1,0 @@
-ALTER TABLE fault_code_rule ADD COLUMN subordinate_parts_id varchar(50) DEFAULT NULL COMMENT '所属零部件';
