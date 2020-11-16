@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.veh.dao.DataItemCheckResultMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.veh.domain.DataItemCheckResult" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    dicr.id  ,dicr.create_time ,dicr.create_by ,dicr.vin ,dicr.check_record_id ,dicr.seq_no ,dicr.data_item_name ,dicr.item_packet_num ,dicr.item_exception_num ,dicr.data_item_exception ,dicr.item_real_exception ,dicr.item_exception_result
+    </sql>
+    <sql id="moreColumns">
+    dicr.id  ,dicr.create_time ,dicr.create_by ,dicr.vin ,dicr.check_record_id ,dicr.seq_no ,dicr.data_item_name ,dicr.item_packet_num ,dicr.item_exception_num ,dicr.data_item_exception ,dicr.item_real_exception ,dicr.item_exception_result
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.veh.domain.DataItemCheckResult"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        veh_data_item_check_result dicr
+        <where>
+            dicr.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        veh_data_item_check_result (id,create_time,create_by,vin,check_record_id,seq_no,data_item_name,item_packet_num,item_exception_num,data_item_exception,item_real_exception,item_exception_result)
+        values
+        (#{id},#{createTime},#{createBy},#{vin},#{checkRecordId},#{seqNo},#{dataItemName},#{itemPacketNum},#{itemExceptionNum},#{dataItemException},#{itemRealException},#{itemExceptionResult})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update veh_data_item_check_result set
+        id=id,vin=#{vin},check_record_id=#{checkRecordId},seq_no=#{seqNo},data_item_name=#{dataItemName},item_packet_num=#{itemPacketNum},item_exception_num=#{itemExceptionNum},data_item_exception=#{dataItemException},item_real_exception=#{itemRealException},item_exception_result=#{itemExceptionResult}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        veh_data_item_check_result
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap" resultOrdered="true">
+        select
+        <include refid="moreColumns"/>
+        from
+        veh_data_item_check_result dicr
+        <where>
+        <if test="authSQL != null">
+        <include refid="authSQL"/>
+        </if>
+        </where>
+
+    </select>
+</mapper>

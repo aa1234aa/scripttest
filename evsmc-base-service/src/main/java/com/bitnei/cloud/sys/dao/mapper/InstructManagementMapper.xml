@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.mapper.InstructManagementMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.InstructManagement" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    iman.id  ,iman.name ,iman.instruct_category_id ,iman.param_data ,iman.passwd ,iman.status ,iman.description ,iman.create_by ,iman.create_by_id ,iman.create_time ,iman.update_by ,iman.update_time
+    </sql>
+    <sql id="moreColumns">
+    iman.id  ,iman.name ,iman.instruct_category_id ,iman.param_data ,iman.passwd ,iman.status ,iman.description ,iman.create_by ,iman.create_by_id ,iman.create_time ,iman.update_by ,iman.update_time
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.InstructManagement" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>, vehModelIdStrs
+        from
+        sys_instruct_management iman
+        left join (select imm.instruct_management_id, group_concat(imm.veh_model_id) as vehModelIdStrs
+        from sys_instruct_management_model imm
+        group by imm.instruct_management_id) img
+        on iman.id = img.instruct_management_id
+        <where>
+            iman.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_instruct_management (id,name,instruct_category_id,param_data,passwd,status,description,create_by,create_by_id,create_time)
+        values
+        (#{id},#{name},#{instructCategoryId},#{paramData},#{passwd},#{status},#{description},#{createBy},#{createById},#{createTime})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_instruct_management set
+        id=id,name=#{name},instruct_category_id=#{instructCategoryId},param_data=#{paramData},passwd=#{passwd},status=#{status},description=#{description},create_by_id=#{createById},update_by=#{updateBy},update_time=#{updateTime}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="java.util.HashMap">
+        delete from
+        sys_instruct_management
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>, vehModelIdStrs
+        from
+        sys_instruct_management iman
+        left join (select imm.instruct_management_id, group_concat(imm.veh_model_id) as vehModelIdStrs
+        from sys_instruct_management_model imm
+        group by imm.instruct_management_id) img
+        on iman.id = img.instruct_management_id
+
+        <where>
+            <if test="instructCategoryId != null">
+                AND iman.instruct_category_id = #{instructCategoryId}
+            </if>
+            <if test="name != null and name != ''">
+                AND iman.name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="status != null">
+                AND iman.status = #{status}
+            </if>
+            <!-- id集合 -->
+            <if test="ids != null">
+                AND iman.id IN
+                <foreach collection="ids" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+        order by iman.create_time desc
+    </select>
+
+    <select id="normalPagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>, vehModelIdStrs
+        from
+        sys_instruct_management iman
+
+        left join (select imm.instruct_management_id, group_concat(imm.veh_model_id) as vehModelIdStrs
+        from sys_instruct_management_model imm
+        group by imm.instruct_management_id) img
+        on iman.id = img.instruct_management_id
+
+        <where>
+            iman.status = 1
+            <if test="instructCategoryId != null">
+                AND iman.instruct_category_id = #{instructCategoryId}
+            </if>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </select>
+</mapper>

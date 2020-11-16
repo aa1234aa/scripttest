@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="apitest">
+  <parameter name="host" value="http://bdp-app.bitnei.cn:7788" />
+  <parameter name="host7789" value="http://bdp-app.bitnei.cn:7789" />
+  <parameter name="hostsaas" value="http://61.149.8.78:85" />
+  <parameter name="hostopenapi" value="http://61.149.8.78:83" />
+  <parameter name="pathroad" value="D:\\TEST.xlsx" />
+  <parameter name="suite" value="suiteParameter" />
+	<!--thread-count 并发线程数  preserve-order classes按顺序执行   verbose 输出日志等级 -->
+<!-- 
+  <test parallel="classes" thread-count="1" name="SAASTEST" verbose="2" preserve-order="true"> 
+  <classes>
+    <class name = "com.bitnei.apitest.testcases.bidash.SchemeAdd" />
+    <class name = "com.bitnei.apitest.webtestcases.saas.SaasLogin" />
+    <class name = "com.bitnei.apitest.webtestcases.saas.UserManage" />
+  </classes> 
+  </test> 
+ --> 
+  <test parallel="classes" thread-count="1" name="OPENAPI" verbose="2" >
+    <classes>
+    	<class name = "com.bitnei.apitest.testcases.openapi.ChargingData" />
+    	<class name = "com.bitnei.apitest.testcases.openapi.EnergyConservation" />
+    	<class name = "com.bitnei.apitest.testcases.openapi.RunningData" />
+    	<class name = "com.bitnei.apitest.testcases.openapi.ChargingDataTest" />
+    </classes> 
+  </test> 
+   
+<!--  
+  <test parallel="classes" thread-count="1" name="MONITER" verbose="2" >
+    <classes>
+    <class name = "com.bitnei.apitest.testcases.getVehCountPerMonitorPlatform" />
+    <class name = "com.bitnei.apitest.testcases.PostVehicles" />
+    <class name = "com.bitnei.apitest.testcases.EvDetail" />
+    </classes> 
+  </test> 
+-->
+<!--   
+  <test parallel="classes" thread-count="1" name="DATASEND" verbose="2" >
+    <classes>
+    <class name = "com.bitnei.apitest.testcases.datasend.PlatFormSelect" />
+    <class name = "com.bitnei.apitest.testcases.datasend.PlatForm" />
+    <class name = "com.bitnei.apitest.testcases.datasend.PlatFormUpdate" />
+    <class name = "com.bitnei.apitest.testcases.datasend.PlatFormDel" />
+    <class name = "com.bitnei.apitest.testcases.datasend.ProtocolAdd" />
+    <class name = "com.bitnei.apitest.testcases.datasend.ProtocolUpdate" />
+    <class name = "com.bitnei.apitest.testcases.datasend.ProtocolDelete" />
+    <class name = "com.bitnei.apitest.testcases.datasend.TaskAdd" />
+	<class name = "com.bitnei.apitest.testcases.datasend.TaskDelete" />
+	<class name = "com.bitnei.apitest.testcases.datasend.ForwardVehicleQuery" />
+    <class name = "com.bitnei.apitest.testcases.datasend.ForwardVehicleSelectVehicles" />
+    <class name = "com.bitnei.apitest.testcases.datasend.ForwardVehicleAddVehicle" />
+    <class name = "com.bitnei.apitest.testcases.datasend.ForwardVehicleRemoveVehicle" />
+    </classes> 
+  </test>
+-->
+
+</suite> 

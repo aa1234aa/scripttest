@@ -1,0 +1,26 @@
+
+CREATE TABLE `fault_safety_accidents` (
+  `id` varchar(36) NOT NULL COMMENT 'id',
+  `vin` varchar(45) DEFAULT NULL COMMENT 'vin',
+  `vid` varchar(36) DEFAULT NULL COMMENT 'vid',
+  `vehicle_total_mileage` varchar(500) NOT NULL COMMENT '事故发生时车辆总里程',
+  `vehicle_state` tinyint(4) DEFAULT NULL COMMENT '事故发生时车辆状态',
+  `fault_situation` varchar(500) NOT NULL COMMENT '故障情况',
+  `representation` varchar(500) NOT NULL COMMENT '事故表征',
+  `accident` varchar(500) NOT NULL COMMENT '事故影响',
+  `reason` varchar(500) NOT NULL COMMENT '事故原因初判',
+  `time` varchar(20) DEFAULT NULL COMMENT '事故发生时间',
+  `scenario_name` varchar(500) DEFAULT NULL COMMENT '事故场景名称',
+  `relation` tinyint(1) DEFAULT NULL COMMENT '是否关联上报车型处置预案',
+  `reporting_unit` varchar(500) DEFAULT NULL COMMENT '事故上报单位',
+  `report_state` varchar(500) DEFAULT NULL COMMENT '事故上报状态',
+  `reasons_for_failure` varchar(500) DEFAULT NULL COMMENT '上报失败原因',
+  `platform` varchar(500) DEFAULT NULL COMMENT '上报平台',
+  `final_operator` varchar(36) DEFAULT NULL COMMENT '最后操作人',
+  `operating_time` varchar(20) DEFAULT NULL COMMENT '操作时间',
+  `create_time` varchar(20) DEFAULT NULL COMMENT '创建时间',
+  `create_by` varchar(36) DEFAULT NULL COMMENT '创建人',
+  `update_time` varchar(20) DEFAULT NULL COMMENT '更新时间',
+  `update_by` varchar(36) DEFAULT NULL COMMENT '更新人',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='安全事故管理|安全事故管理|fsa';

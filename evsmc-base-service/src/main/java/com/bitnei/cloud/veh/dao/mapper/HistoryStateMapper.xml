@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.veh.dao.HistoryStateMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.veh.domain.HistoryState" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        <if test="authSQL != null and '' != authSQL">
+            and ${authSQL}
+        </if>
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    hs.id  ,hs.vid ,hs.vin ,hs.report_date ,hs.gauges_mileage ,hs.state ,hs.total_voltage ,hs.total_current ,hs.speed ,hs.soc ,hs.position_lon ,hs.position_lat ,hs.last_communication_time ,hs.last_can_valid_time ,hs.last_charge_time ,hs.charge_discharge_state, hs.veh_position
+    </sql>
+    <sql id="moreColumns">
+    hs.id  ,hs.vid ,hs.vin ,hs.report_date ,hs.gauges_mileage ,hs.state ,hs.total_voltage ,hs.total_current ,hs.speed ,hs.soc ,hs.position_lon ,hs.position_lat ,hs.last_communication_time ,hs.last_can_valid_time ,hs.last_charge_time ,hs.charge_discharge_state, hs.veh_position
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.veh.domain.HistoryState"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        veh_history_state hs
+        <where>
+            hs.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" resultOrdered="true">
+        select
+            hs.id,
+            date_format(hs.report_date, '%Y-%m-%d %H:%i:%s') as report_date,
+            date_format(hs.last_communication_time, '%Y-%m-%d %H:%i:%s') as last_communication_time,
+            date_format(hs.last_can_valid_time, '%Y-%m-%d %H:%i:%s') as last_can_valid_time,
+            date_format(hs.last_charge_time, '%Y-%m-%d %H:%i:%s') as last_charge_time,
+            hs.charge_discharge_state,
+            hs.gauges_mileage,
+            hs.state,
+            hs.total_voltage,
+            hs.total_current,
+            hs.speed,
+            hs.soc,
+            hs.position_lon,
+            hs.position_lat,
+            hs.veh_position,
+            veh.vin,
+            veh.inter_no,
+            veh.license_plate,
+            veh.manu_unit_id,
+            veh.stage,
+            veh.oper_unit_id,
+            veh.oper_license_city_id,
+            veh.create_time,
+            veh.sell_date,
+            svm.veh_model_name,
+            svm.notice_id,
+            stmu.term_part_firmware_number,
+            stmu.serial_number,
+            stmu.iccid,
+            area.name as oper_license_city_display,
+            manu.name as manu_unit_display,
+            oper.name as oper_unit_display,
+            vn.name as notice_display
+        from veh_history_state hs
+            left join sys_vehicle veh on veh.uuid = hs.vid
+            left join sys_veh_model svm on veh.veh_model_id = svm.id
+            left join sys_term_model_unit stmu on veh.term_id = stmu.id
+            left join sys_area area on area.id = veh.oper_license_city_id
+            left join sys_unit manu on manu.id = veh.manu_unit_id
+            left join sys_unit oper on oper.id = veh.oper_unit_id
+            left join sys_veh_notice vn on vn.id = svm.notice_id
+        <where>
+            veh.vin is not null and veh.is_delete = 0
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="beginTime != null and endTime != null">
+                and hs.report_date between #{beginTime} and #{endTime}
+            </if>
+            <if test="gaugesMileage != null">
+                and hs.gauges_mileage > #{gaugesMileage}
+            </if>
+            <if test="licensePlate != null  ">
+                <bind name="pattern-licensePlate" value="'%' + licensePlate + '%'" />
+                and veh.license_plate like #{pattern-licensePlate}
+            </if>
+            <if test="vin != null  ">
+                <bind name="pattern-vin" value="'%' + vin + '%'" />
+                and veh.vin like #{pattern-vin}
+            </if>
+            <if test="stage != null">
+                and veh.stage = #{stage}
+            </if>
+            <if test="vehModelId != null">
+                and veh.veh_model_id = #{vehModelId}
+            </if>
+            <if test="operLicenseCityId != null">
+                and veh.oper_license_city_id = #{operLicenseCityId}
+            </if>
+            <if test="operUnitId != null">
+                and veh.oper_unit_id = #{operUnitId}
+            </if>
+            <if test="importSearchValues != null and importSearchValues.size()>0">
+                and veh.vin in
+                <foreach collection="importSearchValues" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <!-- 上牌城市 -->
+            <if test="operLicenseCityId != null and operLicenseCityId != ''">
+                <bind name="pattern-operLicenseCityId" value="'%/' + operLicenseCityId + '/%'" />
+                and area.path like #{pattern-operLicenseCityId}
+            </if>
+        </where>
+        order by
+            veh.vin asc,
+            hs.report_date desc
+    </select>
+
+    <!-- 分页查询计数 -->
+    <select id="pagerModel_COUNT" resultType="long">
+        select
+            count(0)
+        from veh_history_state hs
+            left join sys_vehicle veh on veh.uuid = hs.vid
+            left join sys_veh_model svm on veh.veh_model_id = svm.id
+            left join sys_term_model_unit stmu on veh.term_id = stmu.id
+            left join sys_area area on area.id = veh.oper_license_city_id
+            left join sys_unit manu on manu.id = veh.manu_unit_id
+            left join sys_unit oper on oper.id = veh.oper_unit_id
+            left join sys_veh_notice vn on vn.id = svm.notice_id
+        <where>
+            veh.vin is not null and veh.is_delete = 0
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="beginTime != null and endTime != null">
+                and hs.report_date between #{beginTime} and #{endTime}
+            </if>
+            <if test="gaugesMileage != null">
+                and hs.gauges_mileage > #{gaugesMileage}
+            </if>
+            <if test="licensePlate != null  ">
+                <bind name="pattern-licensePlate" value="'%' + licensePlate + '%'" />
+                and veh.license_plate like #{pattern-licensePlate}
+            </if>
+            <if test="vin != null  ">
+                <bind name="pattern-vin" value="'%' + vin + '%'" />
+                and veh.vin like #{pattern-vin}
+            </if>
+            <if test="stage != null">
+                and veh.stage = #{stage}
+            </if>
+            <if test="vehModelId != null">
+                and veh.veh_model_id = #{vehModelId}
+            </if>
+            <if test="operLicenseCityId != null">
+                and veh.oper_license_city_id = #{operLicenseCityId}
+            </if>
+            <if test="operUnitId != null">
+                and veh.oper_unit_id = #{operUnitId}
+            </if>
+            <if test="importSearchValues != null and importSearchValues.size()>0">
+                and veh.vin in
+                <foreach collection="importSearchValues" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <!-- 上牌城市 -->
+            <if test="operLicenseCityId != null and operLicenseCityId != ''">
+                <bind name="pattern-operLicenseCityId" value="'%/' + operLicenseCityId + '/%'" />
+                and area.path like #{pattern-operLicenseCityId}
+            </if>
+        </where>
+    </select>
+
+    <!-- 分页查询 默认查询全部车辆最近的1张快照 -->
+    <select id="pagerModelAllVehNew" resultMap="tailResults">
+        select
+            veh.vin,
+            veh.inter_no,
+            veh.license_plate,
+            veh.stage,
+            veh.oper_unit_id,
+            veh.oper_license_city_id,
+            veh.create_time,
+            veh.sell_date,
+            veh.manu_unit_id,
+            hs.id,
+            date_format(hs.report_date, '%Y-%m-%d %H:%i:%s') as report_date,
+            date_format(hs.last_communication_time, '%Y-%m-%d %H:%i:%s') as last_communication_time,
+            date_format(hs.last_can_valid_time, '%Y-%m-%d %H:%i:%s') as last_can_valid_time,
+            date_format(hs.last_charge_time, '%Y-%m-%d %H:%i:%s') as last_charge_time,
+            hs.charge_discharge_state,
+            hs.gauges_mileage,
+            hs.state,
+            hs.total_voltage,
+            hs.total_current,
+            hs.speed,
+            hs.soc,
+            hs.position_lon,
+            hs.position_lat,
+            hs.veh_position,
+            svm.veh_model_name,
+            svm.notice_id,
+            stmu.term_part_firmware_number,
+            stmu.serial_number,
+            stmu.iccid,
+            area.name as oper_license_city_display,
+            manu.name as manu_unit_display,
+            oper.name as oper_unit_display,
+            vn.name as notice_display
+        from sys_vehicle veh
+            inner join veh_history_state hs on hs.vid = veh.uuid
+            left join sys_veh_model svm on veh.veh_model_id = svm.id
+            left join sys_term_model_unit stmu on veh.term_id = stmu.id
+            left join sys_area area on area.id = veh.oper_license_city_id
+            left join sys_unit manu on manu.id = veh.manu_unit_id
+            left join sys_unit oper on oper.id = veh.oper_unit_id
+            left join sys_veh_notice vn on vn.id = svm.notice_id
+        <where>
+            veh.vin is not null and veh.is_delete = 0
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="beginTime != null and endTime != null">
+                and hs.report_date between #{beginTime} and #{endTime}
+            </if>
+            <if test="gaugesMileage != null">
+                and hs.gauges_mileage > #{gaugesMileage}
+            </if>
+            <if test="licensePlate != null  ">
+                <bind name="pattern-licensePlate" value="'%' + licensePlate + '%'" />
+                and veh.license_plate like #{pattern-licensePlate}
+            </if>
+            <if test="vin != null  ">
+                <bind name="pattern-vin" value="'%' + vin + '%'" />
+                and veh.vin like #{pattern-vin}
+            </if>
+            <if test="stage != null">
+                and veh.stage = #{stage}
+            </if>
+            <if test="vehModelId != null">
+                and veh.veh_model_id = #{vehModelId}
+            </if>
+            <if test="operUnitId != null">
+                and veh.oper_unit_id = #{operUnitId}
+            </if>
+            <if test="importSearchValues != null and importSearchValues.size()>0">
+                and veh.vin in
+                <foreach collection="importSearchValues" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <!-- 上牌城市 -->
+            <if test="operLicenseCityId != null and operLicenseCityId != ''">
+                <bind name="pattern-operLicenseCityId" value="'%/' + operLicenseCityId + '/%'" />
+                and area.path like #{pattern-operLicenseCityId}
+            </if>
+        </where>
+        order by
+            veh.vin asc,
+            hs.report_date desc
+    </select>
+
+    <!-- 分页查询计数 默认查询全部车辆最近的1张快照 -->
+    <select id="pagerModelAllVehNew_COUNT" resultType="long">
+        select
+            count(*)
+        from sys_vehicle veh
+            inner join veh_history_state hs on hs.vid = veh.uuid
+            left join sys_veh_model svm on veh.veh_model_id = svm.id
+            left join sys_term_model_unit stmu on veh.term_id = stmu.id
+            left join sys_area area on area.id = veh.oper_license_city_id
+            left join sys_unit manu on manu.id = veh.manu_unit_id
+            left join sys_unit oper on oper.id = veh.oper_unit_id
+            left join sys_veh_notice vn on vn.id = svm.notice_id
+        <where>
+            veh.vin is not null and veh.is_delete = 0
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="beginTime != null and endTime != null">
+                and hs.report_date between #{beginTime} and #{endTime}
+            </if>
+            <if test="gaugesMileage != null">
+                and hs.gauges_mileage > #{gaugesMileage}
+            </if>
+            <if test="licensePlate != null  ">
+                <bind name="pattern-licensePlate" value="'%' + licensePlate + '%'" />
+                and veh.license_plate like #{pattern-licensePlate}
+            </if>
+            <if test="vin != null  ">
+                <bind name="pattern-vin" value="'%' + vin + '%'" />
+                and veh.vin like #{pattern-vin}
+            </if>
+            <if test="stage != null">
+                and veh.stage = #{stage}
+            </if>
+            <if test="vehModelId != null">
+                and veh.veh_model_id = #{vehModelId}
+            </if>
+            <if test="operUnitId != null">
+                and veh.oper_unit_id = #{operUnitId}
+            </if>
+            <if test="importSearchValues != null and importSearchValues.size()>0">
+                and veh.vin in
+                <foreach collection="importSearchValues" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <!-- 上牌城市 -->
+            <if test="operLicenseCityId != null and operLicenseCityId != ''">
+                <bind name="pattern-operLicenseCityId" value="'%/' + operLicenseCityId + '/%'" />
+                and area.path like #{pattern-operLicenseCityId}
+            </if>
+        </where>
+    </select>
+
+    <!-- 更新车辆地理位置 - 多条语句 -->
+    <update id="updateVehPosition">
+        <foreach collection="list" item="hs" separator=";">
+            update ${hs.tableName}
+            <set>
+                veh_position = #{hs.vehPosition}
+            </set>
+            <where>
+                id = #{hs.id}
+            </where>
+        </foreach>
+    </update>
+
+    <!-- 更新车辆地理位置 => 在单条SQL中更新一个分区表中的多条记录 -->
+    <update id="updateVehPositionInOneShardingTable">
+        <include refid="updateVehPositionInShardingTable"/>
+    </update>
+
+    <sql id="updateVehPositionInShardingTable">
+        update ${table}
+        <set>
+            veh_position =
+            <foreach collection="rows" item="row" open="case id" close="end">
+                when #{row.id} then #{row.vehPosition}
+            </foreach>
+        </set>
+        <where>
+            id in
+            <foreach collection="rows" item="row" open="(" separator="," close=")">
+                #{row.id}
+            </foreach>
+        </where>
+    </sql>
+
+    <!-- 更新车辆地理位置 => 通过多条SQL语句, 每条SQL批量更一张分区表中的多条记录 -->
+    <update id="updateVehPositionInManyShardingTables">
+        <foreach collection="tables" index="table" item="rows" separator=";">
+            <include refid="updateVehPositionInShardingTable"/>
+        </foreach>
+    </update>
+
+</mapper>

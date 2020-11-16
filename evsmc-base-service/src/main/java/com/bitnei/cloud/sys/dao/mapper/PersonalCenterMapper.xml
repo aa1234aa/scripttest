@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.PersonalCenterMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.PersonalCenterInfo" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+        sups.*
+    </sql>
+    <sql id="moreColumns">
+        sups.*
+    </sql>
+
+
+    <!-- 增加 -->
+    <insert id="addAlarmSetting" parameterType="java.util.HashMap">
+        insert into
+        sys_user_fault_ring (id,user_id,is_allow_ring, is_allow_dialog,is_allow_sms, fault_ring_id)
+        values
+        (#{id},#{userId},#{isAllowRing},#{isAllowDialog}, #{isAllowSms}, #{faultRingId})
+    </insert>
+
+    <!-- 更新 -->
+    <insert id="addUserSetting" parameterType="java.util.HashMap">
+        insert into sys_user_personal_setting(id,user_id,keep_on_line_time,login_type,last_login_time,last_change_password_time,is_repeat_login_allow,is_force_change_password_active,is_account_deprecated_active)
+        values
+       (#{id},#{userId},#{keepOnLineTime},#{loginType},#{lastLoginTime},#{lastChangePasswordTime},#{isRepeatLoginAllow},#{isForceChangePasswordActive},#{isAccountDeprecatedActive})
+    </insert>
+
+
+    <!-- 根据id查询 -->
+    <select id="getUserSetting" resultType="com.bitnei.cloud.sys.domain.UserPersonalSetting"  parameterType="String">
+        select id as id,user_id as userId,keep_on_line_time as keepOnLineTime,login_type as loginType,
+        last_login_time as lastLoginTime,last_change_password_time as lastChangePasswordTime,is_repeat_login_allow as isRepeatLoginAllow,
+        is_repeat_login_allow as isRepeatLoginAllow,is_account_deprecated_active as isAccountDeprecatedActive,
+        is_force_change_password_active as isForceChangePasswordActive
+        from
+        sys_user_personal_setting sups
+        <where>
+            sups.user_id=#{userId}
+        </where>
+    </select>
+
+    <update id="updateUserSetting" parameterType="java.util.HashMap">
+        update sys_user_personal_setting sups
+        <if test="loginType != null">
+            set sups.login_type = #{loginType},
+             sups.last_change_password_time = #{lastChangePasswordTime}
+        </if>
+        <if test="keepOnLineTime != null">
+            set sups.keep_on_line_time = #{keepOnLineTime}
+        </if>
+        <if test="lastLoginTime != null">
+            set sups.last_login_time = #{lastLoginTime}
+        </if>
+        <where>
+            sups.user_id = #{userId}
+        </where>
+
+    </update>
+
+
+    <select id="alarmRingList" resultType="java.util.HashMap" >
+        select id as ringId,ring_name as ringName,url as fileName
+        from
+        fault_alarm_ring
+
+    </select>
+
+    <select id="getUserAlarmRingSet" parameterType="String" resultType="java.util.HashMap" >
+
+        select sufr.is_allow_ring as isAllowRing, sufr.is_allow_dialog as isAllowDialog, sufr.is_allow_sms as isAllowSms,
+          sufr.fault_ring_id as ringId,far.url as ringFile
+        from sys_user_fault_ring sufr
+        left join fault_alarm_ring far on sufr.fault_ring_id = far.id
+        <where>
+            user_id=#{userId}
+        </where>
+
+    </select>
+
+    <select id="getUserKeepConnTime" parameterType="String" resultType="java.util.HashMap" >
+    select keep_on_line_time as keepOnLineTime,CONCAT(keep_on_line_time,'分钟') as keepOnLineTimeDisplay from sys_user_personal_setting
+    <where>
+        user_id=#{userId}
+    </where>
+    </select>
+
+
+    <update id="updateUserAlarmRing" parameterType="java.util.HashMap">
+        update sys_user_fault_ring
+        SET
+        <if test="faultRingId != null">
+           fault_ring_id = #{faultRingId},
+        </if>
+        <if test="isAllowRing != null">
+           is_allow_ring = #{isAllowRing},
+        </if>
+        <if test="isAllowDialog != null">
+           is_allow_dialog = #{isAllowDialog},
+        </if>
+        <if test="isAllowSms != null">
+           is_allow_sms = #{isAllowSms},
+        </if>
+        update_time = #{updateTime},
+        update_by = #{updateBy}
+        WHERE user_id=#{userId}
+
+    </update>
+
+
+    <insert id="setUserKeepOnLineTime" parameterType="java.util.HashMap">
+        insert  into sys_user_personal_setting (id,user_id,keep_on_line_time) value (#{id},#{userId},#{keepOnLineTime})
+
+    </insert>
+
+    <select id="getUserRoleList" parameterType="String" resultType="java.util.HashMap">
+        select urlk.role_id as roleId , sr.name as roleName
+           from sys_user_role_lk urlk
+          inner join sys_role sr on urlk.role_id = sr.id
+        <where>
+           urlk.user_id = #{userId}
+        </where>
+
+    </select>
+
+    <select id="personalInformation" parameterType="String" resultType="com.bitnei.cloud.sys.domain.PersonalCenterInfo">
+        select sop.owner_name as ownerName,sop.sex as sex,sop.tel_phone as telPhone,sop.email as email,sop.job_number as jobNumber,
+          sus.is_valid as isValid,sus.is_never_expire as isNeverExpire,
+          sop.address as address,sop.card_type as cardType,sop.card_no as cardNo,sop.card_address as cardAddress,sop.front_card_img_id as frontCardImgId,
+          sop.back_card_img_id as backCardImgId,sop.face_card_img_id as faceCardImgId,su.name as unitName,sop.job_post as jobPost,
+          sus.username as userName,(select sr.name from sys_role sr where sr.id = #{roleId}) as roleName,sus.is_valid as accountState,sus.permit_end_date as lastValidDate,
+
+        case sus.is_valid when '1' then '启用' when '0' then '未启用' else null end as AccountStateDisplay
+        from sys_owner_people sop
+          left join sys_unit su on sop.unit_id = su.id
+          left join sys_user sus on sop.id = sus.owner_id
+          left join sys_role sr on sus.def_role_id = sr.id
+
+          <where>
+              sus.id = #{userId}
+          </where>
+    </select>
+
+
+
+</mapper>

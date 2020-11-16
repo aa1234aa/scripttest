@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.fault.dao.SafetyAccidentsMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.fault.domain.SafetyAccidents" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    fsa.id  ,fsa.vin ,fsa.vid ,fsa.vehicle_total_mileage ,fsa.vehicle_state ,fsa.fault_situation ,fsa.representation ,fsa.accident ,fsa.reason ,fsa.time ,fsa.relation ,fsa.report_state ,fsa.reasons_for_failure ,fsa.platform ,fsa.final_operator ,fsa.operating_time ,fsa.create_time ,fsa.create_by ,fsa.update_time ,fsa.update_by ,fsa.photo1_id ,fsa.photo2_id ,fsa.photo3_id ,fsa.photo4_id ,fsa.report_number ,fsa.supervise_data_file_id ,fsa.analysis_report_file_id ,fsa.data_report_state ,fsa.report_upload_state ,fsa.engery_device_ids
+    </sql>
+    <sql id="moreColumns">
+    fsa.id  ,fsa.vin ,fsa.vid ,fsa.vehicle_total_mileage ,fsa.vehicle_state ,fsa.fault_situation ,fsa.representation ,fsa.accident ,fsa.reason ,fsa.time ,fsa.relation ,fsa.report_state ,fsa.reasons_for_failure ,fsa.platform ,fsa.final_operator ,fsa.operating_time ,fsa.create_time ,fsa.create_by ,fsa.update_time ,fsa.update_by ,fsa.photo1_id ,fsa.photo2_id ,fsa.photo3_id ,fsa.photo4_id ,fsa.report_number ,fsa.supervise_data_file_id ,fsa.analysis_report_file_id ,fsa.data_report_state ,fsa.report_upload_state ,fsa.engery_device_ids
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.fault.domain.SafetyAccidents"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>,
+        sv.id as vehicle_id,
+        sv.inter_no,
+        sv.license_plate,
+        sv.veh_model_id,
+        sv.oper_unit_id,
+        sv.oper_area_id,
+        sv.produce_date,
+        sv.sell_date
+        from
+        fault_safety_accidents fsa
+        left join sys_vehicle sv on sv.uuid = fsa.vid
+        <where>
+            fsa.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        fault_safety_accidents (id,vin,vid,engery_device_ids,vehicle_total_mileage,vehicle_state,fault_situation,representation,accident,reason,time,relation,create_time,create_by,photo1_id,photo2_id,photo3_id,photo4_id,report_state,data_report_state,report_upload_state,final_operator,operating_time)
+        values
+        (#{id},#{vin},#{vid},#{engeryDeviceIds},#{vehicleTotalMileage},#{vehicleState},#{faultSituation},#{representation},#{accident},#{reason},#{time},#{relation},#{createTime},#{createBy},#{photo1Id},#{photo2Id},#{photo3Id},#{photo4Id},#{reportState},#{dataReportState},#{reportUploadState},#{finalOperator},#{operatingTime})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update fault_safety_accidents set
+        id=id,vin=#{vin},vid=#{vid},report_state=#{reportState},engery_device_ids=#{engeryDeviceIds},vehicle_total_mileage=#{vehicleTotalMileage},vehicle_state=#{vehicleState},fault_situation=#{faultSituation},representation=#{representation},accident=#{accident},reason=#{reason},time=#{time},relation=#{relation},update_time=#{updateTime},update_by=#{updateBy},final_operator=#{finalOperator},operating_time=#{operatingTime},reasons_for_failure = ""
+        <if test = "photo1Id != null and photo1Id != ''">
+            , photo1_id = #{photo1Id}
+        </if>
+        <if test = "photo2Id != null and photo2Id != ''">
+            , photo2_id = #{photo2Id}
+        </if>
+        <if test = "photo3Id != null and photo3Id != ''">
+            , photo3_id = #{photo3Id}
+        </if>
+        <if test = "photo4Id != null and photo4Id != ''">
+            , photo4_id = #{photo4Id}
+        </if>
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 更新事故上报平台及上报状态 -->
+    <update id="updateUnit" parameterType="java.util.HashMap">
+        update fault_safety_accidents
+        <set>
+            platform=#{platform},
+            update_time=#{updateTime},
+            update_by=#{updateBy},
+            report_state=#{reportState},
+            reasons_for_failure = #{reasonsForFailure},
+            final_operator=#{finalOperator},
+            operating_time=#{operatingTime}
+            <if test = "reportNumber != null">
+                , report_number = #{reportNumber}
+            </if>
+        </set>
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+    <!-- 更新添加可充电储能装置编码 -->
+    <update id="update2" parameterType="java.util.HashMap">
+        update fault_safety_accidents set
+        id=id,vin=#{vin},vid=#{vid},vehicle_total_mileage=#{vehicleTotalMileage},vehicle_state=#{vehicleState},fault_situation=#{faultSituation},representation=#{representation},accident=#{accident},reason=#{reason},time=#{time},relation=#{relation},report_state=#{reportState},reasons_for_failure=#{reasonsForFailure},platform=#{platform},final_operator=#{finalOperator},operating_time=#{operatingTime},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        fault_safety_accidents
+        <where>
+            id = #{id}
+            and report_state != '4'
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap" resultOrdered="true">
+        select
+        <include refid="moreColumns"/>,
+        sv.id as vehicle_id,
+        sv.inter_no,
+        sv.license_plate,
+        sv.veh_model_id,
+        sv.oper_unit_id,
+        sv.oper_area_id,
+        sv.produce_date,
+        sv.sell_date
+        from
+        fault_safety_accidents fsa
+        left join sys_vehicle sv on sv.uuid = fsa.vid
+        <where>
+        <if test="authSQL != null">
+        <include refid="authSQL"/>
+        </if>
+            <if test="vin != null and vin != ''">
+                and fsa.vin like concat('%',#{vin},'%')
+            </if>
+            <if test="interNo != null and interNo != ''">
+                <bind name="pattern-inter-no" value="'%' + interNo + '%'" />
+                and sv.inter_no like #{pattern-inter-no}
+            </if>
+            <if test="vehModelId != null and vehModelId != ''">
+                and sv.veh_model_id = #{vehModelId}
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                and <![CDATA[ fsa.time >= #{beginTime,jdbcType=DATE} ]]>
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and <![CDATA[ fsa.time <= #{endTime,jdbcType=DATE} ]]>
+            </if>
+            <if test="reportState != null and reportState != ''">
+                and fsa.report_state = #{reportState}
+            </if>
+            <if test="dataReportState != null and dataReportState != ''">
+                and fsa.data_report_state = #{dataReportState}
+            </if>
+            <if test="reportUploadState != null and reportUploadState != ''">
+                and fsa.report_upload_state = #{reportUploadState}
+            </if>
+        </where>
+        order by fsa.create_time desc
+    </select>
+
+    <!-- 更新上报监管数据状态 -->
+    <update id="updateByDataReportState" parameterType="java.util.HashMap">
+        update fault_safety_accidents
+        <set>
+            supervise_data_file_id=#{superviseDataFileId},
+            data_report_state=#{dataReportState},
+            final_operator=#{finalOperator},
+            operating_time=#{operatingTime},
+            update_time=#{updateTime},
+            update_by=#{updateBy}
+        </set>
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 更新分析报告上传状态 -->
+    <update id="updateByReportUploadState" parameterType="java.util.HashMap">
+        update fault_safety_accidents
+        <set>
+            analysis_report_file_id=#{analysisReportFileId},
+            report_upload_state=#{reportUploadState},
+            final_operator=#{finalOperator},
+            operating_time=#{operatingTime},
+            update_time=#{updateTime},
+            update_by=#{updateBy}
+        </set>
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+</mapper>

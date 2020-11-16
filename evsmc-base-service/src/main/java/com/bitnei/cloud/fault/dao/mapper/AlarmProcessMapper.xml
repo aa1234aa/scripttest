@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.fault.dao.AlarmProcessMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.fault.domain.AlarmProcess" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    fap.id  ,fap.fault_alarm_id , fault_begin_time, fap.proces_status ,fap.remark , fap.again_remind_status ,fap.again_remind_time ,fap.create_time ,fap.create_by
+    </sql>
+    <sql id="moreColumns">
+    fap.id  ,fap.fault_alarm_id , fault_begin_time, fap.proces_status ,fap.remark , fap.again_remind_status ,fap.again_remind_time ,fap.create_time ,fap.create_by
+    </sql>
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        fault_alarm_process (id,fault_alarm_id,fault_begin_time, proces_status,remark,again_remind_status,again_remind_time,create_time,create_by)
+        values
+        (#{id},#{faultAlarmId}, #{faultBeginTime}, #{procesStatus},#{remark},#{againRemindStatus},#{againRemindTime},#{createTime},#{createBy})
+    </insert>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        fault_alarm_process fap
+        <where>
+            <if test="faultAlarmId != null and faultAlarmId !=''">
+                and fap.fault_alarm_id = #{faultAlarmId}
+            </if>
+            <if test="faultBeginTime != null and faultBeginTime !=''">
+                and fap.fault_begin_time = #{faultBeginTime}
+            </if>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+        order by fap.create_time desc
+    </select>
+
+    <select id="findFaultAlarmId" resultType="string">
+        select
+            fap.fault_alarm_id
+        from
+            fault_alarm_process fap
+        where
+            fap.again_remind_time between #{beginTime} and #{endTime}
+    </select>
+
+    <select id="findAllByTableName" resultMap="tailResults" parameterType="string">
+        select
+        <include refid="moreColumns"/>
+        from ${tableName} fap
+        order by fap.create_time desc
+    </select>
+
+    <select id="findByTableNameAndFaultId" resultMap="tailResults" parameterType="java.util.Map">
+        select
+        <include refid="moreColumns"/>
+        from ${tableName} fap
+        <if test="faultAlarmIds != null and faultAlarmIds.size() > 0 ">
+            where fap.fault_alarm_id in
+            <foreach collection="faultAlarmIds" item="faultAlarmId" open="(" separator="," close=")">
+                #{faultAlarmId}
+            </foreach>
+        </if>
+        order by fap.create_time desc
+    </select>
+
+    <delete id="deleteBatch">
+        delete from ${tableName}
+        where fault_alarm_id in (''
+        <foreach collection="alarmInfoHistoryList" item="alarmInfoHistory" open="," separator="," close="">
+            #{alarmInfoHistory.id}
+        </foreach>
+        )
+    </delete>
+
+    <delete id="deleteByFaultAlarmId">
+        delete from fault_alarm_process
+        where fault_alarm_id = #{faultAlarmId}
+    </delete>
+
+</mapper>

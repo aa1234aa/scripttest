@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.dc.dao.ForwardRuleMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.dc.domain.ForwardRule" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+    <resultMap id="tailItemResults" type="com.bitnei.cloud.dc.domain.ForwardRuleItem" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+            <result column="resource_item_name" property="resourceItemName"/>
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    fr.id  ,fr.name ,fr.status ,fr.note ,fr.create_time ,fr.update_time ,fr.create_by ,fr.update_by ,fr.rule_type, fr.rule_description, fr.default_rule
+    </sql>
+    <sql id="moreColumns">
+    fr.id  ,fr.name ,fr.status ,fr.note ,fr.create_time ,fr.update_time ,fr.create_by ,fr.update_by ,fr.rule_type, fr.rule_description, fr.default_rule
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.dc.domain.ForwardRule"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        dc_forward_rule fr
+        <where>
+            fr.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+     <!-- 根据名称查询 -->
+    <select id="findByName" resultType="com.bitnei.cloud.dc.domain.ForwardRule"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        dc_forward_rule fr
+        <where>
+            fr.name=#{name}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        dc_forward_rule (id,name,status,note,create_time,create_by,rule_type, rule_description, default_rule)
+        values
+        (#{id},#{name},#{status},#{note},#{createTime},#{createBy},#{ruleType},#{ruleDescription}, #{defaultRule})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update dc_forward_rule set
+        id=id,name=#{name},status=#{status},note=#{note},update_time=#{updateTime},update_by=#{updateBy},rule_type=#{ruleType},rule_description=#{ruleDescription}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        dc_forward_rule
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        dc_forward_rule fr
+        <where>
+            fr.default_rule = 0
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="name != null">
+                and fr.name like "%"#{name}"%"
+            </if>
+            <if test="status != null">
+                and fr.status = #{status}
+            </if>
+            <if test="ruleType != null">
+                and fr.rule_type = #{ruleType}
+            </if>
+        </where>
+        order by fr.create_time DESC
+
+    </select>
+
+    <!-- 增加规则明细 -->
+    <insert id="insertForwardRuleItem" parameterType="java.util.HashMap">
+        insert into
+        dc_forward_rule_item (id,forward_rule_id,resource_item_id,op,pre_logic_op,val,create_time,create_by)
+        values
+        (#{id},#{forwardRuleId},#{resourceItemId},#{op},#{preLogicOp},#{val},#{createTime},#{createBy})
+    </insert>
+
+    <!-- 更新规则明细 -->
+    <update id="updateForwardRuleItem" parameterType="java.util.HashMap">
+        update dc_forward_rule_item set
+        forward_rule_id=#{forwardRuleId},
+        resource_item_id=#{resourceItemId},
+        op=#{op},
+        pre_logic_op=#{preLogicOp},
+        val=#{val},
+        update_time=#{updateTime}
+        ,update_by=#{updateBy}
+        where
+        id=#{id}
+    </update>
+
+    <!-- 根据规则ID查询规则明细 -->
+    <select id="findRuleItemByRuleId" resultMap="tailItemResults" parameterType="java.util.HashMap">
+        select
+        ri.id, ri.forward_rule_id, ri.resource_item_id, ri.op, ri.pre_logic_op, ri.val, cri.name as resource_item_name
+        FROM dc_forward_rule_item ri
+        inner JOIN
+        sys_core_resource_item cri ON cri.id = ri.resource_item_id
+        <where>
+            <if test="ruleId != null">
+                and ri.forward_rule_id = #{ruleId}
+            </if>
+        </where>
+        order by ri.id asc
+    </select>
+    <select id="findRuleItemsByRuleId" resultType="com.bitnei.cloud.sys.domain.GroupRuleInfo" parameterType="java.util.HashMap">
+        SELECT
+          cri.object_table_name as table_name, fri.forward_rule_id as group_id, fri.op,cri.pre_code, fri.val, fri.pre_logic_op, fri.id as order_num
+        FROM
+          dc_forward_rule_item fri
+        inner JOIN
+          sys_core_resource_item cri ON cri.id = fri.resource_item_id
+        WHERE
+
+        fri.forward_rule_id in
+        <foreach collection="ruleIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY fri.id asc
+
+    </select>
+
+    <!-- 删除规则明细 -->
+    <delete id="delRuleItem"  parameterType="java.util.HashMap">
+        delete from
+        dc_forward_rule_item
+        <where>
+            forward_rule_id = #{ruleId}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 根据规则ID查询规则明细 -->
+    <select id="findRuleItems" resultMap="tailItemResults" parameterType="java.util.HashMap">
+        select
+        ri.id, ri.forward_rule_id, ri.resource_item_id, ri.op, ri.pre_logic_op, ri.val
+        FROM dc_forward_rule_item ri
+        <where>
+            <if test="ruleId != null">
+                ri.forward_rule_id = #{ruleId}
+            </if>
+        </where>
+        order by ri.id asc
+    </select>
+
+    <!-- 查找转发规则车辆 -->
+    <select id="findRuleVehicles" resultType="com.bitnei.cloud.dc.model.ForwardRuleVehicleModel" parameterType="java.util.HashMap">
+        SELECT
+        sv.id,
+        sv.license_plate,
+        sv.vin,
+        sv.inter_no,
+        sv.manu_unit_id,
+        svm.veh_model_name,
+        sv.oper_unit_id,
+        sv.oper_license_city_id,
+        tmu.support_protocol
+        ,dr.`name` AS support_protocol_name
+        ,area.name AS oper_license_city_name
+        ,sv.veh_model_id
+        FROM
+        sys_vehicle sv
+        LEFT JOIN sys_veh_model svm ON svm.id = sv.veh_model_id
+        LEFT JOIN sys_term_model_unit tmu ON tmu.id = sv.term_id
+        LEFT JOIN dc_rule dr ON dr.id = tmu.support_protocol
+        LEFT JOIN sys_area area ON area.id = sv.oper_license_city_id
+        <where>
+            sv.is_delete = 0
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="importSearchValues != null and importSearchValues.size()>0">
+                and sv.vin in
+                <foreach collection="importSearchValues" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <!-- id集合 -->
+            <if test="vehicleIds != null">
+                AND sv.id IN
+                <foreach collection="vehicleIds" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <!-- 过滤id -->
+            <if test="excludeIds != null">
+                AND sv.id NOT IN
+                <foreach collection="excludeIds" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <!-- 车辆型号ID -->
+            <if test="vehModelId != null and vehModelId != ''">
+                AND svm.id = #{vehModelId}
+            </if>
+            <!-- 制造工厂 -->
+            <if test="manuUnitId != null and manuUnitId != ''">
+                AND sv.manu_unit_id = #{manuUnitId}
+            </if>
+            <!-- 车辆运营单位id -->
+            <if test="operUnitId != null and operUnitId != ''">
+                AND sv.oper_unit_id = #{operUnitId}
+            </if>
+            <!-- 车牌号模糊查询 -->
+            <if test="licensePlate != null and licensePlate != ''">
+                AND sv.license_plate LIKE CONCAT('%',#{licensePlate},'%')
+            </if>
+            <!--  VIN码 -->
+            <if test="vin != null and vin != '' ">
+                AND sv.vin LIKE CONCAT('%',#{vin},'%')
+            </if>
+        </where>
+        order by sv.create_time desc
+
+    </select>
+
+    <!-- 查找车辆 -->
+    <select id="findAllVehicles" resultType="com.bitnei.cloud.dc.model.ForwardRuleVehicleModel" parameterType="java.util.HashMap">
+        SELECT
+        sv.id,
+        sv.license_plate,
+        sv.vin,
+        sv.inter_no,
+        sv.manu_unit_id,
+        svm.veh_model_name,
+        sv.oper_unit_id,
+        sv.oper_license_city_id,
+        tmu.support_protocol
+        ,svt.name AS veh_type_name
+        ,area.name AS oper_license_city_name
+        ,svn.veh_type_id
+        ,sv.veh_model_id
+        ,dr.`name` AS support_protocol_name
+        FROM
+        sys_vehicle sv
+        LEFT JOIN sys_veh_model svm ON svm.id = sv.veh_model_id
+        LEFT JOIN sys_term_model_unit tmu ON tmu.id = sv.term_id
+        LEFT JOIN sys_veh_notice svn ON svn.id = svm.notice_id
+        LEFT JOIN sys_veh_type svt ON svt.id = svn.veh_type_id
+        LEFT JOIN sys_area area ON area.id = sv.oper_license_city_id
+        LEFT JOIN dc_rule dr ON dr.id = tmu.support_protocol
+        <where>
+            sv.is_delete = 0
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="importSearchValues != null and importSearchValues.size()>0">
+                and sv.vin in
+                <foreach collection="importSearchValues" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <!-- id集合 -->
+            <if test="vehicleIds != null">
+                AND sv.id IN
+                <foreach collection="vehicleIds" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <!-- 过滤id -->
+            <if test="excludeIds != null">
+                AND sv.id NOT IN
+                <foreach collection="excludeIds" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <!-- 车辆型号ID -->
+            <if test="vehModelId != null and vehModelId != ''">
+                AND svm.id = #{vehModelId}
+            </if>
+            <!-- 制造工厂 -->
+            <if test="manuUnitId != null and manuUnitId != ''">
+                AND sv.manu_unit_id = #{manuUnitId}
+            </if>
+            <!-- 车辆运营单位id -->
+            <if test="operUnitId != null and operUnitId != ''">
+                AND sv.oper_unit_id = #{operUnitId}
+            </if>
+            <!-- 车牌号模糊查询 -->
+            <if test="licensePlate != null and licensePlate != ''">
+                AND sv.license_plate LIKE CONCAT('%',#{licensePlate},'%')
+            </if>
+            <!--  VIN码 -->
+            <if test="vin != null and vin != '' ">
+                AND sv.vin LIKE CONCAT('%',#{vin},'%')
+            </if>
+            <!-- 车辆种类ID -->
+            <if test="vehTypeId != null and vehTypeId != ''">
+                AND svt.path like CONCAT('%/',#{vehTypeId},'/%')
+            </if>
+            <!-- 车型名称模糊查询 -->
+            <if test="vehModelName != null and vehModelName != ''">
+                AND svm.veh_model_name LIKE CONCAT('%',#{vehModelName},'%')
+            </if>
+            <!-- 上牌地区 -->
+            <if test="operLicenseCityId != null and operLicenseCityId != ''">
+                and area.path LIKE CONCAT('%/',#{operLicenseCityId},'/%')
+            </if>
+        </where>
+        order by sv.create_time desc
+
+    </select>
+
+    <!-- 通过平台id查询默认规则明细 -->
+    <select id="findPlatformDefaultRuleItem" resultType="com.bitnei.cloud.dc.domain.ForwardRuleItem" parameterType="java.util.HashMap">
+        select
+        ri.id, ri.forward_rule_id, ri.resource_item_id, ri.op, ri.pre_logic_op, ri.val
+        from dc_forward_rule ru, dc_platform_rule_lk lk, dc_forward_rule_item it
+        where ru.id = lk.forward_rule_id
+        and ru.id = it.forward_rule_id
+        and ru.default_rule = 1
+        and lk.platform_id = #{platformId}
+    </select>
+
+    <!-- 查询平台的默认规则 -->
+    <select id="findPlatformDefaultRule" resultType="com.bitnei.cloud.dc.domain.ForwardRule"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from  dc_forward_rule fr
+        left join dc_platform_rule_lk lk on lk.forward_rule_id = fr.id
+        <where>
+            fr.default_rule = 1
+            and lk.platform_id = #{platformId}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+</mapper>

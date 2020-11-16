@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.OfflineExportMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.OfflineExport" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        <if test="authSQL != null and '' != authSQL">
+            and ${authSQL}
+        </if>
+    </sql>
+
+    <!-- 通用查询条件列 -->
+    <sql id="baseConditions">
+        <if test="id != null">
+            and id=#{id}
+        </if>
+        <if test="exportFileName != null">
+            and export_file_name=#{exportFileName}
+        </if>
+        <if test="stateMachine != null">
+            and state_machine=#{stateMachine}
+        </if>
+        <if test="exportServiceName != null">
+            and export_service_name=#{exportServiceName}
+        </if>
+        <if test="exportMethodName != null">
+            and export_method_name=#{exportMethodName}
+        </if>
+        <if test="exportMethodParams != null">
+            and export_method_params=#{exportMethodParams}
+        </if>
+        <if test="exportNote != null">
+            and export_note=#{exportNote}
+        </if>
+        <if test="createTime != null">
+            and create_time=#{createTime}
+        </if>
+        <if test="createBy != null">
+            and create_by=#{createBy}
+        </if>
+        <if test="updateTime != null">
+            and update_time=#{updateTime}
+        </if>
+        <if test="updateBy != null">
+            and update_by=#{updateBy}
+        </if>
+        <if test="systemName != null">
+            and system_name=#{systemName}
+        </if>
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    soe.id  ,soe.export_file_name ,soe.state_machine ,soe.export_service_name ,soe.export_method_name ,soe.export_method_params ,soe.export_note ,soe.create_time ,soe.create_by ,soe.update_time ,soe.update_by, soe.system_name
+    </sql>
+    <sql id="moreColumns">
+    soe.id  ,soe.export_file_name ,soe.state_machine ,soe.export_service_name ,soe.export_method_name ,soe.export_method_params ,soe.export_note ,soe.create_time ,soe.create_by ,soe.update_time ,soe.update_by, soe.system_name
+    </sql>
+
+    <!-- 通用查询排序列 -->
+    <sql id="sorts">
+        <if test="sorts != null">
+            <foreach item="item" index="index" collection="sorts" open="order by" separator="," close="">
+                <if test="'id' == item.name">
+                    id <include refid="order"/>
+                </if>
+                <if test="'exportFileName' == item.name">
+                    export_file_name <include refid="order"/>
+                </if>
+                <if test="'stateMachine' == item.name">
+                    state_machine <include refid="order"/>
+                </if>
+                <if test="'exportServiceName' == item.name">
+                    export_service_name <include refid="order"/>
+                </if>
+                <if test="'exportMethodName' == item.name">
+                    export_method_name <include refid="order"/>
+                </if>
+                <if test="'exportMethodParams' == item.name">
+                    export_method_params <include refid="order"/>
+                </if>
+                <if test="'exportNote' == item.name">
+                    export_note <include refid="order"/>
+                </if>
+                <if test="'createTime' == item.name">
+                    create_time <include refid="order"/>
+                </if>
+                <if test="'createBy' == item.name">
+                    create_by <include refid="order"/>
+                </if>
+                <if test="'updateTime' == item.name">
+                    update_time <include refid="order"/>
+                </if>
+                <if test="'updateBy' == item.name">
+                    update_by <include refid="order"/>
+                </if>
+            </foreach>
+        </if>
+    </sql>
+
+    <sql id="order">
+        <choose>
+            <when test="'asc'.equalsIgnoreCase(item.order)">
+                asc
+            </when>
+            <when test="'desc'.equalsIgnoreCase(item.order)">
+                desc
+            </when>
+        </choose>
+    </sql>
+
+    <!-- region IMapper -->
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.OfflineExport">
+        select
+        <include refid="baseColumns"/>
+        from
+        sys_offline_export soe
+        <where>
+            soe.id=#{id}
+            <include refid="authSQL"/>
+        </where>
+    </select>
+
+    <!-- 增加 -->
+    <insert id="insert">
+        insert into
+        sys_offline_export (id,export_file_name,state_machine,export_service_name,export_method_name,export_method_params,export_note,create_time,create_by,system_name)
+        values
+        (#{id},#{exportFileName},#{stateMachine},#{exportServiceName},#{exportMethodName},#{exportMethodParams},#{exportNote},#{createTime},#{createBy},#{systemName})
+    </insert>
+
+    <!-- 部分更新 -->
+    <update id="update">
+        update sys_offline_export
+        <set>
+            <if test="exportFileName != null">
+                export_file_name=#{exportFileName},
+            </if>
+            <if test="stateMachine != null">
+                state_machine=#{stateMachine},
+            </if>
+            <if test="exportServiceName != null">
+                export_service_name=#{exportServiceName},
+            </if>
+            <if test="exportMethodName != null">
+                export_method_name=#{exportMethodName},
+            </if>
+            <if test="exportMethodParams != null">
+                export_method_params=#{exportMethodParams},
+            </if>
+            <if test="exportNote != null">
+                export_note=#{exportNote},
+            </if>
+            <if test="updateTime != null">
+                update_time=#{updateTime},
+            </if>
+            <if test="updateBy != null">
+                update_by=#{updateBy},
+            </if>
+            <if test="systemName != null">
+                system_name=#{systemName},
+            </if>
+        </set>
+        <where>
+            id = #{id}
+            <include refid="authSQL"/>
+        </where>
+    </update>
+
+    <!-- 条件删除 -->
+    <delete id="delete">
+        delete from
+        sys_offline_export
+        <where>
+            <include refid="baseConditions"/>
+            <include refid="authSQL"/>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" resultOrdered="true">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_offline_export soe
+        <where>
+            <include refid="baseConditions"/>
+            <include refid="authSQL"/>
+        </where>
+        <include refid="sorts"/>
+    </select>
+
+    <!-- 条件计数 -->
+    <select id="count" resultType="int" flushCache="true" useCache="false">
+        select count(id)
+        from
+        sys_offline_export soe
+        <where>
+            <include refid="baseConditions"/>
+            <include refid="authSQL"/>
+        </where>
+    </select>
+
+    <!-- 条件查询 -->
+    <select id="select" resultType="com.bitnei.cloud.sys.domain.OfflineExport" resultOrdered="true">
+        select
+        <include refid="baseColumns"/>
+        from
+        sys_offline_export soe
+        <where>
+            <include refid="baseConditions"/>
+            <include refid="authSQL"/>
+        </where>
+        <include refid="sorts"/>
+    </select>
+
+    <!-- endregion IMapper -->
+
+    <!-- 重复任务计数 -->
+    <select id="countDuplicateTask" resultType="int" flushCache="true" useCache="false">
+        select count(id)
+        from
+        sys_offline_export soe
+        <where>
+            (state_machine=1 or state_machine=2)
+            and export_service_name=#{export_service_name}
+            and create_by=#{create_by}
+            and system_name=#{systemName}
+        </where>
+    </select>
+
+    <select id="selectSharding" resultType="com.bitnei.cloud.sys.domain.OfflineExport" resultOrdered="true" flushCache="true" useCache="false">
+        select
+            soe.id,
+            soe.export_file_name,
+            soe.export_service_name,
+            soe.export_method_name,
+            soe.export_method_params,
+            soe.create_time,
+            soe.create_by
+        from sys_offline_export soe
+        where state_machine = 1
+            and mod(right(soe.create_time, 2), #{shardingTotalCount}) = #{shardingItem}
+            and system_name=#{systemName}
+        order by create_time asc, update_time asc
+    </select>
+
+    <!-- 根据id查询 -->
+    <select id="findByIds" resultType="com.bitnei.cloud.sys.domain.OfflineExport">
+        select
+        <include refid="baseColumns"/>
+        from
+        sys_offline_export soe
+        <where>
+            soe.id in
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </where>
+    </select>
+
+    <select id="retryExceptionalTask">
+        update sys_offline_export
+        set state_machine = 1
+        <where>
+            id in
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+            and state_machine = 5
+        </where>
+    </select>
+
+    <select id="cancelExportingTask">
+        update sys_offline_export
+        set state_machine = 4
+        <where>
+            id in
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+            and (state_machine = 1 or state_machine = 2)
+        </where>
+    </select>
+
+</mapper>

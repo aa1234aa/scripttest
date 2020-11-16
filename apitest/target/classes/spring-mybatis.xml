@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+                        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd  
+                        http://www.springframework.org/schema/context  
+                        http://www.springframework.org/schema/context/spring-context-3.2.xsd  
+                        http://www.springframework.org/schema/mvc  
+                        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+                        http://www.springframework.org/schema/tx
+						http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+						http://www.springframework.org/schema/aop
+						http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+						http://www.springframework.org/schema/task 
+						http://www.springframework.org/schema/task/spring-task-3.2.xsd">
+						
+	<!-- 自动扫描 -->
+	<context:component-scan base-package="com.bitnei" />
+	
+	<context:annotation-config></context:annotation-config>
+	
+	<!-- 启用Spring对@AspectJ的支持 -->
+	<!--进行对象的创建
+    <bean id="hanDao" class="com.bitnei.apitest.pro.datasendpro.HanDao"></bean>
+	<bean id="platformdao" class="com.bitnei.apitest.dao.impl.PlatFormDao"></bean>
+	-->
+   	<aop:aspectj-autoproxy proxy-target-class="true" />
+
+   	<!-- 声明事务切面类对象 -->
+   	<!-- <bean id="transactionManager" class="com.aiyi.core.aop.TransactionManager" /> -->
+   	
+   
+	<!-- 引入配置文件 -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:jdbc.properties" />
+	</bean>
+	
+
+	<bean id="platDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${driver}" />
+		<property name="url" value="${url}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
+		<!-- 初始化连接大小 -->
+		<property name="initialSize" value="${initialSize}"></property>
+		<!-- 连接池最大数量 -->
+		<property name="maxActive" value="${maxActive}"></property>
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="${maxIdle}"></property>
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="${minIdle}"></property>
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="${maxWait}"></property>
+	</bean>
+	
+		<bean id="biDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${driver}" />
+		<property name="url" value="${url2}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
+		<!-- 初始化连接大小 -->
+		<property name="initialSize" value="${initialSize}"></property>
+		<!-- 连接池最大数量 -->
+		<property name="maxActive" value="${maxActive}"></property>
+		<!-- 连接池最大空闲 -->
+		<property name="maxIdle" value="${maxIdle}"></property>
+		<!-- 连接池最小空闲 -->
+		<property name="minIdle" value="${minIdle}"></property>
+		<!-- 获取连接最大等待时间 -->
+		<property name="maxWait" value="${maxWait}"></property>
+	</bean>
+	
+	<!-- 动态配置数据源 -->
+	<bean id="dataSource" class="com.bitnei.apitest.tool.DynamicDataSource">
+		<property name ="targetDataSources">  
+             <map key-type ="java.lang.String">  
+             	<entry value-ref ="platDataSource" key= "platDataSource"></entry>  
+                <entry value-ref ="biDataSource" key="biDataSource"></entry>
+             </map>  
+		</property>
+		<!-- 默认使用的数据源 -->
+		<property name ="defaultTargetDataSource" ref= "platDataSource"></property>
+	</bean>
+
+
+	<!-- spring和MyBatis完美整合，不需要mybatis的配置映射文件  -->
+	<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<!-- 自动扫描mapping.xml文件 -->
+		<property name="mapperLocations" value="classpath:com/bitnei/*/mapper/*.xml"></property>		
+	</bean>	
+
+	<!-- DAO接口所在包名，Spring会自动查找其下的类
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.bitnei" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	</bean> 
+	-->
+	
+	<!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	
+	<!-- 注解驱动 -->
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+	
+	<!-- 开启AOP监听 只对当前配置文件有效 -->
+ 
+	<aop:aspectj-autoproxy expose-proxy="true" />
+	
+	<aop:config>
+        <aop:aspect ref="dataSourceAspect">
+        	<!-- 配置拦截规则，拦截所有请求方法 -->
+	        <aop:pointcut id="dataSourcePointcut" expression ="execution(* com.bitnei.apitest.dao.impl..*.*(..))"/>
+            <aop:before pointcut-ref="dataSourcePointcut" method="intercept" />
+        </aop:aspect>
+    </aop:config>
+	<bean id="dataSourceAspect" class="com.bitnei.apitest.tool.DataSourceAspect" />
+
+	<!-- 任务执行定时器，启动注解任务 -->
+	<task:annotation-driven /> 
+	
+	
+	<!-- 创建一个sqlSession实例，线程安全的，可以在所有DAO实例共享，原理是将sqlSession，事务与当前线程挂钩 -->
+	<bean name="sqlSessionTemplateASS" id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactoryBean" />
+	</bean>
+	
+
+</beans>

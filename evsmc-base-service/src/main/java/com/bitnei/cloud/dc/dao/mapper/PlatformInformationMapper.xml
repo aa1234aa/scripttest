@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.dc.dao.PlatformInformationMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.dc.domain.PlatformInformation" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    pi.id  ,pi.name ,pi.username ,pi.password ,pi.cdkey ,pi.type ,pi.contacts ,pi.telephone ,pi.email ,pi.whitelist ,pi.area_id ,pi.is_open ,pi.rule_type_id ,pi.environment ,pi.status ,pi.create_time ,pi.create_by ,pi.update_time ,pi.update_by
+    </sql>
+    <sql id="moreColumns">
+    pi.id  ,pi.name ,pi.username ,pi.password ,pi.cdkey ,pi.type ,pi.contacts ,pi.telephone ,pi.email ,pi.whitelist ,pi.area_id ,pi.is_open ,pi.rule_type_id ,pi.environment ,pi.status ,pi.create_time ,pi.create_by ,pi.update_time ,pi.update_by
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.dc.domain.PlatformInformation"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        dc_platform_information pi
+        <where>
+            pi.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据用户查询 -->
+    <select id="findByUsername" resultType="com.bitnei.cloud.dc.domain.PlatformInformation"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        dc_platform_information pi
+        <where>
+            pi.username=#{username}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+     <!-- 根据名称查询 -->
+    <select id="findByName" resultType="com.bitnei.cloud.dc.domain.PlatformInformation"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        dc_platform_information pi
+        <where>
+            pi.name=#{name}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>    
+     <!-- 根据唯一识别码查询 -->
+    <select id="findByCdkey" resultType="com.bitnei.cloud.dc.domain.PlatformInformation"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        dc_platform_information pi
+        <where>
+            pi.cdkey=#{cdkey} and pi.cdkey != ''
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>    
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        dc_platform_information (id,name,username,password,cdkey,type,contacts,telephone,email,whitelist,area_id,is_open,rule_type_id,environment,create_time,create_by)
+        values
+        (#{id},#{name},#{username},#{password},#{cdkey},#{type},#{contacts},#{telephone},#{email},#{whitelist},#{areaId},#{isOpen},#{ruleTypeId},#{environment},#{createTime},#{createBy})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update dc_platform_information set
+        id=id,name=#{name},username=#{username},password=#{password},cdkey=#{cdkey},type=#{type},contacts=#{contacts},telephone=#{telephone},email=#{email},whitelist=#{whitelist},area_id=#{areaId},is_open=#{isOpen},rule_type_id=#{ruleTypeId},environment=#{environment},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 更改连接状态 -->
+    <update id="updatePlatformStatus" parameterType="java.util.HashMap">
+        update dc_platform_information set
+        status=#{status}
+        <where>
+            id = #{id}
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        dc_platform_information
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        dc_platform_information pi
+        <where>
+        <if test="authSQL != null">
+        <include refid="authSQL"/>
+        </if>
+            <if test="name != null and name != ''">
+                and pi.name like concat('%',#{name},'%')
+            </if>
+            <if test="username != null and username != ''">
+                and pi.username like concat('%',#{username},'%')
+            </if>
+            <if test="status != null and status != ''">
+                and pi.status = #{status}
+            </if>
+            <if test="isOpen != null and isOpen != ''">
+                and pi.is_open = #{isOpen}
+            </if>
+            <if test="type != null and type != ''">
+                and pi.type = #{type}
+            </if>
+            <if test="ruleTypeId != null and ruleTypeId != ''">
+                and pi.rule_type_id = #{ruleTypeId}
+            </if>
+            <if test="environment != null and environment != ''">
+                and pi.environment = #{environment}
+            </if>
+            <if test="contacts != null and contacts != ''">
+                and pi.contacts like concat('%',#{contacts},'%')
+            </if>
+        </where>
+        order by pi.create_time desc
+    </select>
+
+    <!-- 根据协议类型计算接入平台数量 -->
+    <select id="findByRuleTypeIdCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        SELECT COUNT(pi.id) FROM dc_platform_information pi
+        WHERE pi.rule_type_id = #{ruleTypeId}
+    </select>
+</mapper>

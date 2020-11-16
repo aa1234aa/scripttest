@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.fault.dao.AlarmInfoMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.fault.domain.AlarmInfo" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    fai.id  ,fai.uuid ,fai.vehicle_id ,fai.fault_type ,fai.parent_rule_id ,fai.rule_id ,fai.rule_name ,fai.alarm_level ,fai.fault_begin_time ,fai.fault_end_time ,fai.fault_status ,fai.longitude ,fai.latitude ,fai.response_mode ,fai.trigger_item , fai.proces_status , fai.proces_time ,fai.push_status ,fai.push_time ,fai.create_time ,fai.msg_id
+    </sql>
+    <sql id="moreColumns">
+    fai.id  ,fai.uuid ,fai.vehicle_id ,fai.fault_type ,fai.parent_rule_id ,fai.rule_id ,fai.rule_name ,fai.alarm_level ,fai.fault_begin_time ,fai.fault_end_time ,fai.fault_status ,fai.longitude ,fai.latitude ,fai.response_mode ,fai.trigger_item , fai.proces_status , fai.proces_time ,fai.push_status ,fai.push_time ,fai.create_time, fai.msg_id
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.fault.domain.AlarmInfo" parameterType="java.util.HashMap">
+        select
+        mef.chart_type,
+        mef.lonlat_range,
+        <include refid="moreColumns"/>,
+        sv.vin, sv.license_plate,
+        sv.inter_no,
+        sv.veh_model_id,
+        sv.sell_for_field,
+        sv.sell_pri_veh_owner_id,
+        sv.sell_pub_unit_id,
+        sv.is_delete vehDelete
+        ,stmu.serial_number
+        from fault_alarm_info fai
+        LEFT JOIN sys_vehicle sv on fai.vehicle_id = sv.id
+        LEFT JOIN monitor_electronic_fence mef on fai.rule_id=mef.id
+        LEFT JOIN sys_term_model_unit stmu ON sv.term_id = stmu.id
+        <where>
+            1=1
+            and fai.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        fault_alarm_info (id,uuid,vehicle_id,fault_type,parent_rule_id,rule_id,rule_name,alarm_level,fault_begin_time,fault_end_time,fault_status,longitude,latitude,response_mode,trigger_item,proces_status,proces_time,push_status,push_time,create_time, msg_id)
+        values
+        (#{id},#{uuid},#{vehicleId},#{faultType},#{parentRuleId},#{ruleId},#{ruleName},#{alarmLevel},#{faultBeginTime},#{faultEndTime},#{faultStatus},#{longitude},#{latitude},#{responseMode}, #{triggerItem}, #{procesStatus},#{procesTime},#{pushStatus},#{pushTime},#{createTime}, #{msgId})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update fault_alarm_info
+        <set>
+            <if test="procesStatus != null">
+                proces_status=#{procesStatus},
+            </if>
+            <if test="procesTime != null">
+                proces_time=#{procesTime},
+            </if>
+            <if test="pushStatus != null">
+                push_status=#{pushStatus},
+            </if>
+            <if test="pushTime != null">
+                push_time=#{pushTime},
+            </if>
+            <if test="faultStatus != null">
+                fault_status=#{faultStatus},
+            </if>
+            <if test="faultEndTime != null and faultEndTime !=''">
+                fault_end_time=#{faultEndTime},
+            </if>
+            <if test="ruleName != null and ruleName !=''">
+                rule_name=#{ruleName},
+            </if>
+        </set>
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </update>
+
+    <update id="updateAlarm" parameterType="java.util.HashMap">
+        update fault_alarm_info
+        <set>
+            <if test="ruleName != null and ruleName !=''">
+                rule_name = #{ruleName},
+            </if>
+            <if test="(alarmLevel != null and alarmLevel !='') or alarmLevel == 0 ">
+                alarm_level = #{alarmLevel},
+            </if>
+            <if test="(responseMode != null and responseMode !='') or responseMode == 0 ">
+                response_mode = #{responseMode},
+            </if>
+        </set>
+        <where>
+            <if test="ruleId != null and ruleId !=''">
+                rule_id = #{ruleId}
+            </if>
+            <if test="parentRuleId != null and parentRuleId !=''">
+                and parent_rule_id = #{parentRuleId}
+            </if>
+            <if test="id != null and id != ''">
+                and id = #{id}
+            </if>
+        </where>
+    </update>
+
+    <update id="updateByMsgId" parameterType="java.util.HashMap">
+        update fault_alarm_info set fault_status=#{faultStatus}, fault_end_time = #{faultEndTime}
+        <where>
+            msg_id = #{msgId}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </update>
+
+    <update id="updateByMsgIds" parameterType="java.util.HashMap">
+        update fault_alarm_info set fault_status=#{faultStatus}, fault_end_time = #{faultEndTime}
+        <where>
+            msg_id in
+            <foreach collection="msgIds" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </update>
+
+    <update id="updateProcesStatus" parameterType="java.util.HashMap">
+        update fault_alarm_info set proces_status=#{procesStatus}, proces_time=#{procesTime}
+        <where>
+            id in
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </update>
+
+    <update id="updateAlarmLevel" parameterType="java.util.HashMap">
+        update fault_alarm_info set alarm_level = #{alarmLevel}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </update>
+
+    <!-- 根据MsgId查询 -->
+    <select id="findByMsgId" resultType="com.bitnei.cloud.fault.domain.AlarmInfo" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>,
+        sct.who_can_see_me
+        from fault_alarm_info fai
+        left join sys_vehicle sv on fai.vehicle_id=sv.id
+        left join sys_core_tag sct on (sct.table_name='sys_vehicle' and sct.id_value = sv.id)
+
+        where msg_id = #{msgId}
+        and sv.is_delete=0
+    </select>
+
+    <!-- 分页查询 故障 进行中 的-->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>,
+        sv.vin, sv.license_plate, sv.inter_no, sv.veh_model_id, sv.sell_for_field, sv.sell_pri_veh_owner_id,
+        sv.sell_pub_unit_id, sv.is_delete vehDelete, sct.who_can_see_me
+        from fault_alarm_info fai, sys_vehicle sv
+        left join sys_core_tag sct on (sct.table_name='sys_vehicle' and sct.id_value = sv.id)
+        <where>
+            fai.vehicle_id = sv.id
+            <if test="id != null and id !=''">
+                and fai.id = #{id}
+            </if>
+            <if test="vin != null and vin !=''">
+                and sv.vin like "%"#{vin}"%"
+            </if>
+            <if test="licensePlate != null and licensePlate != ''">
+                and sv.license_plate like "%"#{licensePlate}"%"
+            </if>
+            <if test="interNo != null and interNo != ''">
+                and sv.inter_no like "%"#{interNo}"%"
+            </if>
+            <if test="uuid != null and uuid != ''">
+                and sv.uuid like "%"#{uuid}"%"
+            </if>
+            <if test="vehModelId != null">
+                and sv.veh_model_id = #{vehModelId}
+            </if>
+            <if test="faultType != null">
+                and fai.fault_type = #{faultType}
+            </if>
+            <if test="ruleId != null and ruleId !=''">
+                and fai.rule_id = #{ruleId}
+            </if>
+            <if test="parentRuleId != null and parentRuleId !=''">
+                and fai.parent_rule_id = #{parentRuleId}
+            </if>
+            <if test="vehicleId != null and vehicleId !=''">
+                and fai.vehicle_id = #{vehicleId}
+            </if>
+            <if test="alarmLevel != null and alarmLevel !=''">
+                and fai.alarm_level = #{alarmLevel}
+            </if>
+            <if test="procesStatus != null and procesStatus !=''">
+                and proces_status=#{procesStatus}
+            </if>
+            <if test="keyword != null and keyword !=''">
+                and (sv.vin like "%"#{keyword}"%" or sv.license_plate like "%"#{keyword}"%" or fai.rule_name like
+                "%"#{keyword}"%")
+            </if>
+            <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+                and fai.fault_begin_time between #{beginTime} and #{endTime}
+            </if>
+            <if test="excludeFaultTypes != null">
+                and fai.fault_type != #{excludeFaultTypes}
+            </if>
+            <if test="ruleName != null and ruleName !=''">
+                and fai.rule_name like "%"#{ruleName}"%"
+            </if>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+        <if test="sorts != null and sorts.size() > 0 ">
+            order by
+            <foreach collection="sorts" item="sort" separator=",">
+                fai.${sort.name} ${sort.order}
+            </foreach>
+        </if>
+        <if test="sorts == null or sorts.size() == 0 ">
+            order by fai.fault_begin_time desc
+        </if>
+    </select>
+
+    <select id="processTotal" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        select
+        sum(case when fai.proces_status = 1 then 1 else 0 end) as unprocessTotal,
+        sum(case when fai.proces_status = 2 then 1 else 0 end) as processingTotal,
+        sum(case when fai.proces_status = 3 then 1 else 0 end) as processedTotal
+        from fault_alarm_info fai, sys_vehicle sv
+        where
+        fai.vehicle_id = sv.id
+        <if test="authSQL != null">
+            <include refid="authSQL"/>
+        </if>
+    </select>
+
+    <select id="faultTypeTotal" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        select
+        sum(case when fai.fault_type = 1 then 1 else 0 end) as parameterTotal,
+        sum(case when fai.fault_type = 2 then 1 else 0 end) as faultCodeTotal,
+        sum(case when fai.fault_type = 3 then 1 else 0 end) as fenceTotal
+        from fault_alarm_info fai, sys_vehicle sv
+        where
+        fai.vehicle_id = sv.id
+        <if test="authSQL != null">
+            <include refid="authSQL"/>
+        </if>
+    </select>
+
+    <select id="list" resultMap="tailResults" parameterType="java.util.HashMap">
+        select<include refid="moreColumns"/>, sv.vin, sv.license_plate
+        from fault_alarm_info fai, sys_vehicle sv
+        where fai.vehicle_id = sv.id and fault_status = 1 and push_status = 1
+    </select>
+
+    <!-- 故障结束时删除 -->
+    <delete id="deleteById">
+        delete from fault_alarm_info where id = #{id}
+    </delete>
+
+    <!-- 故障结束时删除 -->
+    <delete id="deleteBatch" parameterType="list">
+        delete from fault_alarm_info where id in
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="findStopAlarm" resultType="com.bitnei.cloud.fault.domain.AlarmInfoHistory"
+            parameterType="java.util.HashMap">
+        select sct.who_can_see_me,
+        <include refid="moreColumns"/>
+        from fault_alarm_info fai
+        left join sys_core_tag sct on (sct.table_name='sys_vehicle' and sct.id_value = fai.vehicle_id)
+        <where>
+            fai.fault_status = #{faultStatus}
+            <if test="procesStatus != null">
+                and proces_status = #{procesStatus}
+            </if>
+        </where>
+    </select>
+
+</mapper>

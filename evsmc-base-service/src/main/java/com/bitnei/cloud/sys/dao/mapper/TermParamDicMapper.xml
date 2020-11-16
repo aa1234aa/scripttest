@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.mapper.TermParamDicMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.TermParamDic" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    tpd.id  ,tpd.name ,tpd.code ,tpd.setup_code ,tpd.receive_code ,tpd.data_size ,tpd.data_type ,tpd.state ,tpd.describes ,tpd.create_by ,tpd.create_time ,tpd.sequence ,tpd.is_setup ,tpd.param_type ,tpd.upper_limit ,tpd.lower_limit ,tpd.unit
+    </sql>
+    <sql id="moreColumns">
+    tpd.id  ,tpd.name ,tpd.code ,tpd.setup_code ,tpd.receive_code ,tpd.data_size ,tpd.data_type ,tpd.state ,tpd.describes ,tpd.create_by ,tpd.create_time ,tpd.sequence ,tpd.is_setup ,tpd.param_type ,tpd.upper_limit ,tpd.lower_limit ,tpd.unit
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.TermParamDic" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_term_param_dic tpd
+        <where>
+            tpd.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_term_param_dic (id,name,code,setup_code,receive_code,data_size,data_type,state,describes,create_by,create_time,sequence,is_setup,param_type)
+        values
+        (#{id},#{name},#{code},#{setupCode},#{receiveCode},#{dataSize},#{dataType},#{state},#{describes},#{createBy},#{createTime},#{sequence},#{isSetup},#{paramType})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_term_param_dic set
+        id=id,name=#{name},code=#{code},setup_code=#{setupCode},receive_code=#{receiveCode},data_size=#{dataSize},data_type=#{dataType},state=#{state},describes=#{describes},sequence=#{sequence},is_setup=#{isSetup},param_type=#{paramType}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="java.util.HashMap">
+        delete from
+        sys_term_param_dic
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_term_param_dic tpd
+        <where>
+            <if test="paramType != null">
+                and tpd.param_type = #{paramType}
+            </if>
+            <if test="type != null">
+                and tpd.type = #{type}
+            </if>
+            <if test="isSetup != null">
+                and tpd.is_setup = #{isSetup}
+            </if>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </select>
+</mapper>

@@ -1,0 +1,1 @@
+ALTER TABLE `fault_veh_risk_notice` DROP COLUMN `opinion`;

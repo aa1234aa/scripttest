@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.mapper.InstructManagementModelMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.InstructManagementModel" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    imm.id  ,imm.instruct_management_id ,imm.veh_model_id
+    </sql>
+    <sql id="moreColumns">
+    imm.id  ,imm.instruct_management_id ,imm.veh_model_id
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.InstructManagementModel"
+            parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_instruct_management_model imm
+        <where>
+            imm.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_instruct_management_model (id,instruct_management_id,veh_model_id)
+        values
+        (#{id},#{instructManagementId},#{vehModelId})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_instruct_management_model set
+        id=id,instruct_management_id=#{instructManagementId},veh_model_id=#{vehModelId}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="java.util.HashMap">
+        delete from
+        sys_instruct_management_model
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <delete id="deleteByManagementId" parameterType="java.util.HashMap">
+        delete from
+        sys_instruct_management_model
+        <where>
+            instruct_management_id = #{instructManagementId}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_instruct_management_model imm
+        <where>
+            <if test="vehModelId != null and vehModelId != ''">
+                AND imm.veh_model_id = #{vehModelId}
+            </if>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </select>
+</mapper>

@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.VehIdleRecordMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.VehIdleRecord" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+            <result property="licensePlate" column="license_plate" />
+            <result property="vin" column="vin" />
+            <result property="interNo" column="inter_no" />
+            <result property="vehModelId" column="veh_model_id" />
+            <result property="operLicenseCityId" column="oper_license_city_id" />
+            <result property="operUnitId" column="oper_unit_id" />
+            <result property="isDelete" column="is_delete" />
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    vir.id  ,vir.vehicle_id ,vir.vehicle_uuid ,vir.regain_online_time ,vir.update_time ,vir.create_time ,vir.state ,vir.remind_state ,vir.remarks ,vir.threshold ,vir.last_online_time ,vir.last_online_mileage ,vir.regain_online_mileage
+    </sql>
+    <sql id="moreColumns">
+    vir.id  ,vir.vehicle_id ,vir.vehicle_uuid ,vir.regain_online_time ,vir.update_time ,vir.create_time ,vir.state ,vir.remind_state ,vir.remarks ,vir.threshold ,vir.last_online_time ,vir.last_online_mileage ,vir.regain_online_mileage
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.VehIdleRecord"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_veh_idle_record vir
+        <where>
+            vir.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert1" parameterType="java.util.HashMap">
+        insert into
+        sys_veh_idle_record (id,vehicle_id,vehicle_uuid,regain_online_time,create_time,state,remind_state,remarks,threshold,last_online_time,last_online_mileage,regain_online_mileage)
+        values
+        (#{id},#{vehicleId},#{vehicleUuid},#{regainOnlineTime},#{createTime},#{state},#{remindState},#{remarks},#{threshold},#{lastOnlineTime},#{lastOnlineMileage},#{regainOnlineMileage})
+    </insert>
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_veh_idle_record (id,vehicle_id,vehicle_uuid,create_time,state,remind_state,threshold,last_online_time,last_online_mileage)
+        values
+        (#{id},#{vehicleId},#{vehicleUuid},#{createTime},#{state},#{remindState},#{threshold},#{lastOnlineTime},#{lastOnlineMileage})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_veh_idle_record set
+        id=id,vehicle_id=#{vehicleId},vehicle_uuid=#{vehicleUuid},regain_online_time=#{regainOnlineTime},update_time=#{updateTime},state=#{state},remind_state=#{remindState},remarks=#{remarks},threshold=#{threshold},last_online_time=#{lastOnlineTime},last_online_mileage=#{lastOnlineMileage},regain_online_mileage=#{regainOnlineMileage}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 异常提醒处理 -->
+    <update id="updateRmakAndType" parameterType="java.util.HashMap">
+        update sys_veh_idle_record set
+       update_time=#{updateTime},remind_state=#{remindState},remarks=#{remarks}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        sys_veh_idle_record
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 历史分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" resultOrdered="true" parameterType="java.util.HashMap">
+        select
+        (timestampdiff(second,vir.last_online_time,if(vir.regain_online_time is null , now(),vir.regain_online_time))) as seconds,
+        vir.id  ,vir.vehicle_id ,vir.vehicle_uuid ,
+        date_format(vir.regain_online_time,'%Y-%m-%d %H:%i:%s') as regain_online_time ,
+        date_format(vir.update_time,'%Y-%m-%d %H:%i:%s') as update_time,
+        vir.create_time ,vir.state ,vir.remind_state ,vir.remarks ,vir.threshold ,
+        date_format(vir.last_online_time,'%Y-%m-%d %H:%i:%s') as last_online_time,
+        vir.last_online_mileage ,vir.regain_online_mileage,
+        sv.is_delete*1 as is_delete,sv.license_plate,sv.vin,sv.inter_no,sv.veh_model_id,sv.oper_license_city_id,sv.oper_unit_id
+        from
+        sys_veh_idle_record vir
+        inner join sys_vehicle sv on sv.uuid = vir.vehicle_uuid
+        <if test="operLicenseCityId != null and operLicenseCityId != ''">
+            left join sys_area area on area.id = sv.oper_license_city_id
+        </if>
+        <where>
+            (vir.state = 0 or sv.is_delete = 1)
+        <if test="authSQL != null">
+        <include refid="authSQL"/>
+        </if>
+            <if test="licensePlate != null and licensePlate != ''">
+                and sv.license_plate like concat('%',#{licensePlate},'%')
+            </if>
+            <if test="vin != null and vin != ''">
+                and sv.vin like concat('%',#{vin},'%')
+            </if>
+            <if test="interNo != null and interNo != ''">
+                and sv.inter_no like concat('%',#{interNo},'%')
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                and <![CDATA[vir.last_online_time >= #{beginTime,jdbcType=DATE} ]]>
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and <![CDATA[vir.last_online_time <= #{endTime,jdbcType=DATE} ]]>
+            </if>
+            <if test="vehModelId != null and vehModelId != ''">
+                and sv.veh_model_id = #{vehModelId}
+            </if>
+            <if test="operLicenseCityId != null and operLicenseCityId != ''">
+                and area.path like concat('%/',#{operLicenseCityId},'/%')
+            </if>
+            <if test="operUnitId != null and operUnitId != ''">
+                and sv.oper_unit_id = #{operUnitId}
+            </if>
+            <if test="days != null and days != ''">
+                and cast((timestampdiff(second,vir.last_online_time,if(vir.regain_online_time is null, now(),vir. regain_online_time))) as decimal(11,1)) > #{days}
+            </if>
+        </where>
+        order by vir.regain_online_time desc
+    </select>
+
+    <!-- 实时分页查询 -->
+    <select id="findByRealTime" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        (timestampdiff(second,vir.last_online_time,if(vir.regain_online_time is null , now(),vir.regain_online_time))) as seconds,
+        vir.id  ,vir.vehicle_id ,vir.vehicle_uuid ,vir.regain_online_time ,vir.update_time ,vir.create_time ,vir.state ,vir.remind_state ,vir.remarks ,vir.threshold ,
+        date_format(vir.last_online_time,'%Y-%m-%d %H:%i:%s') as last_online_time,
+        vir.last_online_mileage ,vir.regain_online_mileage,
+        sv.is_delete*1 as is_delete,sv.license_plate,sv.vin,sv.inter_no,sv.veh_model_id,sv.oper_license_city_id,sv.oper_unit_id
+        from
+        sys_veh_idle_record vir
+        inner join sys_vehicle sv on sv.uuid = vir.vehicle_uuid and sv.is_delete = 0
+        <if test="operLicenseCityId != null and operLicenseCityId != ''">
+            left join sys_area area on area.id = sv.oper_license_city_id
+        </if>
+        <where>
+            vir.state = 1
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="licensePlate != null and licensePlate != ''">
+                and sv.license_plate like concat('%',#{licensePlate},'%')
+            </if>
+            <if test="vin != null and vin != ''">
+                and sv.vin like concat('%',#{vin},'%')
+            </if>
+            <if test="interNo != null and interNo != ''">
+                and sv.inter_no like concat('%',#{interNo},'%')
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                and <![CDATA[vir.last_online_time >= #{beginTime,jdbcType=DATE} ]]>
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and <![CDATA[vir.last_online_time <= #{endTime,jdbcType=DATE} ]]>
+            </if>
+            <if test="vehModelId != null and vehModelId != ''">
+                and sv.veh_model_id = #{vehModelId}
+            </if>
+            <if test="operLicenseCityId != null and operLicenseCityId != ''">
+                and area.path like concat('%/',#{operLicenseCityId},'/%')
+            </if>
+            <if test="operUnitId != null and operUnitId != ''">
+                and sv.oper_unit_id = #{operUnitId}
+            </if>
+            <if test="days != null and days != ''">
+                and cast((timestampdiff(second,vir.last_online_time,if(vir.regain_online_time is null, now(),vir. regain_online_time))) as decimal(11,1)) > #{days}
+            </if>
+        </where>
+        order by vir.last_online_time desc
+    </select>
+
+    <!-- 实时分页查询 -->
+    <select id="longestTimeOffline" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        sv.license_plate,sv.is_delete*1 as is_delete,
+        (timestampdiff(second,vir.last_online_time,if(vir.regain_online_time is null , now(),vir.regain_online_time))) as seconds
+        from
+        sys_veh_idle_record vir
+        inner join sys_vehicle sv on sv.uuid = vir.vehicle_uuid and sv.is_delete = 0
+		where vir.state = 1 and vir.remind_state = 0
+		order by seconds desc
+    </select>
+
+    <!-- 根据vid查询 -->
+    <select id="getByVid" resultType="com.bitnei.cloud.sys.domain.VehIdleRecord"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_veh_idle_record vir
+        <where>
+            vir.state = 1 and vir.vehicle_uuid=#{uuid}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 分页计数 -->
+    <select id="pagerModel_COUNT" resultType="long">
+        select count(vir.id) from
+        sys_veh_idle_record vir
+        inner join sys_vehicle sv on sv.uuid = vir.vehicle_uuid
+        <if test="operLicenseCityId != null and operLicenseCityId != ''">
+            left join sys_area area on area.id = sv.oper_license_city_id
+        </if>
+        <where>
+            (vir.state = 0 or sv.is_delete = 1)
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="licensePlate != null and licensePlate != ''">
+                and sv.license_plate like concat('%',#{licensePlate},'%')
+            </if>
+            <if test="vin != null and vin != ''">
+                and sv.vin like concat('%',#{vin},'%')
+            </if>
+            <if test="interNo != null and interNo != ''">
+                and sv.inter_no like concat('%',#{interNo},'%')
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                and <![CDATA[vir.last_online_time >= #{beginTime,jdbcType=DATE} ]]>
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and <![CDATA[vir.last_online_time <= #{endTime,jdbcType=DATE} ]]>
+            </if>
+            <if test="vehModelId != null and vehModelId != ''">
+                and sv.veh_model_id = #{vehModelId}
+            </if>
+            <if test="operLicenseCityId != null and operLicenseCityId != ''">
+                and area.path like concat('%/',#{operLicenseCityId},'/%')
+            </if>
+            <if test="operUnitId != null and operUnitId != ''">
+                and sv.oper_unit_id = #{operUnitId}
+            </if>
+            <if test="days != null and days != ''">
+                and cast((timestampdiff(second,vir.last_online_time,if(vir.regain_online_time is null, now(),vir. regain_online_time))) as decimal(11,1)) > #{days}
+            </if>
+        </where>
+    </select>
+</mapper>

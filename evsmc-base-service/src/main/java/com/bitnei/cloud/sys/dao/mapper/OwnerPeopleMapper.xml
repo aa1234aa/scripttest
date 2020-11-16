@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.OwnerPeopleMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.OwnerPeople" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+        op.*
+    </sql>
+
+    <sql id="moreColumns">
+        op.*
+    </sql>
+
+    <!-- 查询所有的结果 -->
+    <select id="all" resultType="com.bitnei.cloud.sys.domain.OwnerPeople" parameterType="java.util.HashMap">
+        select
+        <include refid="baseColumns"/>
+        from
+        sys_owner_people op
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.OwnerPeople" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_owner_people op
+        <where>
+            op.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据id查询 -->
+    <select id="findByOwnerName" resultType="com.bitnei.cloud.sys.domain.OwnerPeople" parameterType="java.lang.String">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_owner_people op
+        where op.owner_name = #{ownerName}
+        limit 1
+    </select>
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_owner_people (id,owner_name,unit_id,job_post,job_number,sex,tel_phone,address,email,card_type,card_no,card_address,front_card_img_id,back_card_img_id,face_card_img_id,create_time,create_by)
+        values
+        (#{id},#{ownerName},#{unitId},#{jobPost},#{jobNumber},#{sex},#{telPhone},#{address},#{email},#{cardType},#{cardNo},#{cardAddress},#{frontCardImgId},#{backCardImgId},#{faceCardImgId},#{createTime},#{createBy})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_owner_people set
+        id=id,owner_name=#{ownerName},unit_id=#{unitId},job_post=#{jobPost},job_number=#{jobNumber},sex=#{sex},tel_phone=#{telPhone},address=#{address},email=#{email},card_type=#{cardType},card_no=#{cardNo},card_address=#{cardAddress},front_card_img_id=#{frontCardImgId},back_card_img_id=#{backCardImgId},face_card_img_id=#{faceCardImgId},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="java.util.HashMap">
+        delete from
+        sys_owner_people
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from sys_owner_people op
+        left join sys_unit su on op.unit_id = su.id
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="id != null">
+                AND op.id=#{id}
+            </if>
+            <if test="ownerName != null and ownerName != ''">
+                AND op.owner_name LIKE CONCAT('%',#{ownerName},'%')
+            </if>
+            <if test="unitId != null and unitId != ''">
+                AND op.unit_id = #{unitId}
+            </if>
+            <if test="unitName != null and unitName != ''">
+                AND su.name LIKE CONCAT('%',#{unitName},'%')
+            </if>
+            <if test="jobPost != null and jobPost != ''">
+                AND op.job_post = #{jobPost}
+            </if>
+            <if test="jobNumber != null and jobNumber != ''">
+                AND op.job_number LIKE CONCAT('%',#{jobNumber},'%')
+            </if>
+            <if test="sex != null and sex != ''">
+                AND op.sex = #{sex}
+            </if>
+            <if test="telPhone != null and telPhone != ''">
+                AND op.tel_phone LIKE CONCAT('%',#{telPhone},'%')
+            </if>
+            <if test="address != null and address != ''">
+                AND op.address LIKE CONCAT('%',#{address},'%')
+            </if>
+            <if test="email != null and email != ''">
+                AND op.email LIKE CONCAT('%',#{email},'%')
+            </if>
+            <if test="cardType != null and cardType != ''">
+                AND op.card_type = #{cardType}
+            </if>
+            <if test="cardNo != null and cardNo != ''">
+                AND op.card_no LIKE CONCAT('%',#{cardNo},'%')
+            </if>
+            <if test="cardAddress != null and cardAddress != ''">
+                AND op.card_address LIKE CONCAT('%',#{cardAddress},'%')
+            </if>
+            <if test="frontCardImgId != null and frontCardImgId != ''">
+                AND op.front_card_img_id = #{frontCardImgId}
+            </if>
+            <if test="backCardImgId != null and backCardImgId != ''">
+                AND op.back_card_img_id = #{backCardImgId}
+            </if>
+            <if test="faceCardImgId != null and faceCardImgId != ''">
+                AND op.face_card_img_id = #{faceCardImgId}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                AND op.create_by = #{createBy}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                AND op.update_by = #{updateBy}
+            </if>
+            <if test="ids != null">
+                AND op.id in
+                <foreach collection="ids" index="index" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="importSearchValues != null and importSearchValues.size()>0">
+                AND op.tel_phone in
+                <foreach collection="importSearchValues" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY op.create_time DESC
+    </select>
+
+    <update id="personalCenterUpdateInfo" parameterType="java.util.HashMap">
+        update sys_owner_people sop
+            set sop.owner_name = #{ownerName},
+             sop.sex = #{sex},
+             sop.tel_phone = #{telPhone},
+             sop.email = #{email},
+             sop.job_number = #{jobNumber},
+             sop.address = #{address},
+             sop.card_type = #{cardType},
+             sop.card_no = #{cardNo},
+             sop.card_address = #{cardAddress},
+             sop.front_card_img_id = #{frontCardImgId},
+             sop.back_card_img_id = #{backCardImgId},
+             sop.face_card_img_id = #{faceCardImgId},
+            sop.update_time = #{updateTime},
+            sop.update_by = #{updateBy}
+        <where>
+             sop.id = #{ownerId}
+        </where>
+
+    </update>
+
+    <select id="checkCardNo" parameterType="String" resultType="String">
+        select su.id as userId from sys_owner_people sop
+        left join sys_user su on sop.id = su.owner_id
+        <where>
+           sop.card_no = #{cardNo}
+        </where>
+
+    </select>
+
+
+    <select id="findOwnerByUserId" parameterType="String" resultType="com.bitnei.cloud.sys.domain.OwnerPeople">
+        select
+        <include refid="baseColumns"/>
+        from
+        sys_owner_people op
+        left join sys_user su on op.id = su.owner_id
+        <where>
+            su.id = #{userId}
+        </where>
+
+    </select>
+
+    <select id="findOwnerById" parameterType="String" resultType="com.bitnei.cloud.sys.domain.OwnerPeople">
+        select
+        <include refid="moreColumns"/>, su.name unitName
+        from sys_owner_people op
+        left join sys_unit su on op.unit_id = su.id where op.id = #{id}
+
+    </select>
+
+</mapper>

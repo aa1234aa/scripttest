@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.EngineModelMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.EngineModel" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+         em.id,em.name,em.intake_way,em.circulation_way,em.fuel_form,em.tank_capacity,em.gasholder_number,em.gasholder_type,em.gasholder_capacity,em.brand_name,em.controller_model,em.peak_power,em.peak_rotate_speed,em.peak_torque,em.peak_torque_rotate_speed,em.prod_unit_id,em.controller_prod_unit_id,em.create_time,em.create_by,em.update_time,em.update_by,
+         em.obd_model,em.obd_unit_id,em.interface_photo
+    </sql>
+    <sql id="moreColumns">
+         em.id,em.name,em.intake_way,em.circulation_way,em.fuel_form,em.tank_capacity,em.gasholder_number,em.gasholder_type,em.gasholder_capacity,em.brand_name,em.controller_model,em.peak_power,em.peak_rotate_speed,em.peak_torque,em.peak_torque_rotate_speed,em.prod_unit_id,em.controller_prod_unit_id,em.create_time,em.create_by,em.update_time,em.update_by,
+         em.obd_model,em.obd_unit_id,em.interface_photo
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.EngineModel"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_engine_model em
+        <where>
+            em.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据name查询 -->
+    <select id="findByName" resultType="com.bitnei.cloud.sys.domain.EngineModel"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_engine_model em
+        <where>
+            em.name=#{name}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_engine_model (id,name,intake_way,circulation_way,fuel_form,tank_capacity,gasholder_number,gasholder_type,gasholder_capacity,brand_name,controller_model,peak_power,peak_rotate_speed,peak_torque,peak_torque_rotate_speed,prod_unit_id,controller_prod_unit_id,create_time,create_by,
+        obd_model,obd_unit_id,interface_photo)
+        values
+        (#{id},#{name},#{intakeWay},#{circulationWay},#{fuelForm},#{tankCapacity},#{gasholderNumber},#{gasholderType},#{gasholderCapacity},#{brandName},#{controllerModel},#{peakPower},#{peakRotateSpeed},#{peakTorque},#{peakTorqueRotateSpeed},#{prodUnitId},#{controllerProdUnitId},#{createTime},#{createBy},
+        #{obdModel},#{obdUnitId},#{interfacePhoto})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_engine_model set
+        id=id,name=#{name},intake_way=#{intakeWay},circulation_way=#{circulationWay},fuel_form=#{fuelForm},tank_capacity=#{tankCapacity},gasholder_number=#{gasholderNumber},gasholder_type=#{gasholderType},gasholder_capacity=#{gasholderCapacity},brand_name=#{brandName},controller_model=#{controllerModel},peak_power=#{peakPower},peak_rotate_speed=#{peakRotateSpeed},peak_torque=#{peakTorque},peak_torque_rotate_speed=#{peakTorqueRotateSpeed},prod_unit_id=#{prodUnitId},controller_prod_unit_id=#{controllerProdUnitId},update_time=#{updateTime},update_by=#{updateBy},
+        obd_model=#{obdModel},obd_unit_id=#{obdUnitId},interface_photo=#{interfacePhoto}
+        <where>
+            <choose>
+                <when test="id != null">
+                    id = #{id}
+                </when>
+                <otherwise>
+                    name = #{name}
+                </otherwise>
+            </choose>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        sys_engine_model
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_engine_model em
+        <where>
+            1=1
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="name != null">
+                and em.name like "%"#{name}"%"
+            </if>
+            <if test="intakeWay != null">
+                and em.intake_way=#{intakeWay}
+            </if>
+            <if test="prodUnitId != null">
+                and em.prod_unit_id=#{prodUnitId}
+            </if>
+            <if test="controllerProdUnitId != null">
+                and em.controller_prod_unit_id=#{controllerProdUnitId}
+            </if>
+            <if test="circulationWay != null">
+                and em.circulation_way=#{circulationWay}
+            </if>
+            <if test="fuelForm != null">
+                and em.fuel_form=#{fuelForm}
+            </if>
+            <if test="brandName != null">
+                and em.brand_name like "%"#{brandName}"%"
+            </if>
+        </where>
+        ORDER BY em.create_time DESC
+
+    </select>
+</mapper>

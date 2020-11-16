@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.fault.dao.VehRiskNoticeMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.fault.domain.VehRiskNotice" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+        vrn.id,vrn.vehicle_id ,vrn.name ,vrn.notice_type ,vrn.notice_status ,vrn.risk_level ,vrn.notice_original_text ,vrn.first_notice_time ,vrn.state_update_time ,vrn.read_time ,vrn.processing_time ,vrn.last_operator ,vrn.create_time ,vrn.create_by ,vrn.update_time ,vrn.update_by ,vrn.file_id ,vrn.code
+    </sql>
+    <sql id="moreColumns">
+        vrn.id,vrn.vehicle_id ,vrn.name ,vrn.notice_type ,vrn.notice_status ,vrn.risk_level ,vrn.notice_original_text ,vrn.first_notice_time ,vrn.state_update_time ,vrn.read_time ,vrn.processing_time ,vrn.last_operator ,vrn.create_time ,vrn.create_by ,vrn.update_time ,vrn.update_by ,vrn.file_id ,vrn.code
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.fault.domain.VehRiskNotice"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        fault_veh_risk_notice vrn
+        inner join sys_vehicle sv on sv.id = vrn.vehicle_id
+        <where>
+            sv.is_delete = 0 and vrn.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据code查询 -->
+    <select id="findByCode" resultType="com.bitnei.cloud.fault.domain.VehRiskNotice"  parameterType="java.lang.String">
+        select
+        <include refid="moreColumns"/>,
+        sv.vin
+        from
+        fault_veh_risk_notice vrn
+        inner join sys_vehicle sv on sv.id = vrn.vehicle_id
+        <where>
+            sv.is_delete = 0 and vrn.code=#{code}
+        </where>
+    </select>
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+          fault_veh_risk_notice (id,vehicle_id,name,notice_type,notice_status,risk_level,notice_original_text,first_notice_time,state_update_time,read_time,processing_time,last_operator,create_time,create_by,file_id,code)
+        values
+          (#{id},#{vehicleId},#{name},#{noticeType},#{noticeStatus},#{riskLevel},#{noticeOriginalText},#{firstNoticeTime},#{stateUpdateTime},#{readTime},#{processingTime},#{lastOperator},#{createTime},#{createBy},#{fileId},#{code})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update fault_veh_risk_notice set
+        notice_status=#{noticeStatus},risk_level=#{riskLevel},state_update_time=#{stateUpdateTime},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            code = #{code}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        fault_veh_risk_notice
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap" resultOrdered="true">
+        select
+          <include refid="moreColumns"/>,
+          sv.vin
+        from
+        fault_veh_risk_notice vrn
+        inner join sys_vehicle sv on sv.id = vrn.vehicle_id
+        <where>
+            sv.is_delete = 0 and vrn.notice_status != 6
+        <if test="authSQL != null">
+        <include refid="authSQL"/>
+        </if>
+            <if test="vin != null and vin !=''">
+                and sv.vin like concat('%',#{vin},'%')
+            </if>
+            <if test="riskLevel != null and riskLevel !=''">
+                and vrn.risk_level = #{riskLevel}
+            </if>
+            <!-- 通知状态统计详情 -->
+            <if test="noticeStatus != null and noticeStatus == 0">
+                and (vrn.notice_status = 0 or vrn.notice_status = 2)
+            </if>
+            <if test="noticeStatus != null and noticeStatus == 3">
+                and (vrn.notice_status = 1 or vrn.notice_status = 3)
+            </if>
+            <if test="noticeStatus != null and noticeStatus == 4">
+                and vrn.notice_status = 4
+            </if>
+            <if test="noticeStatus != null and noticeStatus == 5">
+                and vrn.notice_status = 5
+            </if>
+            <if test="code != null and code !=''">
+                and vrn.code = #{code}
+            </if>
+        </where>
+        order by vrn.state_update_time desc
+    </select>
+
+    <!-- 批量阅读 -->
+    <update id="updateByCode" parameterType="java.util.HashMap">
+        update fault_veh_risk_notice
+        <set>
+            <if test="readTime != null and readTime !=''">
+                read_time=#{readTime},
+            </if>
+            <if test="noticeStatus != null">
+                notice_status=#{noticeStatus},
+            </if>
+            <if test="stateUpdateTime != null and stateUpdateTime !=''">
+                state_update_time=#{stateUpdateTime},
+            </if>
+            <if test="processingTime != null and processingTime !=''">
+                processing_time=#{processingTime},
+            </if>
+            <if test="lastOperator != null and lastOperator !=''">
+                last_operator=#{lastOperator},
+            </if>
+            <if test="updateTime != null and updateTime !=''">
+                update_time=#{updateTime},
+            </if>
+            <if test="updateBy != null and updateBy !=''">
+                update_by=#{updateBy},
+            </if>
+        </set>
+        <where>
+        code in
+        <foreach collection="codes" open="("  item="code" separator="," close=")">
+            #{code}
+        </foreach>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 批量回复，1、2、3、4 未读、未读超时、已读、未回复状态的更新 -->
+    <update id="updateByCode2" parameterType="java.util.HashMap">
+        update fault_veh_risk_notice set
+        notice_status=#{noticeStatus},state_update_time=#{updateTime},processing_time=#{processingTime},last_operator=#{lastOperator},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="codes != null and codes .size()>0">
+                code in
+                <foreach collection="codes" index="index" item="code" open="(" separator="," close=")">
+                    #{code}
+                </foreach>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 5/6  批量回复已回复/审核中调用这条sql -->
+    <update id="updateByCode2-2" parameterType="java.util.HashMap">
+        update fault_veh_risk_notice set
+        processing_time=#{processingTime},last_operator=#{lastOperator},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="codes != null and codes .size()>0">
+                code in
+                <foreach collection="codes" index="index" item="code" open="(" separator="," close=")">
+                    #{code}
+                </foreach>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 批量回复后，添加记录到历史回复表 -->
+    <insert id="insertHistory" parameterType="java.util.HashMap">
+        insert into
+        veh_risk_history_adjudicate (id,code,annotations,file_id,create_time,create_by)
+        values
+        <foreach collection="list" item="history" separator="," close=";">
+            (#{history.id},#{history.code},#{history.annotations},#{history.fileId},#{history.createTime},#{history.createBy})
+        </foreach>
+
+    </insert>
+
+    <!-- 根据code查询历史处理记录 -->
+    <select id="findAnnotationsByCode" resultType="com.bitnei.cloud.fault.model.VehRiskHistoryAdjudicateModel"  parameterType="java.util.HashMap">
+        select * from
+        veh_risk_history_adjudicate rha
+        where rha.code=#{code}
+        order by rha.create_time desc
+        <if test="trueOrFalse != null and trueOrFalse == 1">
+            limit 1
+        </if>
+    </select>
+
+    <!-- 通知状态、风险等级统计 -->
+    <select id="findByNoticeStateAndRiskLevelCount" resultMap="tailResults"  parameterType="java.util.HashMap">
+        select
+        count(1) as all_num,
+        sum(case when vrn.notice_status = 0 or vrn.notice_status = 2 then 1 else 0 end) as un_read,
+        sum(case when vrn.notice_status = 1 or vrn.notice_status = 3 then 1 else 0 end) as un_reply,
+        sum(case when vrn.notice_status = 4 then 1 else 0 end) as reply,
+        sum(case when vrn.notice_status = 5 then 1 else 0 end) as examining,
+        sum(case when vrn.risk_level = 1 or vrn.risk_level = 2 then 1 else 0 end) as level_one_and_two,
+        sum(case when vrn.risk_level = 3 or vrn.risk_level = 4 then 1 else 0 end) as level_three_and_four,
+        sum(case when vrn.risk_level = 5 then 1 else 0 end) as level_five
+        from
+        fault_veh_risk_notice vrn
+        inner join sys_vehicle sv on sv.id = vrn.vehicle_id
+        <where>
+            sv.is_delete = 0 and vrn.notice_status != 6
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </select>
+
+    <!-- 国家平台管理员意见 -->
+    <select id="findOpinionsByCode" resultType="com.bitnei.cloud.fault.model.FaultDisposalOpinionsModel"  parameterType="java.util.HashMap">
+        select
+        fdo.id,
+        fdo.code,
+        fdo.opinions,
+        fdo.time
+        from
+        fault_disposal_opinions fdo
+        where fdo.code = #{code}
+        order by fdo.time desc
+        <if test="trueOrFalse != null and trueOrFalse == 1">
+            limit 1
+        </if>
+    </select>
+
+    <!-- 增加 -->
+    <insert id="insertOpinionsByCode" parameterType="java.util.HashMap">
+        insert into
+          fault_disposal_opinions (id,code,opinions,time,create_time,create_by)
+        values
+          (#{id},#{code},#{opinions},#{time},#{createTime},#{createBy})
+    </insert>
+
+    <!-- 分页查询 -->
+    <select id="historyPagerModel" resultMap="tailResults" parameterType="java.util.HashMap" resultOrdered="true">
+        select
+        <include refid="moreColumns"/>,
+        sv.vin
+        from
+        fault_veh_risk_notice vrn
+        inner join sys_vehicle sv on sv.id = vrn.vehicle_id
+        <where>
+            sv.is_delete = 0 and vrn.notice_status = 6
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="vin != null and vin !=''">
+                and sv.vin like concat('%',#{vin},'%')
+            </if>
+            <if test="pushBeginTime != null and pushBeginTime != ''">
+                and <![CDATA[ vrn.create_time >= #{pushBeginTime} ]]>
+            </if>
+            <if test="pushEndTime != null and pushEndTime != ''">
+                and <![CDATA[ vrn.create_time <= #{pushEndTime} ]]>
+            </if>
+            <if test="noticeType != null and noticeType !=''">
+                and vrn.notice_type = #{noticeType}
+            </if>
+            <if test="riskLevel != null and riskLevel !=''">
+                and vrn.risk_level = #{riskLevel}
+            </if>
+            <if test="endBeginTime != null and endBeginTime != ''">
+                and <![CDATA[ vrn.state_update_time >= #{endBeginTime} ]]>
+            </if>
+            <if test="endEndTime != null and endEndTime != ''">
+                and <![CDATA[ vrn.state_update_time <= #{endEndTime} ]]>
+            </if>
+        </where>
+        order by vrn.state_update_time desc
+    </select>
+
+
+    <!-- 定时更新未读状态 -->
+    <select id="findNotReadRisk" resultMap="tailResults" parameterType="java.util.HashMap" resultOrdered="true">
+        select
+        vrn.code,
+        vrn.first_notice_time
+        from
+        fault_veh_risk_notice vrn
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="type != null and type == 1">
+                and vrn.notice_status = 0
+            </if>
+            <if test="type != null and type == 2">
+                and vrn.notice_status = 1 or vrn.notice_status = 2
+            </if>
+        </where>
+    </select>
+
+    <!-- 定时更新为未读超时 -->
+    <update id="updateNoticeStatus" parameterType="java.util.HashMap">
+        update fault_veh_risk_notice
+        <set>
+            <if test="noticeStatus != null">
+                notice_status=#{noticeStatus},
+            </if>
+            <if test="stateUpdateTime != null and stateUpdateTime !=''">
+                state_update_time=#{stateUpdateTime},
+            </if>
+            <if test="updateTime != null and updateTime !=''">
+                update_time=#{updateTime},
+            </if>
+            <if test="updateBy != null and updateBy !=''">
+                update_by=#{updateBy},
+            </if>
+        </set>
+        <where>
+            code in
+            <foreach collection="codes" open="("  item="code" separator="," close=")">
+                #{code}
+            </foreach>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+</mapper>

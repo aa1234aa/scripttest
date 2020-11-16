@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.fault.dao.AlarmInfoHistoryMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.fault.domain.AlarmInfoHistory" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+            <result property="sellUnitOrVita" column="sell_unit_or_vita"/>
+            <result property="telephone" column="telephone"/>
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        <if test="authSQL != null and '' != authSQL">
+            and ${authSQL}
+        </if>
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    faih.id  ,faih.uuid ,faih.vehicle_id ,faih.fault_type  ,faih.parent_rule_id ,faih.rule_id ,faih.rule_name ,faih.alarm_level ,faih.fault_begin_time ,faih.fault_end_time ,faih.fault_status ,faih.longitude ,faih.latitude ,faih.response_mode ,faih.trigger_item ,faih.proces_status ,faih.proces_time ,faih.push_status ,faih.push_time ,faih.create_time
+    </sql>
+    <sql id="moreColumns">
+    faih.id  ,faih.uuid ,faih.vehicle_id ,faih.fault_type  ,faih.parent_rule_id ,faih.rule_id ,faih.rule_name ,faih.alarm_level ,faih.fault_begin_time ,faih.fault_end_time ,faih.fault_status ,faih.longitude ,faih.latitude ,faih.response_mode ,faih.trigger_item ,faih.proces_status ,faih.proces_time ,faih.push_status ,faih.push_time ,faih.create_time
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.fault.domain.AlarmInfoHistory" parameterType="java.util.HashMap">
+        select
+        mef.chart_type,
+        mef.lonlat_range,
+        <include refid="moreColumns"/>,
+        sv.vin, sv.license_plate, sv.sell_for_field, sv.sell_pri_veh_owner_id, sv.sell_pub_unit_id, svm.veh_model_name, sv.is_delete vehDelete
+        from fault_alarm_info_history faih
+        inner join sys_vehicle sv on faih.vehicle_id = sv.id
+        left join sys_veh_model svm on sv.veh_model_id = svm.id
+        LEFT JOIN monitor_electronic_fence mef on  faih.rule_id=mef.id
+        <where>
+            faih.id=#{id}
+            and faih.fault_begin_time = #{faultBeginTime}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        fault_alarm_info_history (id,uuid,vehicle_id,fault_type, parent_rule_id,rule_id,rule_name,alarm_level,fault_begin_time,fault_end_time,fault_status,longitude,latitude,response_mode,trigger_item,proces_status,proces_time,push_status,push_time,create_time, msg_id)
+        values
+        (#{id},#{uuid},#{vehicleId},#{faultType},#{parentRuleId},#{ruleId},#{ruleName},#{alarmLevel},#{faultBeginTime},#{faultEndTime},#{faultStatus},#{longitude},#{latitude},#{responseMode},#{triggerItem},#{procesStatus},#{procesTime},#{pushStatus},#{pushTime},#{createTime}, #{msgId})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update fault_alarm_info_history
+        <set>
+            <if test="procesStatus != null">
+                proces_status=#{procesStatus},
+            </if>
+            <if test="procesTime != null">
+                proces_time=#{procesTime},
+            </if>
+        </set>
+        <where>
+            id = #{id} and fault_begin_time = #{faultBeginTime}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </update>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" resultOrdered="true">
+        select
+        <include refid="moreColumns"/>,
+        sv.vin, sv.license_plate, sv.sell_for_field, sv.sell_pri_veh_owner_id, sv.sell_pub_unit_id, svm.veh_model_name, sv.is_delete vehDelete,
+        (case sv.sell_for_field when 1 then ow.owner_name else un.name end) sell_unit_or_vita,
+        (case sv.sell_for_field when 1 then ow.tel_phone else un.telephone end) telephone
+        from fault_alarm_info_history faih
+        inner join sys_vehicle sv on faih.vehicle_id = sv.id
+        left join sys_veh_model svm on sv.veh_model_id = svm.id
+        left join sys_veh_owner ow on ow.id = sv.sell_pri_veh_owner_id
+        left join sys_unit un on un.id = sv.sell_pub_unit_id
+        <where>
+            <if test="faultType != null and faultType !=''">
+                and faih.fault_type = #{faultType}
+            </if>
+            <if test="ruleName != null and ruleName !=''">
+                <bind name="pattern-ruleName" value="'%' + ruleName + '%'" />
+                and faih.rule_name like #{pattern-ruleName}
+            </if>
+            <if test="vin != null and vin !=''">
+                <bind name="pattern-vin" value="'%' + vin + '%'" />
+                and sv.vin like #{pattern-vin}
+            </if>
+            <if test="licensePlate != null and licensePlate !=''">
+                <bind name="pattern-licensePlate" value="'%' + licensePlate + '%'" />
+                and sv.license_plate like #{pattern-licensePlate}
+            </if>
+            <if test="vehModelId != null and vehModelId !=''">
+                and svm.id = #{vehModelId}
+            </if>
+            <if test="vehModelName != null and vehModelName !=''">
+                <bind name="pattern-vehModelName" value="'%' + vehModelName + '%'" />
+                and svm.veh_model_name like #{pattern-vehModelName}
+            </if>
+            <if test="alarmLevel != null and alarmLevel !=''">
+                and faih.alarm_level = #{alarmLevel}
+            </if>
+            <if test="procesStatus != null and procesStatus !=''">
+                and proces_status=#{procesStatus}
+            </if>
+            <if test="keyword != null and keyword !=''">
+                and (sv.vin like "%"#{keyword}"%" or sv.license_plate like "%"#{keyword}"%" or faih.rule_name like "%"#{keyword}"%")
+            </if>
+            <if test="beginTime !=null and beginTime != '' and endTime !=null and endTime != ''">
+                and faih.fault_begin_time between #{beginTime} and #{endTime}
+            </if>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+        order by faih.fault_end_time desc
+    </select>
+
+    <!-- 分页查询计数 -->
+    <select id="pagerModel_COUNT" resultType="long">
+        select
+            count(0)
+        from fault_alarm_info_history faih
+        inner join sys_vehicle sv on faih.vehicle_id = sv.id
+        left join sys_veh_model svm on sv.veh_model_id = svm.id
+        left join sys_veh_owner ow on ow.id = sv.sell_pri_veh_owner_id
+        left join sys_unit un on un.id = sv.sell_pub_unit_id
+        <where>
+            <if test="faultType != null and faultType !=''">
+                and faih.fault_type = #{faultType}
+            </if>
+            <if test="ruleName != null and ruleName !=''">
+                <bind name="pattern-ruleName" value="'%' + ruleName + '%'" />
+                and faih.rule_name like #{pattern-ruleName}
+            </if>
+            <if test="vin != null and vin !=''">
+                <bind name="pattern-vin" value="'%' + vin + '%'" />
+                and sv.vin like #{pattern-vin}
+            </if>
+            <if test="licensePlate != null and licensePlate !=''">
+                <bind name="pattern-licensePlate" value="'%' + licensePlate + '%'" />
+                and sv.license_plate like #{pattern-licensePlate}
+            </if>
+            <if test="vehModelId != null and vehModelId !=''">
+                and svm.id = #{vehModelId}
+            </if>
+            <if test="vehModelName != null and vehModelName !=''">
+                <bind name="pattern-vehModelName" value="'%' + vehModelName + '%'" />
+                and svm.veh_model_name like #{pattern-vehModelName}
+            </if>
+            <if test="alarmLevel != null and alarmLevel !=''">
+                and faih.alarm_level = #{alarmLevel}
+            </if>
+            <if test="procesStatus != null and procesStatus !=''">
+                and proces_status=#{procesStatus}
+            </if>
+            <if test="keyword != null and keyword !=''">
+                and (sv.vin like "%"#{keyword}"%" or sv.license_plate like "%"#{keyword}"%" or faih.rule_name like "%"#{keyword}"%")
+            </if>
+            <if test="beginTime !=null and beginTime != '' and endTime !=null and endTime != ''">
+                and faih.fault_begin_time between #{beginTime} and #{endTime}
+            </if>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <select id="processRecords" resultType="java.util.HashMap">
+        select
+            fap.fault_alarm_id,
+            fap.remark,
+            fap.create_time
+        from fault_alarm_process fap
+        <where>
+            fap.fault_alarm_id in (
+                <foreach collection="alarmInfoHistoryIds" item="item" separator=",">
+                    #{item}
+                </foreach>
+            )
+        </where>
+    </select>
+
+    <select id="findAllByTableName" resultMap="tailResults" parameterType="string">
+        select
+        <include refid="moreColumns"/>
+        from ${tableName} faih
+    </select>
+
+    <select id="findPageByTableName" resultMap="tailResults" parameterType="java.util.Map">
+        select
+        <include refid="moreColumns"/>
+        from ${tableName} faih
+        where faih.fault_begin_time > #{faultBeginTime}
+        or (faih.fault_begin_time = #{faultBeginTime} and faih.id > #{faultId})
+        order by faih.fault_begin_time asc, faih.id asc
+        limit #{limit}
+    </select>
+
+    <delete id="deleteByTable" parameterType="string">
+        delete from ${tableName}
+    </delete>
+
+    <delete id="deleteBatch" >
+        delete from ${tableName}
+        where id in
+        <foreach collection="alarmInfoHistoryList" item="alarmInfoHistory" open="(" separator="," close=")">
+            #{alarmInfoHistory.id}
+        </foreach>
+    </delete>
+
+
+</mapper>

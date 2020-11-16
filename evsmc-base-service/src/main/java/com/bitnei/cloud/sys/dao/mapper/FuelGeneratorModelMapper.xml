@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.FuelGeneratorModelMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.FuelGeneratorModel" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    fgm.id  ,fgm.name ,fgm.air_inlet ,fgm.fuel_form ,fgm.tank_capacity ,fgm.brand_name ,fgm.controller_model ,fgm.peak_power ,fgm.peak_power_speed ,fgm.peak_torque ,fgm.peak_torque_speed ,fgm.prod_unit_id ,fgm.controller_prod_unit_id ,fgm.create_time ,fgm.create_by ,fgm.update_time ,fgm.update_by
+    </sql>
+    <sql id="moreColumns">
+    fgm.id  ,fgm.name ,fgm.air_inlet ,fgm.fuel_form ,fgm.tank_capacity ,fgm.brand_name ,fgm.controller_model ,fgm.peak_power ,fgm.peak_power_speed ,fgm.peak_torque ,fgm.peak_torque_speed ,fgm.prod_unit_id ,fgm.controller_prod_unit_id ,fgm.create_time ,fgm.create_by ,fgm.update_time ,fgm.update_by
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.FuelGeneratorModel"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_fuel_generator_model fgm
+        <where>
+            fgm.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+     <!-- 根据燃油发电机型号查询 -->
+    <select id="findByName" resultType="com.bitnei.cloud.sys.domain.FuelGeneratorModel"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_fuel_generator_model fgm
+        <where>
+            fgm.name=#{name}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_fuel_generator_model (id,name,air_inlet,fuel_form,tank_capacity,brand_name,controller_model,peak_power,peak_power_speed,peak_torque,peak_torque_speed,prod_unit_id,controller_prod_unit_id,create_time,create_by)
+        values
+        (#{id},#{name},#{airInlet},#{fuelForm},#{tankCapacity},#{brandName},#{controllerModel},#{peakPower},#{peakPowerSpeed},#{peakTorque},#{peakTorqueSpeed},#{prodUnitId},#{controllerProdUnitId},#{createTime},#{createBy})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_fuel_generator_model set
+        id=id,name=#{name},air_inlet=#{airInlet},fuel_form=#{fuelForm},tank_capacity=#{tankCapacity},brand_name=#{brandName},controller_model=#{controllerModel},peak_power=#{peakPower},peak_power_speed=#{peakPowerSpeed},peak_torque=#{peakTorque},peak_torque_speed=#{peakTorqueSpeed},prod_unit_id=#{prodUnitId},controller_prod_unit_id=#{controllerProdUnitId},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            <choose>
+                <when test="id != null">
+                    id = #{id}
+                </when>
+                <otherwise>
+                    name = #{name}
+                </otherwise>
+            </choose>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        sys_fuel_generator_model
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_fuel_generator_model fgm
+        <where>
+            1=1
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="name != null">
+                and fgm.name like "%"#{name}"%"
+            </if>
+            <if test="prodUnitId != null">
+                and fgm.prod_unit_id=#{prodUnitId}
+            </if>
+            <if test="controllerProdUnitId != null">
+                and fgm.controller_prod_unit_id=#{controllerProdUnitId}
+            </if>
+            <if test="airInlet != null">
+                and fgm.air_inlet=#{airInlet}
+            </if>
+            <if test="fuelForm != null">
+                and fgm.fuel_form=#{fuelForm}
+            </if>
+            <if test="brandName != null">
+                and fgm.brand_name like "%"#{brandName}"%"
+            </if>
+        </where>
+        order by fgm.create_time desc
+
+    </select>
+</mapper>

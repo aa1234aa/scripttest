@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.fault.dao.IncidentHandlingMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.fault.domain.IncidentHandling" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+            <result property="configName" column="config_name" />
+            <result property="noticeName" column="notice_name" />
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    fih.id ,fih.veh_model_id ,fih.document_name ,fih.document_type ,fih.report_state ,fih.reasons_for_failure ,fih.report_time ,fih.platform ,fih.component_information ,fih.rescue ,fih.open_vehicle ,fih.prohibitory_acts ,fih.file_id ,fih.document_describe ,fih.create_time ,fih.create_by ,fih.update_time ,fih.update_by
+    </sql>
+    <sql id="moreColumns">
+    fih.id ,fih.veh_model_id ,fih.document_name ,fih.document_type ,fih.report_state ,fih.reasons_for_failure ,fih.report_time ,fih.platform ,fih.component_information ,fih.rescue ,fih.open_vehicle ,fih.prohibitory_acts ,fih.file_id ,fih.document_describe ,fih.create_time ,fih.create_by ,fih.update_time ,fih.update_by
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.fault.domain.IncidentHandling"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>,
+        svm.config_name
+        from
+        fault_incident_handling fih
+        left join sys_veh_model svm on svm.id = fih.veh_model_id
+        <where>
+            fih.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据车型id查询事故现场处置预案 -->
+    <select id="findByVehModelId" resultType="com.bitnei.cloud.fault.domain.IncidentHandling"  parameterType="java.lang.String">
+        select
+        <include refid="moreColumns"/>
+        from
+        fault_incident_handling fih
+        where fih.veh_model_id = #{vehModelId}
+        and fih.document_type = 1
+    </select>
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        fault_incident_handling (id,veh_model_id,document_name,document_type,report_state,component_information,rescue,open_vehicle,prohibitory_acts,file_id,document_describe,create_time,create_by)
+        values
+        (#{id},#{vehModelId},#{documentName},#{documentType},#{reportState},#{componentInformation},#{rescue},#{openVehicle},#{prohibitoryActs},#{fileId},#{documentDescribe},#{createTime},#{createBy})
+    </insert>
+
+    <!-- 增加(用于车型复制事故处置预案) -->
+    <insert id="copyInsert" parameterType="java.util.HashMap">
+        insert into
+        fault_incident_handling (id,veh_model_id,name,case_type,scene_type,scenario_describe,processing_scheme,document_describe,create_time,create_by)
+        values
+        <foreach collection="list" item="report" separator="," close=";">
+            (#{report.id},#{report.vehModelId},#{report.name},#{report.caseType},#{report.sceneType},#{report.scenarioDescribe},#{report.processingScheme},#{report.documentDescribe},#{report.createTime},#{report.createBy})
+        </foreach>
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update fault_incident_handling set
+        id=id,veh_model_id=#{vehModelId},
+        <if test="reportState != null and reportState!=''">
+            report_state=#{reportState},
+        </if>
+           document_name=#{documentName},
+           document_type=#{documentType},
+           component_information=#{componentInformation},
+           rescue=#{rescue},open_vehicle=#{openVehicle},
+           prohibitory_acts=#{prohibitoryActs},
+           file_id=#{fileId},document_describe=#{documentDescribe},
+           reasons_for_failure = "",
+           update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        fault_incident_handling
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap" resultOrdered="true">
+        select
+        <include refid="moreColumns"/>,
+        svm.config_name
+        from
+        fault_incident_handling fih
+        left join sys_veh_model svm on svm.id = fih.veh_model_id
+        <where>
+        <if test="authSQL != null">
+        <include refid="authSQL"/>
+        </if>
+            <if test="documentName != null and documentName != ''">
+                <bind name="pattern-name" value="'%' + documentName + '%'" />
+                and fih.document_name like #{pattern-name}
+            </if>
+            <if test="vehModelId != null and vehModelId != ''">
+                and fih.veh_model_id=#{vehModelId}
+            </if>
+            <if test="reportState != null and reportState != ''">
+                and fih.report_state=#{reportState}
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                and <![CDATA[ fih.create_time >= #{beginTime,jdbcType=DATE} ]]>
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and <![CDATA[ fih.create_time <= #{endTime,jdbcType=DATE} ]]>
+            </if>
+            <if test="documentType != null and documentType != ''">
+                and fih.document_type=#{documentType}
+            </if>
+        </where>
+        order by fih.create_time desc
+    </select>
+
+    <!-- 预案上报 -->
+    <update id="updateReportState" parameterType="java.util.HashMap">
+        update fault_incident_handling set
+        platform=#{platform},
+        report_time=#{reportTime},
+        report_state=#{reportState},
+        update_time=#{updateTime},
+        update_by=#{updateBy}
+        <if test = "reasonsForFailure != null">
+            , reasons_for_failure = #{reasonsForFailure}
+        </if>
+        where id = #{id}
+    </update>
+
+    <!-- 用于复制时的覆盖需删除原先文档类型下的车型预案 -->
+    <delete id="deleteOld"  parameterType="java.util.HashMap">
+        delete from
+        fault_incident_handling
+        <where>
+            veh_model_id = #{vehModelId}
+            and document_type = #{documentType}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+</mapper>

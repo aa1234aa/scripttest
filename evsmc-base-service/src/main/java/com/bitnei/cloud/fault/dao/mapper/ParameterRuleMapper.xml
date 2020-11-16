@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.fault.dao.ParameterRuleMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.fault.domain.ParameterRule" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+        fpr.id ,fpr.name ,fpr.veh_model_id ,fpr.subordinate_parts_id ,fpr.produce_alarm ,fpr.alarm_level ,
+        fpr.response_mode, fpr.level_describe ,fpr.begin_threshold ,fpr.end_threshold ,fpr.begin_count_threshold ,fpr.end_count_threshold ,fpr.enable_time_threshold ,enable_count_threshold ,fpr.enabled_status ,fpr.formula ,fpr.formula_display ,
+        fpr.formula_code, fpr.formula_chinese ,fpr.data_const_describe ,fpr.solution_describe, fpr.dc_rule_type_id ,
+        fpr.delete_status, fpr.create_time ,fpr.create_by ,fpr.update_time ,fpr.update_by, fpr.preset_rule
+    </sql>
+    <sql id="moreColumns">
+        fpr.id ,fpr.name ,fpr.veh_model_id ,fpr.subordinate_parts_id ,fpr.produce_alarm ,fpr.alarm_level ,
+        fpr.response_mode, fpr.level_describe ,fpr.begin_threshold ,fpr.end_threshold ,fpr.begin_count_threshold ,fpr.end_count_threshold ,fpr.enable_time_threshold ,enable_count_threshold ,fpr.enabled_status ,fpr.formula ,fpr.formula_display ,
+        fpr.formula_code, fpr.formula_chinese ,fpr.data_const_describe ,fpr.solution_describe, fpr.dc_rule_type_id ,
+        fpr.delete_status, fpr.create_time ,fpr.create_by ,fpr.update_time ,fpr.update_by, fpr.preset_rule
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.fault.domain.ParameterRule" parameterType="java.lang.String">
+        select
+        <include refid="moreColumns"/>
+        from
+        fault_parameter_rule fpr
+        where
+            fpr.id=#{id}
+    </select>
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="com.bitnei.cloud.fault.domain.ParameterRule">
+        insert into
+        fault_parameter_rule (
+            id,name,veh_model_id,subordinate_parts_id,produce_alarm,alarm_level,response_mode, level_describe,begin_threshold,end_threshold,
+            enabled_status,formula,formula_display,formula_code,formula_chinese,data_const_describe,solution_describe,
+            dc_rule_type_id, delete_status,create_time,create_by, preset_rule, type, group_name, enable_time_threshold, enable_count_threshold, begin_count_threshold, end_count_threshold)
+        values (
+            #{id},#{name},#{vehModelId},#{subordinatePartsId},0,#{alarmLevel},#{responseMode},
+            #{levelDescribe},#{beginThreshold},#{endThreshold},#{enabledStatus},#{formula},#{formulaDisplay},#{formulaCode},#{formulaChinese},
+            #{dataConstDescribe},#{solutionDescribe},#{dcRuleTypeId},0,#{createTime},#{createBy} , 0, #{type}, #{groupName}, #{enableTimeThreshold}, #{enableCountThreshold}, #{beginCountThreshold}, #{endCountThreshold})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="com.bitnei.cloud.fault.domain.ParameterRule">
+        update fault_parameter_rule
+        set
+            name=#{name},veh_model_id=#{vehModelId},subordinate_parts_id=#{subordinatePartsId},
+            alarm_level=#{alarmLevel},response_mode=#{responseMode},
+            level_describe=#{levelDescribe},begin_threshold=#{beginThreshold},end_threshold=#{endThreshold},enabled_status=#{enabledStatus},
+            formula=#{formula}, formula_display=#{formulaDisplay},formula_code=#{formulaCode},
+            formula_chinese=#{formulaChinese},data_const_describe=#{dataConstDescribe},
+            solution_describe=#{solutionDescribe}, dc_rule_type_id = #{dcRuleTypeId},
+            update_time=#{updateTime},update_by=#{updateBy},enable_time_threshold=#{enableTimeThreshold},enable_count_threshold=#{enableCountThreshold},begin_count_threshold=#{beginCountThreshold},end_count_threshold=#{endCountThreshold}
+        where
+            id = #{id} and type=0
+    </update>
+
+    <!-- 删除 -->
+    <update id="delete" parameterType="java.lang.String">
+        update  fault_parameter_rule set delete_status = 1
+        where
+            id = #{id} and type=0
+    </update>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        fault_parameter_rule fpr
+        <where>
+            fpr.delete_status = 0 and type = 0
+            <if test="name != null and name !=''">
+                and fpr.name like "%"#{name}"%"
+            </if>
+            <if test="alarmLevel != null">
+                and fpr.alarm_level = #{alarmLevel}
+            </if>
+            <if test="subordinateParts != null">
+                and fpr.subordinate_parts_id = #{subordinateParts}
+            </if>
+            <if test="enabledStatus != null">
+                and fpr.enabled_status = #{enabledStatus}
+            </if>
+            <if test="vehModelId != null and vehModelId !=''">
+                and fpr.veh_model_id like CONCAT('%', #{vehModelId}, '%')
+            </if>
+        </where>
+        order by fpr.create_time desc
+    </select>
+
+    <!-- 统计数量 -->
+    <select id="count" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        select count(*) from fault_parameter_rule fpr
+        <where>
+            fpr.delete_status = 0  and type = 0
+            <if test="name != null and name != ''">
+                and fpr.name = #{name}
+            </if>
+            <if test="skipId != null and skipId != ''">
+                and fpr.id != #{skipId}
+            </if>
+            <if test="existDataItem != null and existDataItem != ''">
+                and fpr.formula like CONCAT('%', #{existDataItem}, '%')
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据车型删除 -->
+    <update id="deleteByVehModelId"   parameterType="java.util.HashMap">
+        update  fault_parameter_rule fpr set fpr.delete_status = 1, fpr.update_time=#{updateTime}, fpr.update_by=#{updateBy}
+        where fpr.delete_status = 0 and type = 0 and fpr.veh_model_id=#{vehModelId}
+    </update>
+
+    <update id="updateVehModelId"   parameterType="java.util.HashMap">
+        update  fault_parameter_rule fpr set fpr.veh_model_id=#{vehModelId}, fpr.update_time=#{updateTime}, fpr.update_by=#{updateBy}
+        where  fpr.id=#{id} and type=0
+    </update>
+
+    <!-- 删除指定车辆规则下的某个级别的规则 -->
+    <update id="deleteVehicleModelRule">
+        update  fault_parameter_rule fpr set fpr.delete_status = 1, fpr.update_time=#{updateTime}, fpr.update_by=#{updateBy}
+        <where>
+            fpr.delete_status = 0 and type = 1 and fpr.veh_model_id=#{vehModelId}
+            <if test="level != null">
+                and fpr.alarm_level = #{level}
+            </if>
+            <if test="groupName != null and groupName != ''">
+                and fpr.group_name = #{groupName}
+            </if>
+        </where>
+    </update>
+
+
+    <update id="updateVehicleModelRuleResponseMode">
+        update fault_parameter_rule set response_mode = #{responseMode}, update_time=#{updateTime}, update_by=#{updateBy}
+        where type = 1 and delete_status = 0 and veh_model_id=#{vehModelId}
+    </update>
+</mapper>

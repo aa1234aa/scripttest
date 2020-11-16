@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.VehModelMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.VehModel" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+        vm.*
+    </sql>
+    <sql id="moreColumns">
+        vm.*
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.VehModel" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_veh_model vm
+        <where>
+            vm.id=#{id}
+        </where>
+    </select>
+
+    <!-- 根据名称查询 -->
+    <select id="findByName" resultType="com.bitnei.cloud.sys.domain.VehModel" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_veh_model vm
+        <where>
+            vm.veh_model_name=#{vehModelName}
+        </where>
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_veh_model (id,veh_model_name,notice_id,config_name,rule_id, veh_unit_id, detection_mechanism_name, veh_report_number,controller_model, controller_unit_id, chassis_model,chassis_img_id,chassis_unit_id,veh_weight,curb_weight,veh_lang,veh_wide,veh_high,rated_capacity,save_fuel_standard,batt_type,battery_package_count,battery_link_mode,drive_device_count,drive_type,drive_struct_type,drive_mode,power_mode,efficiency_json,create_time,create_by,l100km,kwh100h,
+        engine_model,emission_level,urea_tank_capacity,vehicle_firm,reduction_ratio,transmission_forward_num,transmission_gear_ratio,use_type,product_area,max_allow_mass,bearing_max_allow_mass,min_ground_clearance,veh_sliding_coefficient,axles_number,wheel_base,wheelbase_detail,body_model,tire_number,tire_manufacturer,tire_spec,tire_pressure,approach_departure_angle,transmission_name,transmission_model,transmission_firm,transmission_type,fuel_tank_capacity,
+        allowed_max_power,abc_speed,tms_monitor_version,drive_type_location,car_body_structure,approved_load,max_total_mass,epa_veh_type,transport_bureau_veh_type,veh_tech_level,rating_date,environmental_info_no,model_details,vehicle_type,veh_inspection_report,total_guests_num,record_activation_mode)
+        values
+        (#{id},#{vehModelName},#{noticeId},#{configName},#{ruleId}, #{vehUnitId}, #{detectionMechanismName},#{vehReportNumber},#{controllerModel},#{controllerUnitId},#{chassisModel},#{chassisImgId},#{chassisUnitId},#{vehWeight},#{curbWeight},#{vehLang},#{vehWide},#{vehHigh},#{ratedCapacity},#{saveFuelStandard},#{battType},#{batteryPackageCount},#{batteryLinkMode},#{driveDeviceCount},#{driveType},#{driveStructType},#{driveMode},#{powerMode},#{efficiencyJson},#{createTime},#{createBy},#{l100km},#{kwh100h},
+        #{engineModel},#{emissionLevel},#{ureaTankCapacity},#{vehicleFirm},#{reductionRatio},#{transmissionForwardNum},#{transmissionGearRatio},#{useType},#{productArea},#{maxAllowMass},#{bearingMaxAllowMass},#{minGroundClearance},#{vehSlidingCoefficient},#{axlesNumber},#{wheelBase},#{wheelbaseDetail},#{bodyModel},#{tireNumber},#{tireManufacturer},#{tireSpec},#{tirePressure},#{approachDepartureAngle},#{transmissionName},#{transmissionModel},#{transmissionFirm},#{transmissionType},#{fuelTankCapacity},
+        #{allowedMaxPower},#{abcSpeed},#{tmsMonitorVersion},#{driveTypeLocation},#{carBodyStructure},#{approvedLoad},#{maxTotalMass},#{epaVehType},#{transportBureauVehType},#{vehTechLevel},#{ratingDate},#{environmentalInfoNo},#{modelDetails},#{vehicleType},#{vehInspectionReport},#{totalGuestsNum},#{recordActivationMode})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_veh_model set
+        id=id,veh_model_name=#{vehModelName},notice_id=#{noticeId},config_name=#{configName}, veh_unit_id=#{vehUnitId},
+        detection_mechanism_name=#{detectionMechanismName},veh_report_number=#{vehReportNumber},controller_model=#{controllerModel}, controller_unit_id=#{controllerUnitId},chassis_model=#{chassisModel},
+        chassis_img_id=#{chassisImgId},chassis_unit_id=#{chassisUnitId},veh_weight=#{vehWeight},curb_weight=#{curbWeight},veh_lang=#{vehLang},veh_wide=#{vehWide},veh_high=#{vehHigh},rated_capacity=#{ratedCapacity},save_fuel_standard=#{saveFuelStandard},batt_type=#{battType},battery_package_count=#{batteryPackageCount},battery_link_mode=#{batteryLinkMode},drive_device_count=#{driveDeviceCount},drive_type=#{driveType},drive_struct_type=#{driveStructType},drive_mode=#{driveMode},power_mode=#{powerMode},efficiency_json=#{efficiencyJson},update_time=#{updateTime},update_by=#{updateBy},l100km=#{l100km},kwh100h=#{kwh100h},
+        engine_model=#{engineModel},emission_level=#{emissionLevel},urea_tank_capacity=#{ureaTankCapacity},vehicle_firm=#{vehicleFirm},reduction_ratio=#{reductionRatio},transmission_forward_num=#{transmissionForwardNum},
+        transmission_gear_ratio=#{transmissionGearRatio},use_type=#{useType},product_area=#{productArea},max_allow_mass=#{maxAllowMass},bearing_max_allow_mass=#{bearingMaxAllowMass},min_ground_clearance=#{minGroundClearance},
+        veh_sliding_coefficient=#{vehSlidingCoefficient},axles_number=#{axlesNumber},wheel_base=#{wheelBase},wheelbase_detail=#{wheelbaseDetail},body_model=#{bodyModel},tire_number=#{tireNumber},tire_manufacturer=#{tireManufacturer},
+        tire_spec=#{tireSpec},tire_pressure=#{tirePressure},approach_departure_angle=#{approachDepartureAngle},transmission_name=#{transmissionName},transmission_model=#{transmissionModel},transmission_firm=#{transmissionFirm},
+        transmission_type=#{transmissionType},fuel_tank_capacity=#{fuelTankCapacity},allowed_max_power=#{allowedMaxPower},abc_speed=#{abcSpeed},tms_monitor_version=#{tmsMonitorVersion},drive_type_location=#{driveTypeLocation},
+        car_body_structure=#{carBodyStructure},approved_load=#{approvedLoad},max_total_mass=#{maxTotalMass},epa_veh_type=#{epaVehType},transport_bureau_veh_type=#{transportBureauVehType},veh_tech_level=#{vehTechLevel},rating_date=#{ratingDate},environmental_info_no=#{environmentalInfoNo},model_details=#{modelDetails},vehicle_type=#{vehicleType},veh_inspection_report=#{vehInspectionReport},total_guests_num=#{totalGuestsNum},record_activation_mode=#{recordActivationMode}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="java.util.HashMap">
+        delete from
+        sys_veh_model
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+          <include refid="moreColumns"/>,
+          svn.veh_type_id
+        from
+        sys_veh_model vm
+        left join sys_unit su on vm.veh_unit_id = su.id
+        left join sys_veh_notice svn on svn.id = vm.notice_id
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+
+            <!-- 车辆公告 -->
+            <if test="noticeId != null and noticeId != '' ">
+                and vm.notice_id = #{noticeId}
+            </if>
+            <!-- 公告目录批次 -->
+            <if test="noticeBatch != null and noticeBatch != '' ">
+                and svn.notice_batch = #{noticeBatch}
+            </if>
+            <!-- 推荐目录批次 -->
+            <if test="recommendBatch != null and recommendBatch != '' ">
+                and svn.recommend_batch = #{recommendBatch}
+            </if>
+            <!-- 公告目录批次年份 -->
+            <if test="noticeYear != null and noticeYear != '' ">
+                and svn.notice_year = #{noticeYear}
+            </if>
+            <!-- 推荐目录批次年份 -->
+            <if test="recommendYear != null and recommendYear != '' ">
+                and svn.recommend_year = #{recommendYear}
+            </if>
+
+            <!--车辆生产企业-->
+            <if test="vehModelName != null and vehModelName != ''">
+                and vm.veh_model_name like concat('%',#{vehModelName},'%')
+            </if>
+
+            <!--车辆种类id -->
+            <if test="vehTypeId != null and vehTypeId != ''">
+                and svn.veh_type_id=#{vehTypeId}
+            </if>
+
+            <!--车辆生产企业id-->
+            <if test="vehUnitId != null and vehUnitId != ''">
+                and vm.veh_unit_id=#{vehUnitId}
+            </if>
+
+            <!--车辆-->
+            <if test="vehUnitName != null and vehUnitName != ''">
+                and su.name like concat('%',#{vehUnitName},'%')
+            </if>
+
+            <!-- id集合 -->
+            <if test="vehModelIds != null">
+                AND vm.id IN
+                <foreach collection="vehModelIds" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+
+            <!--动力方式-->
+            <if test="powerMode != null">
+                and vm.power_mode=#{powerMode}
+            </if>
+
+            <!--排除文档类型下已有的车辆型号-->
+            <if test="documentType != null and documentType != ''">
+                and vm.id not in
+                (select veh_model_id
+                from fault_incident_handling fih
+                where fih.document_type = #{documentType})
+            </if>
+
+            <!--排除所选文档类型下文档上报成功车型-->
+            <if test="success != null and success != ''">
+                and vm.id not in
+                (select veh_model_id
+                from fault_incident_handling fih
+                where fih.document_type = #{success}
+                and report_state = 4)
+            </if>
+        </where>
+        order by create_time desc
+
+    </select>
+
+    <!-- 吉利定制TODO开头为默认车型 -->
+    <select id="listByLikeName" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_veh_model vm
+        <where>
+            vm.veh_model_name like concat(#{vehModelName},'%')
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <!-- 查询车辆所属车型信息 -->
+    <select id="getByVehicleId" resultMap="tailResults" parameterType="java.util.HashMap">
+        SELECT
+        <include refid="moreColumns"/>
+        FROM
+        sys_veh_model vm
+        LEFT JOIN sys_vehicle sv ON vm.id = sv.veh_model_id
+        <where>
+            sv.id = #{vehicleId}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 车型列表+详情查询用于车型事故处理预案 -->
+    <select id="findVehModelAndDetail" resultType="com.bitnei.cloud.fault.domain.IncidentHandling" parameterType="java.util.HashMap">
+        select
+        vm.id as veh_model_id,
+        vm.config_name,
+        svn.name as notice_name,
+        fih.report_state,
+        fih.platform
+        from
+        sys_veh_model vm
+        left join sys_veh_notice svn on svn.id = vm.notice_id
+        left join fault_incident_handling fih on fih.veh_model_id = vm.id
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </select>
+</mapper>

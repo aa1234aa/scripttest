@@ -1,0 +1,12 @@
+spring:
+  kafka:
+    bootstrap-servers: kafka01.bitnei.cn:9092,kafka02.bitnei.cn:9092,kafka03.bitnei.cn:9092
+    producer:
+      retries: 3
+
+sender:
+  vin-file-path: F:/vin.txt
+  topic: us_packet_32960
+  type: geely
+
+

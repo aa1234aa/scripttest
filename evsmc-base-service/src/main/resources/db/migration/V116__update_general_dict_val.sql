@@ -1,0 +1,1 @@
+UPDATE sys_dict SET `id`='bdfa4893169e4902b1bb1bfb38f93cbf', `name`='通用报警', `val`='0', `type`='SUBORDINATE_PARTS', `note`='通用报警', `group_name`='', `order_num`='0', `create_time`='2019-07-02 16:46:58', `create_by`='xuzhijie', `update_time`=NULL, `update_by`=NULL WHERE (`id`='bdfa4893169e4902b1bb1bfb38f93cbf');

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.fault.dao.ParameterManageMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.fault.domain.ParameterManage" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    fpm.id  ,fpm.dc_rule_type_id ,fpm.dc_data_item_id ,fpm.code ,fpm.remark ,fpm.create_by ,fpm.create_time ,fpm.update_by ,fpm.update_time
+    </sql>
+    <sql id="moreColumns">
+    fpm.id  ,fpm.dc_rule_type_id ,fpm.dc_data_item_id ,fpm.code ,fpm.remark ,fpm.create_by ,fpm.create_time ,fpm.update_by ,fpm.update_time
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.fault.domain.ParameterManage"  parameterType="java.lang.String">
+        select
+        <include refid="moreColumns"/>
+        from
+        fault_parameter_manage fpm
+        where
+            fpm.id=#{id}
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="com.bitnei.cloud.fault.domain.ParameterManage">
+        insert into
+        fault_parameter_manage (id,dc_rule_type_id,dc_data_item_id,code,remark,create_by,create_time)
+        values
+        (#{id},#{dcRuleTypeId},#{dcDataItemId},#{code},#{remark},#{createBy},#{createTime})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="com.bitnei.cloud.fault.domain.ParameterManage">
+        update fault_parameter_manage set
+            dc_rule_type_id=#{dcRuleTypeId},
+            dc_data_item_id=#{dcDataItemId},
+            code=#{code},remark=#{remark},
+            update_by=#{updateBy},
+            update_time=#{updateTime}
+        where
+            id = #{id}
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.lang.String">
+        delete from
+        fault_parameter_manage
+        where
+            id = #{id}
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>, it.unit, it.seq_no
+        from
+        fault_parameter_manage fpm, dc_data_item it
+        <where>
+            fpm.dc_data_item_id = it.id
+            <if test="dcDataItemName != null and dcDataItemName !=''">
+                and it.`name` like "%"#{dcDataItemName}"%"
+            </if>
+            <if test="dcRuleTypeId != null and dcRuleTypeId !=''">
+                and fpm.dc_rule_type_id = #{dcRuleTypeId}
+            </if>
+        </where>
+        order by fpm.create_time desc
+    </select>
+
+    <!-- 根据协议, 数据项查询 -->
+    <select id="findByParams" resultType="com.bitnei.cloud.fault.domain.ParameterManage"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from fault_parameter_manage fpm
+        <where>
+            fpm.dc_data_item_id = #{dcDataItemId}
+            and fpm.dc_rule_type_id = #{dcRuleTypeId}
+        </where>
+    </select>
+
+    <!-- 根据参数项ID获取包含关联数据项信息 -->
+    <select id="getDataInfoById" resultType="com.bitnei.cloud.fault.domain.ParameterManage"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>, it.unit, it.seq_no, it.name as dcDataItemName
+        from
+        fault_parameter_manage fpm, dc_data_item it
+        <where>
+            fpm.dc_data_item_id = it.id
+            and fpm.id = #{id}
+        </where>
+    </select>
+
+</mapper>

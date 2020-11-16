@@ -1,0 +1,79 @@
+server:
+  port: 88
+  servlet:
+    context-path: /api
+spring:
+  application:
+    name: evsmc-base-service
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: dev
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    placeholder-replacement: false
+  mvc:
+    async:
+      request-timeout: 3600000
+app:
+  id: ${spring.application.name}
+  mode: dev
+shell:
+  auth:
+    simple:
+      user:
+        name: test
+        password: test
+
+apollo:
+  meta: http://192.168.1.107:8080
+  cacheDir: data/config
+  bootstrap:
+    namespaces: app.evsmc-base-service, security, database, mybatis, redis , cto ,compent.feign, compent.jetcache
+    enabled: true
+kafka:
+  consumers:
+    us_ctrlrsp:
+      -com.bitnei.cloud.compent.kafka.handler.QueryResponseHandler
+      -com.bitnei.cloud.compent.kafka.handler.SetupResponseHandler
+      -com.bitnei.cloud.compent.kafka.handler.ControlResponseHandler
+      -com.bitnei.cloud.compent.kafka.handler.UpdateCanSendResultHandler
+      -com.bitnei.cloud.compent.kafka.handler.TerminalLockResponseHandler
+      -com.bitnei.cloud.compent.kafka.handler.UpdateStatusUploadJinLongHandler
+    alarm_topic:
+      -com.bitnei.cloud.fault.kafka.FaultAlarmVehicleHandler
+    notice_topic:
+      -com.bitnei.cloud.compent.kafka.handler.AbnormalVehicleHandler
+    SYNC_VEHICLE_REG:
+      -com.bitnei.cloud.compent.kafka.handler.PlatformEventHandler
+      -com.bitnei.cloud.compent.kafka.handler.VehicleLoginKafkaHandler
+      -com.bitnei.cloud.compent.kafka.handler.ForwordVehicleStatusHandler
+    FAULT_PARAMETER_ALARM_TOPIC:
+      -com.bitnei.cloud.fault.kafka.FaultParameterAlarmHandler
+    FAULT_CODE_ALARM_TOPIC:
+      -com.bitnei.cloud.fault.kafka.FaultCodeAlarmtHandler
+    FAULT_FENCE_ALARM_TOPIC:
+      -com.bitnei.cloud.fault.kafka.FaultFenceAlarmHandler
+  excutor:
+    corePoolSize: 10
+    keepAliveSeconds: 30000
+    maxPoolSize: 20
+    queueCapacity: 2000
+  switch: false
+
+sharding:
+  table: fault_alarm_info_history|faultBeginTime,
+    sys_veh_not_can|lastUploadTime,
+    sys_veh_not_position|lastUploadTime,
+    sys_soc_vehicle_log|startTime,
+    sys_log|time,
+    veh_history_state|reportDate,
+    fault_alarm_process|faultBeginTime
+  nick: fault_alarm_info_history|faih,
+    sys_veh_not_can|vnc,
+    sys_veh_not_position|vnp,
+    sys_soc_vehicle_log|svl,
+    sys_log|log,
+    veh_history_state|hs,
+    fault_alarm_process|fap

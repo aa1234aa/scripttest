@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.PowerDeviceMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.PowerDevice" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    pd.id  ,pd.code ,pd.model_type ,pd.fuel_battery_model_id ,pd.fuel_generator_model_id ,pd.sequence_number ,pd.install_position ,pd.produce_date ,pd.invoice_no ,pd.create_time ,pd.create_by ,pd.update_time ,pd.update_by
+    </sql>
+    <sql id="moreColumns">
+    pd.id  ,pd.code ,pd.model_type ,pd.fuel_battery_model_id ,pd.fuel_generator_model_id ,pd.sequence_number ,pd.install_position ,pd.produce_date ,pd.invoice_no ,pd.create_time ,pd.create_by ,pd.update_time ,pd.update_by
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.PowerDevice"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_power_device pd
+        <where>
+            pd.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据modelId计算 -->
+    <select id="findByBatteryModelIdCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        SELECT COUNT(pd.id) FROM sys_power_device pd
+        WHERE pd.fuel_battery_model_id = #{batteryModelId}
+    </select>
+
+    <!-- 根据modelId计算 -->
+    <select id="findByGeneratorModelIdCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        SELECT COUNT(pd.id) FROM sys_power_device pd
+        WHERE pd.fuel_generator_model_id = #{generatorModelId}
+    </select>
+
+     <!-- 根据发电装置编码查询 -->
+    <select id="findByCode" resultType="com.bitnei.cloud.sys.domain.PowerDevice"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_power_device pd
+        <where>
+            pd.code=#{code}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_power_device (id,code,model_type,fuel_battery_model_id,fuel_generator_model_id,sequence_number,install_position,produce_date,invoice_no,create_time,create_by)
+        values
+        (#{id},#{code},#{modelType},#{fuelBatteryModelId},#{fuelGeneratorModelId},#{sequenceNumber},#{installPosition},#{produceDate},#{invoiceNo},#{createTime},#{createBy})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_power_device set
+        id=id,code=#{code},model_type=#{modelType},fuel_battery_model_id=#{fuelBatteryModelId},fuel_generator_model_id=#{fuelGeneratorModelId},sequence_number=#{sequenceNumber},install_position=#{installPosition},produce_date=#{produceDate},invoice_no=#{invoiceNo},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            <choose>
+                <when test="id != null">
+                    id = #{id}
+                </when>
+                <otherwise>
+                    code = #{code}
+                </otherwise>
+            </choose>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        sys_power_device
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>, fsm.peak_power as fs_peak_power, fgm.peak_power as fg_peak_power
+        from
+        sys_power_device pd
+        left join sys_fuel_system_model fsm on fsm.id = pd.fuel_battery_model_id
+        left join sys_fuel_generator_model fgm on fgm.id = pd.fuel_generator_model_id
+        <where>
+            1=1
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="code != null">
+                and pd.code like "%"#{code}"%"
+            </if>
+            <if test="invoiceNo != null">
+                and pd.invoice_no like "%"#{invoiceNo}"%"
+            </if>
+            <if test="modelType != null">
+                and pd.model_type = #{modelType}
+            </if>
+            <if test="installPosition != null">
+                and pd.install_position = #{installPosition}
+            </if>
+            <if test="prodUnitId != null">
+                and (fsm.prod_unit_id=#{prodUnitId} or fgm.prod_unit_id=#{prodUnitId})
+            </if>
+            <if test="controllerProdUnitId != null">
+                and (fsm.controller_prod_unit_id=#{controllerProdUnitId} or fgm.controller_prod_unit_id=#{controllerProdUnitId})
+            </if>
+            <if test="modelId != null">
+                and (fsm.id=#{modelId} or fgm.id=#{modelId})
+            </if>
+            <if test="controllerModel != null">
+                and (fsm.controller_model=#{controllerModel} or fgm.controller_model=#{controllerModel})
+            </if>
+            <if test="importSearchValues != null and importSearchValues.size()>0">
+                and pd.code in
+                <foreach collection="importSearchValues" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        order by pd.create_time desc
+
+    </select>
+
+
+    <!-- 查询发电装置型号 -->
+    <select id="findDeviceModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select fgm.id as id, fgm.`name` as model_name, '1' as model_type, fgm.controller_model
+        , fgm.peak_power, fgm.prod_unit_id, fgm.controller_prod_unit_id
+        from sys_fuel_generator_model fgm
+        <where>
+            1 = 1
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="modelName != null">
+                and fgm.`name` like "%"#{modelName}"%"
+            </if>
+        </where>
+        union
+        select fsm.id as id, fsm.`name` as model_name, '2' as model_type, fsm.controller_model
+        , fsm.peak_power, fsm.prod_unit_id, fsm.controller_prod_unit_id
+        from sys_fuel_system_model fsm
+        <where>
+            1 = 1
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="modelName != null">
+                and fsm.`name` like "%"#{modelName}"%"
+            </if>
+        </where>
+
+    </select>
+</mapper>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.VehicleDriveDeviceLkMapper">
+
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.VehicleDriveDeviceLk" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="moreColumns">
+        svedlk.id ,svedlk.create_time ,svedlk.create_by ,svedlk.vehicle_id ,svedlk.drvie_device_id
+    </sql>
+
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.VehicleDriveDeviceLk"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_vehicle_drive_device_lk svedlk
+        where  svedlk.id=#{id}
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_vehicle_drive_device_lk (id,create_time,create_by,vehicle_id,drvie_device_id)
+        values
+        (#{id},#{createTime},#{createBy},#{vehicleId},#{drvieDeviceId})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_vehicle_drive_device_lk set
+        id=id,vehicle_id=#{vehicleId},drvie_device_id=#{drvieDeviceId}
+        where id = #{id}
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        sys_vehicle_drive_device_lk
+        <where>
+            <if test="id != null">
+                AND id = #{id}
+            </if>
+            <if test="vehicleId != null">
+                AND vehicle_id = #{vehicleId}
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        dmm.`name` drive_motor_model_name, dmm.rated_power, dmm.prod_unit_id,
+        sdd.code as drvie_device_code, em.name engine_model_name, em.fuel_form,
+        sdd.drive_model_id, sdd.install_position , sdd.sequence_number, sdd.invoice_no, sdd.engine_model_id,
+        <include refid="moreColumns"/>
+        from
+          sys_vehicle_drive_device_lk svedlk
+        left join sys_drive_device sdd on sdd.id = svedlk.drvie_device_id
+        LEFT JOIN sys_drive_motor_model dmm ON dmm.id = sdd.drive_model_id
+        left join sys_engine_model em on em.id = sdd.engine_model_id
+        <where>
+            <if test="vehicleId != null and vehicleId != ''">
+              AND svedlk.vehicle_id = #{vehicleId}
+            </if>
+            <if test="modelType != null">
+              AND sdd.model_type = #{modelType}
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据装置信息查询车辆数据 -->
+    <select id="findByDeviceId" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+          <include refid="moreColumns"/>
+        from
+        sys_vehicle_drive_device_lk svedlk
+        left join sys_vehicle sv on sv.id = svedlk.vehicle_id
+        where sv.is_delete = 0
+        and svedlk.drvie_device_id = #{deviceId}
+    </select>
+
+    <!-- 根据deviceId计算 -->
+    <select id="findByDeviceIdCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        select count(svedlk.id) from sys_vehicle_drive_device_lk svedlk
+        left join sys_vehicle sv on sv.id = svedlk.vehicle_id
+        where sv.is_delete = 0
+        and svedlk.drvie_device_id = #{deviceId}
+    </select>
+
+    <!-- 车辆补贴列表 驱动装置 -->
+    <select id="pagerModelByVehParams" resultMap="tailResults" parameterType="java.util.HashMap">
+        select svedlk.vehicle_id,
+        group_concat(dmm.`name`) as driveMotorModelName,
+        group_concat(sdd.invoice_no) as invoiceNo,
+        group_concat(p.`name`) as prodUnitName,
+        group_concat(dmm.rated_power) as ratedPowerStr
+        from
+        sys_vehicle_drive_device_lk svedlk
+        left join sys_drive_device sdd on sdd.id = svedlk.drvie_device_id
+        LEFT JOIN sys_drive_motor_model dmm ON dmm.id = sdd.drive_model_id
+        left join sys_engine_model em on em.id = sdd.engine_model_id
+        inner join sys_vehicle sv on sv.id = svedlk.vehicle_id
+        LEFT JOIN sys_veh_model svm ON svm.id = sv.veh_model_id
+        LEFT JOIN sys_veh_notice svn ON svn.id = svm.notice_id
+        LEFT JOIN sys_veh_type svt ON svt.id = svn.veh_type_id
+        LEFT JOIN sys_vehicle_real_status svrs ON svrs.vehicle_id = sv.id
+        LEFT JOIN sys_area sa on sa.id = sv.oper_license_city_id
+        left join sys_unit p on p.id = dmm.prod_unit_id
+        <where>
+            sv.is_delete = 0 and sdd.model_type=1
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="importSearchValues != null and importSearchValues.size()>0">
+                and sv.vin in
+                <foreach collection="importSearchValues" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="id != null">
+                and sv.id = #{id}
+            </if>
+            <if test="vin != null">
+                and sv.vin like CONCAT('%',#{vin},'%')
+            </if>
+            <if test="licensePlate != null">
+                and sv.license_plate LIKE CONCAT('%',#{licensePlate},'%')
+            </if>
+            <if test="operUseFor != null">
+                and sv.oper_use_for = #{operUseFor}
+            </if>
+            <if test="vehModelId != null">
+                and sv.veh_model_id = #{vehModelId}
+            </if>
+            <if test="startDate != null">
+                and sv.sell_license_reg_date <![CDATA[ >= ]]> #{startDate}
+            </if>
+            <if test="endDate != null">
+                and sv.sell_license_reg_date <![CDATA[ <= ]]> #{endDate}
+            </if>
+            <if test="manuUnitId != null">
+                and sv.manu_unit_id = #{manuUnitId}
+            </if>
+            <if test="operLicenseCityId != null and operLicenseCityId != ''">
+                and sa.path LIKE CONCAT('%/',#{operLicenseCityId},'/%')
+            </if>
+            <if test="subsidyApplyStatus != null">
+                and sv.subsidy_apply_status = #{subsidyApplyStatus}
+            </if>
+        </where>
+        group by sv.id desc
+    </select>
+
+</mapper>

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.DeptMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.Dept" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+        dept.*
+    </sql>
+
+    <sql id="moreColumns">
+        dept.*
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.Dept" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_dept dept
+        <where>
+            dept.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_dept (id,name,unit_id,parent_id,path,note,create_time,create_by)
+        values
+        (#{id},#{name},#{unitId},#{parentId},#{path},#{note},#{createTime},#{createBy})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_dept set
+        id=id,name=#{name},unit_id=#{unitId},parent_id=#{parentId},path=#{path}, note=#{note},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="java.util.HashMap">
+        delete from
+        sys_dept
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>,
+        (SELECT GROUP_CONCAT(ut.`name`) FROM sys_unit_type ut, sys_unit_type_lk lk
+          WHERE  ut.id = lk.unit_type_id AND lk.unit_id = un.id) AS unitTypeNames,
+        un.organization_code, un.contactor_name, un.contactor_phone
+        from
+        sys_dept dept
+        LEFT JOIN sys_unit un ON dept.unit_id=un.id
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            and dept.id != '0'
+            <if test="id != null and id != ''">
+                AND dept.id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                AND dept.name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="nameEq != null and nameEq != ''">
+                AND dept.name = #{nameEq}
+            </if>
+            <if test="unitId != null and unitId != ''">
+                AND dept.unit_id = #{unitId}
+            </if>
+            <if test="unitName != null and unitName != ''">
+                AND un.name LIKE CONCAT('%',#{unitName},'%')
+            </if>
+            <if test="parentId != null and parentId != ''">
+                AND dept.parent_id = #{parentId}
+            </if>
+            <if test="note != null and note != ''">
+                AND un.note LIKE CONCAT('%',#{note},'%')
+            </if>
+            <if test="createBy != null and createBy != ''">
+                AND un.create_by = #{createBy}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                AND un.update_by = #{updateBy}
+            </if>
+            <if test="excludeId != null">
+                and dept.path not like CONCAT('%/',#{excludeId},'/%')
+            </if>
+        </where>
+        ORDER BY dept.create_time DESC
+    </select>
+
+    <!-- 查询树形列表 -->
+    <select id="findTreeList" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_dept dept
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="name != null and name != ''">
+                AND dept.name LIKE CONCAT('%',#{name},'%')
+            </if>
+            <if test="nameEq != null and nameEq != ''">
+                AND dept.name = #{nameEq}
+            </if>
+            <if test="unitId != null and unitId != ''">
+                AND dept.unit_id = #{unitId}
+            </if>
+            <if test="parentId != null and parentId != ''">
+                AND dept.parent_id = #{parentId}
+            </if>
+            or dept.id='0'
+        </where>
+        ORDER BY dept.id
+    </select>
+
+    <!--查询联系人单位下组织架构-->
+    <select id="queryDeptsByOpid" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        FROM
+        sys_owner_people op
+        LEFT JOIN sys_unit unit ON op.unit_id = unit.id
+        LEFT JOIN sys_dept dept ON unit.id = dept.unit_id
+            <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            AND op.id = #{opId}
+        </where>
+    </select>
+
+    <!--根据单位名称和简称查询组织架构-->
+    <select id="queryDeptsByUnitName" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        FROM
+        sys_dept dept
+        LEFT JOIN sys_unit unit ON dept.unit_id=unit.id
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="unitName != null and unitName != ''">
+                AND (unit.name LIKE CONCAT('%',#{unitName},'%')
+                OR unit.nick_name LIKE CONCAT('%',#{unitName},'%'))
+            </if>
+        </where>
+    </select>
+
+    <!--统计部门及子节点用户数量-->
+    <select id="statDeptUserCount" resultType="java.lang.Integer"  parameterType="java.util.HashMap">
+        SELECT count(distinct b.user_id) FROM sys_dept a,sys_user_dept_lk b
+        where a.id = b.dept_id and a.path LIKE CONCAT('%/',#{deptId},'/%')
+    </select>
+
+    <!--查询子节点-->
+    <select id="queryChildren" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        FROM
+        sys_dept dept
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            AND dept.parent_id = #{deptId}
+        </where>
+    </select>
+
+    <!-- 修改父节点的时候把改父节点下的所有子节点的path进行修改 -->
+    <update id="updateChildPath"  parameterType="java.util.HashMap">
+        update
+        sys_dept dept
+        set
+        path = replace(path,#{oldpath},#{newpath})
+        <where>
+            dept.path like "%"#{oldpath}"%"
+        </where>
+
+    </update>
+
+</mapper>

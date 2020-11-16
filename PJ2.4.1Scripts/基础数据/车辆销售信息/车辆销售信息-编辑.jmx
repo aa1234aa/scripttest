@@ -1,0 +1,3142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="4.0" jmeter="4.0 r1823414">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="车辆销售信息-编辑" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">true</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="用户定义的变量" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="VariableName" elementType="Argument">
+            <stringProp name="Argument.name">VariableName</stringProp>
+            <stringProp name="Argument.value">evsmc2</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath"></stringProp>
+    </TestPlan>
+    <hashTree>
+      <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="PreProcessor_InitData" enabled="true">
+        <boolProp name="resetInterpreter">false</boolProp>
+        <stringProp name="parameters"></stringProp>
+        <stringProp name="filename"></stringProp>
+        <stringProp name="script">String window = &quot;E:\\AutoFiles\\PJ2.3Scripts&quot;;
+String linux = &quot;/var/lib/jenkins/workspace/InterfaceAutomation2.3/PJ2.3Scripts&quot;;
+String rootPath = PathUtils.getProjectRootPath(window, linux);
+vars.put(&quot;PROJECT_PATH&quot;, rootPath);
+
+Properties prop = InitProperties.init(rootPath + &quot;/Resources/Conf/basicdata.properties&quot;);
+
+vars.put(&quot;SERVER_IP&quot;, prop.get(&quot;server_ip&quot;));
+vars.put(&quot;SERVER_PORT&quot;, prop.get(&quot;server_port&quot;));
+vars.put(&quot;CSRF&quot;, prop.get(&quot;csrf&quot;));
+vars.put(&quot;R_SESS&quot;, prop.get(&quot;r_sess&quot;));
+vars.put(&quot;fileDownload&quot;, prop.get(&quot;file_download&quot;));
+
+vars.put(&quot;MYSQL_SERVER&quot;, prop.get(&quot;mysql_server&quot;));
+vars.put(&quot;MYSQL_DB&quot;, prop.get(&quot;mysql_db&quot;));
+vars.put(&quot;MYSQL_USERNAME&quot;, prop.get(&quot;mysql_username&quot;));
+vars.put(&quot;MYSQL_PASSWORD&quot;, prop.get(&quot;mysql_password&quot;));</stringProp>
+      </BeanShellPreProcessor>
+      <hashTree/>
+      <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP信息头管理器" enabled="true">
+        <collectionProp name="HeaderManager.headers">
+          <elementProp name="" elementType="Header">
+            <stringProp name="Header.name">Accept</stringProp>
+            <stringProp name="Header.value">application/json</stringProp>
+          </elementProp>
+          <elementProp name="" elementType="Header">
+            <stringProp name="Header.name">Accept-Encoding</stringProp>
+            <stringProp name="Header.value">gzip, deflate</stringProp>
+          </elementProp>
+          <elementProp name="" elementType="Header">
+            <stringProp name="Header.name">Accept-Language</stringProp>
+            <stringProp name="Header.value">zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3</stringProp>
+          </elementProp>
+          <elementProp name="" elementType="Header">
+            <stringProp name="Header.name">User-Agent</stringProp>
+            <stringProp name="Header.value">Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0</stringProp>
+          </elementProp>
+          <elementProp name="" elementType="Header">
+            <stringProp name="Header.name">Content-Type</stringProp>
+            <stringProp name="Header.value">application/json;charset=UTF-8</stringProp>
+          </elementProp>
+        </collectionProp>
+      </HeaderManager>
+      <hashTree/>
+      <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="Cookie 管理器" enabled="true">
+        <collectionProp name="CookieManager.cookies">
+          <elementProp name="CSRF" elementType="Cookie" testname="CSRF">
+            <stringProp name="Cookie.value">${CSRF}</stringProp>
+            <stringProp name="Cookie.domain">${SERVER_IP}</stringProp>
+            <stringProp name="Cookie.path">/</stringProp>
+            <boolProp name="Cookie.secure">false</boolProp>
+            <longProp name="Cookie.expires">0</longProp>
+            <boolProp name="Cookie.path_specified">true</boolProp>
+            <boolProp name="Cookie.domain_specified">true</boolProp>
+          </elementProp>
+          <elementProp name="R_SESS" elementType="Cookie" testname="R_SESS">
+            <stringProp name="Cookie.value">${R_SESS}</stringProp>
+            <stringProp name="Cookie.domain">${SERVER_IP}</stringProp>
+            <stringProp name="Cookie.path">/</stringProp>
+            <boolProp name="Cookie.secure">false</boolProp>
+            <longProp name="Cookie.expires">0</longProp>
+            <boolProp name="Cookie.path_specified">true</boolProp>
+            <boolProp name="Cookie.domain_specified">true</boolProp>
+          </elementProp>
+          <elementProp name="fileDownload" elementType="Cookie" testname="fileDownload">
+            <stringProp name="Cookie.value">true</stringProp>
+            <stringProp name="Cookie.domain">${SERVER_IP}</stringProp>
+            <stringProp name="Cookie.path">/</stringProp>
+            <boolProp name="Cookie.secure">false</boolProp>
+            <longProp name="Cookie.expires">0</longProp>
+            <boolProp name="Cookie.path_specified">true</boolProp>
+            <boolProp name="Cookie.domain_specified">true</boolProp>
+          </elementProp>
+        </collectionProp>
+        <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+      </CookieManager>
+      <hashTree/>
+      <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP请求默认值" enabled="true">
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="用户定义的变量" enabled="true">
+          <collectionProp name="Arguments.arguments"/>
+        </elementProp>
+        <stringProp name="HTTPSampler.domain">${SERVER_IP}</stringProp>
+        <stringProp name="HTTPSampler.port">${SERVER_PORT}</stringProp>
+        <stringProp name="HTTPSampler.protocol"></stringProp>
+        <stringProp name="HTTPSampler.contentEncoding">utf-8</stringProp>
+        <stringProp name="HTTPSampler.path"></stringProp>
+        <stringProp name="HTTPSampler.concurrentPool">4</stringProp>
+        <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+        <stringProp name="HTTPSampler.response_timeout"></stringProp>
+      </ConfigTestElement>
+      <hashTree/>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="1.编辑-成功编辑" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="循环控制器" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <longProp name="ThreadGroup.start_time">1512550113000</longProp>
+        <longProp name="ThreadGroup.end_time">1512550113000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random Variable" enabled="true">
+          <stringProp name="maximumValue">99999999</stringProp>
+          <stringProp name="minimumValue">10000000</stringProp>
+          <stringProp name="outputFormat"></stringProp>
+          <boolProp name="perThread">false</boolProp>
+          <stringProp name="randomSeed"></stringProp>
+          <stringProp name="variableName">Random</stringProp>
+        </RandomVariableConfig>
+        <hashTree/>
+        <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random Variable" enabled="true">
+          <stringProp name="maximumValue">99999</stringProp>
+          <stringProp name="minimumValue">10000</stringProp>
+          <stringProp name="outputFormat"></stringProp>
+          <boolProp name="perThread">false</boolProp>
+          <stringProp name="randomSeed"></stringProp>
+          <stringProp name="variableName">Random1</stringProp>
+        </RandomVariableConfig>
+        <hashTree/>
+        <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random2" enabled="true">
+          <stringProp name="maximumValue">99999999</stringProp>
+          <stringProp name="minimumValue">10000000</stringProp>
+          <stringProp name="outputFormat"></stringProp>
+          <boolProp name="perThread">false</boolProp>
+          <stringProp name="randomSeed"></stringProp>
+          <stringProp name="variableName">Random2</stringProp>
+        </RandomVariableConfig>
+        <hashTree/>
+        <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="参数生成器" enabled="true">
+          <stringProp name="BeanShellSampler.query">import com.bitnei.util.*;
+
+
+
+          String cardNo=RandomValue.getCardNo(); //身份证号
+		vars.put(&quot;cardNo&quot;,cardNo);
+		
+		String  cardAddress=RandomValue.getRoad(); //地址
+		vars.put(&quot;cardAddress&quot;,cardAddress);
+		
+		String termModelName=RandomValue.getTermModelName(); //终端型号名
+		vars.put(&quot;termModelName&quot;,termModelName);
+		
+		String brandName=RandomValue.getBrandName();//品牌名
+		vars.put(&quot;brandName&quot;,brandName);
+		
+		String vin=RandomValue.getVin(); //vin码
+		vars.put(&quot;vin&quot;,vin);
+		
+		String interNo=RandomValue.getInterNo(); //内部编号
+		vars.put(&quot;interNo&quot;,interNo);
+		
+		String chinesename=RandomValue.getChineseName(); //中文姓名
+		vars.put(&quot;chinesename&quot;,chinesename);
+		
+		String email=RandomValue.getEmail(5,10); //邮箱
+		vars.put(&quot;email&quot;,email);
+		
+		String tel=RandomValue.getTel();//手机号码
+		vars.put(&quot;tel&quot;,tel);
+		
+		String iccid=RandomValue.getIccid(); //iccid
+		vars.put(&quot;iccid&quot;,iccid);
+		
+		String serialNumber=RandomValue.getSerialNum();//终端编号
+		vars.put(&quot;serialNumber&quot;,serialNumber);
+		
+		String imei=RandomValue.getImei(); //imei
+		vars.put(&quot;imei&quot;,imei);
+		
+	     String uuid=RandomValue.getUUID();//uuid
+	   	vars.put(&quot;uuid&quot;,uuid);
+	     </stringProp>
+          <stringProp name="BeanShellSampler.filename"></stringProp>
+          <stringProp name="BeanShellSampler.parameters"></stringProp>
+          <boolProp name="BeanShellSampler.resetInterpreter">false</boolProp>
+        </BeanShellSampler>
+        <hashTree/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="全局新增供应商" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局新增汽车数据-新增供应商" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;name&quot;:&quot;北理供应商${Random}&quot;,&quot;nickName&quot;:&quot;供应商${Random1}&quot;,&quot;unitTypeNames&quot;:&quot;运营单位&quot;,&quot;coordinate&quot;:&quot;113.497509,22.226091&quot;,&quot;address&quot;:&quot;广东省珠海市香洲区南屏镇南泰明湾南泰明湾花园2期&quot;,&quot;contactorName&quot;:&quot;黄大大&quot;,&quot;contactorPhone&quot;:159${Random},&quot;contactorAddress&quot;:&quot;珠海市香洲区${Random}&quot;,&quot;parentName&quot;:&quot;&quot;,&quot;parentId&quot;:0,&quot;organizationCode&quot;:&quot;RRXX112200${Random}&quot;,&quot;licenceImgId&quot;:&quot;&quot;,&quot;certImgId&quot;:&quot;&quot;,&quot;unitTypeIds&quot;:&quot;${id0}&quot;,&quot;lng&quot;:&quot;113.546261&quot;,&quot;lat&quot;:&quot;22.249608&quot;,&quot;telephone&quot;:&quot;15992667873&quot;,&quot;bussinessLines&quot;:&quot;业务${Random1}&quot;,&quot;brands&quot;:&quot;品牌${Random1}&quot;}&#xd;
+&#xd;
+</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/unit</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="798119933">新增成功</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="beanshell查询供应商的id" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_unit_type WHERE NAME=&apos;供应商&apos; &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;id0&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPreProcessor>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="beanshell查询新增供应商的id" enabled="true">
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_unit where name=&apos;北理供应商${Random}&apos; ORDER BY create_time DESC LIMIT 1 &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;unit_id0&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="全局新增运营单位" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局新增汽车数据-新增运营单位" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;name&quot;:&quot;北理运营单位${Random}&quot;,&quot;nickName&quot;:&quot;运营${Random1}&quot;,&quot;unitTypeNames&quot;:&quot;运营单位&quot;,&quot;coordinate&quot;:&quot;113.497509,22.226091&quot;,&quot;address&quot;:&quot;广东省珠海市香洲区南屏镇南泰明湾南泰明湾花园2期&quot;,&quot;contactorName&quot;:&quot;黄大大&quot;,&quot;contactorPhone&quot;:159${Random},&quot;contactorAddress&quot;:&quot;珠海市香洲区${Random}&quot;,&quot;parentName&quot;:&quot;&quot;,&quot;parentId&quot;:0,&quot;organizationCode&quot;:&quot;RRXX112233${Random}&quot;,&quot;licenceImgId&quot;:&quot;&quot;,&quot;certImgId&quot;:&quot;&quot;,&quot;unitTypeIds&quot;:&quot;${id}&quot;,&quot;lng&quot;:&quot;113.546261&quot;,&quot;lat&quot;:&quot;22.249608&quot;,&quot;telephone&quot;:&quot;15992667873&quot;,&quot;bussinessLines&quot;:&quot;业务${Random1}&quot;,&quot;brands&quot;:&quot;品牌${Random1}&quot;}&#xd;
+&#xd;
+</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/unit</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="798119933">新增成功</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="beanshell查询运营单位的id" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_unit_type WHERE NAME=&apos;运营单位&apos; &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;id&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPreProcessor>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="beanshell查询运营单位的id" enabled="true">
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_unit where name=&apos;北理运营单位${Random}&apos; ORDER BY create_time DESC LIMIT 1&quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;unit_id&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="全局新增经销商" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局新增汽车数据-新增经销商" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;name&quot;:&quot;北理经销商${Random}&quot;,&quot;nickName&quot;:&quot;经销商${Random1}&quot;,&quot;unitTypeNames&quot;:&quot;车辆经销商&quot;,&quot;coordinate&quot;:&quot;113.541305,22.365809&quot;,&quot;address&quot;:&quot;广东省珠海市香洲区唐家湾镇至美路北京理工大学珠海学院&quot;,&quot;contactorName&quot;:&quot;黄大大&quot;,&quot;contactorPhone&quot;:159${Random},&quot;contactorAddress&quot;:&quot;珠海市香洲区${Random}&quot;,&quot;parentName&quot;:&quot;&quot;,&quot;parentId&quot;:0,&quot;organizationCode&quot;:&quot;RRXX444433${Random}&quot;,&quot;licenceImgId&quot;:&quot;&quot;,&quot;certImgId&quot;:&quot;&quot;,&quot;unitTypeIds&quot;:&quot;${id1}&quot;,&quot;lng&quot;:&quot;113.512101&quot;,&quot;lat&quot;:&quot;22.223231&quot;,&quot;telephone&quot;:&quot;15992667873&quot;,&quot;bussinessLines&quot;:&quot;测试业务&quot;,&quot;brands&quot;:&quot;测试品牌&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/unit</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="798119933">新增成功</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="beanshell查询经销商" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_unit_type WHERE NAME=&apos;经销商&apos;&quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;id1&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPreProcessor>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="beanshell查询新增单位的id" enabled="true">
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_unit where name=&apos;北理经销商${Random}&apos; ORDER BY create_time DESC LIMIT 1&quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;unit_id1&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局新增汽车数据-新增单位联系人" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;ownerName&quot;:&quot;经销商${Random1}&quot;,&quot;unitName&quot;:&quot;北理经销商${Random}&quot;,&quot;jobPost&quot;:&quot;经销商&quot;,&quot;jobNumber&quot;:&quot;${Random1}&quot;,&quot;telPhone&quot;:159${Random},&quot;address&quot;:&quot;珠海香洲${Random}&quot;,&quot;email&quot;:&quot;159${Random}@qq.com&quot;,&quot;frontCardImgId&quot;:&quot;&quot;,&quot;backCardImgId&quot;:&quot;&quot;,&quot;faceCardImgId&quot;:&quot;&quot;,&quot;unitId&quot;:&quot;${unit_id}&quot;,&quot;sex&quot;:1,&quot;cardType&quot;:1,&quot;cardNo&quot;:&quot;4418821985${Random}&quot;,&quot;cardAddress&quot;:&quot;珠海香洲区${Random}&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/ownerPeople</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="798119933">新增成功</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="beanshell查询新增单位联系人的id" enabled="true">
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_owner_people where owner_name=&apos;经销商${Random1}&apos; ORDER BY create_time DESC LIMIT 1&quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;owner_id&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="全局新增购车单位" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局新增汽车数据-新增购车单位" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;name&quot;:&quot;北理购车单位${Random}&quot;,&quot;nickName&quot;:&quot;购车${Random1}&quot;,&quot;unitTypeNames&quot;:&quot;购车单位&quot;,&quot;coordinate&quot;:&quot;113.541305,22.365809&quot;,&quot;address&quot;:&quot;广东省珠海市香洲区唐家湾镇至美路北京理工大学珠海学院&quot;,&quot;contactorName&quot;:&quot;黄大大&quot;,&quot;contactorPhone&quot;:159${Random},&quot;contactorAddress&quot;:&quot;珠海市香洲区${Random}&quot;,&quot;parentName&quot;:&quot;&quot;,&quot;parentId&quot;:0,&quot;organizationCode&quot;:&quot;RRXX445533${Random}&quot;,&quot;licenceImgId&quot;:&quot;&quot;,&quot;certImgId&quot;:&quot;&quot;,&quot;unitTypeIds&quot;:&quot;${id2}&quot;,&quot;lng&quot;:&quot;113.512101&quot;,&quot;lat&quot;:&quot;22.223231&quot;,&quot;telephone&quot;:&quot;15992667873&quot;,&quot;bussinessLines&quot;:&quot;测试业务&quot;,&quot;brands&quot;:&quot;测试品牌&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/unit</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="798119933">新增成功</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="beanshell查询购车单位的id" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_unit_type WHERE NAME=&apos;购车单位&apos; &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;id2&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPreProcessor>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="beanshell查询新增购车单位的id" enabled="true">
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_unit where name=&apos;北理购车单位${Random}&apos; ORDER BY create_time DESC LIMIT 1 &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;unit_id2&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="全局新增车辆终端型号" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局新增汽车数据-新增车载终端型号" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;termModelName&quot;:&quot;${termModelName}&quot;,&quot;termCategory&quot;:2,&quot;brandName&quot;:&quot;${brandName}&quot;,&quot;workingVoltage&quot;:220,&quot;powerWaste&quot;:220,&quot;unitName&quot;:&quot;北理运营单位${Random}&quot;,&quot;sleepElectricCurrent&quot;:12,&quot;firmwareVersion&quot;:&quot;1.0&quot;,&quot;builtInBatteryCapacity&quot;:21,&quot;supportEncryptionChip&quot;:0,&quot;detectionReportImgId&quot;:&quot;&quot;,&quot;termDetectionNo&quot;:&quot;${Random2}&quot;,&quot;unitId&quot;:&quot;${unit_id0}&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/termModel</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="798119933">新增成功</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="beanshell查询新增车载终端型号id" enabled="true">
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_term_model where term_model_name=&apos;${termModelName}&apos; ORDER BY create_time DESC LIMIT 1 &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;term_model_id&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="全局新增sim卡" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局新增汽车数据-新增SIM卡" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;globalSimType&quot;:2,&quot;iccid&quot;:&quot;${iccid}&quot;,&quot;msisd&quot;:&quot;${tel}&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/simManagement</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="798119933">新增成功</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="beanshell查询新增的sys_sim_management_id" enabled="true">
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_sim_management where iccid= &apos;${iccid}&apos; ORDER BY create_time DESC LIMIT 1 &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;sys_sim_management_id&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="全局新增车载终端信息" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局新增汽车数据-新增车载终端信息" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;serialNumber&quot;:&quot;${serialNumber}&quot;,&quot;termModelName&quot;:&quot;${termModelName}&quot;,&quot;supportProtocolName&quot;:&quot;GBT32960标准版&quot;,&quot;protocolVersion&quot;:&quot;3.0&quot;,&quot;iccid&quot;:&quot;${iccid}&quot;,&quot;imei&quot;:&quot;${imei}&quot;,&quot;firewareVersion&quot;:&quot;2.0&quot;,&quot;produceBatch&quot;:&quot;100&quot;,&quot;sysTermModelId&quot;:&quot;${term_model_id}&quot;,&quot;supportProtocol&quot;:&quot;${rule_id}&quot;,&quot;factoryDate&quot;:&quot;2019/05/01&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/termModelUnit</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="798119933">新增成功</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="beanshell查询通讯协议的id" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM dc_rule WHERE name=&apos;GBT32960标准版&apos; &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;rule_id&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPreProcessor>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="beanshell查询新增的车辆终端id" enabled="true">
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_term_model_unit where serial_number=&apos;${serialNumber}&apos; ORDER BY create_time DESC LIMIT 1 &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;term_id&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="全局新增汽车数据" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局新增汽车数据-新增车辆" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;stage&quot;:&quot;&quot;,&quot;vin&quot;:&quot;${vin}&quot;,&quot;interNo&quot;:&quot;${interNo}&quot;,&quot;vehModelName&quot;:&quot;默认车型&quot;,&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;colorNickName&quot;:&quot;白晶晶&quot;,&quot;serialNumber&quot;:&quot;${serialNumber}&quot;,&quot;engeryDeviceIds&quot;:&quot;&quot;,&quot;engeryDeviceNames&quot;:&quot;&quot;,&quot;driveDeviceIds&quot;:&quot;&quot;,&quot;driveDeviceCodes&quot;:&quot;&quot;,&quot;powerDeviceIds&quot;:&quot;&quot;,&quot;powerDeviceCodes&quot;:&quot;&quot;,&quot;manuUnitId&quot;:&quot;${factory_id}&quot;,&quot;manuUnitName&quot;:&quot;默认车辆制造工厂&quot;,&quot;produceBatch&quot;:&quot;1001&quot;,&quot;qualityYears&quot;:&quot;2019-05&quot;,&quot;vehCertificateNumber&quot;:&quot;${Random1}&quot;,&quot;produceDate&quot;:&quot;2019-06-01&quot;,&quot;factoryDate&quot;:&quot;2019-06-01&quot;,&quot;certificateFront&quot;:null,&quot;certificateEnd&quot;:null,&quot;stageChangeDate&quot;:&quot;&quot;,&quot;termId&quot;:&quot;${term_id}&quot;,&quot;vehModelId&quot;:&quot;${model_id}&quot;}&#xd;
+</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/vehicle</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="798119933">新增成功</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="beanshell查询车辆型号的默认型号的id" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_veh_model WHERE veh_model_name=&apos;默认车型&apos;&quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;model_id&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPreProcessor>
+            <hashTree/>
+            <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="beanshell查询默认的制造工厂的id" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_unit WHERE NAME=&apos;默认车辆制造工厂&apos; &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;factory_id&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPreProcessor>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="beanshell查询新增的汽车的id" enabled="true">
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_vehicle WHERE vin=&apos;${vin}&apos; &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;veh_id&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.1车辆销售信息-成功新增车辆销售信息" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&quot;vin&quot;:&quot;${vin}&quot;,&quot;sellDate&quot;:&quot;2019-06-01&quot;,&quot;sellPrice&quot;:15,&quot;sellForField&quot;:2,&quot;ownerId&quot;:&quot;&quot;,&quot;ownerName&quot;:&quot;&quot;,&quot;sellPriVehOwnerId&quot;:&quot;&quot;,&quot;sellPubUnitName&quot;:&quot;北理购车单位${Random}&quot;,&quot;sellPubUnitId&quot;:&quot;${unit_id2}&quot;,&quot;sell4sUnitId&quot;:&quot;${unit_id1}&quot;,&quot;sell4sUnitName&quot;:&quot;北理经销商${Random}&quot;,&quot;sellSellerId&quot;:&quot;${owner_id}&quot;,&quot;sellSellerName&quot;:&quot;经销商${Random1}&quot;,&quot;sellSecureDate&quot;:&quot;2019-06-01&quot;,&quot;sellFirstCheckDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceNo&quot;:&quot;${Random}&quot;,&quot;sellInvoiceDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceImgId&quot;:&quot;&quot;,&quot;sellLicenseNo&quot;:&quot;&quot;,&quot;sellLicenseGrantDate&quot;:&quot;&quot;,&quot;sellLicenseRegDate&quot;:&quot;&quot;,&quot;sellLicenseImgId&quot;:&quot;&quot;,&quot;sellCityName&quot;:&quot;北京市&quot;,&quot;sellCityId&quot;:&quot;110&quot;}&#xd;
+</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/sys/vehicleSell</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="798119933">新增成功</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.2车辆销售信息-点击编辑进入编辑页面" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value"></stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/sys/vehicleSells/${veh_id}</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="948638433">&quot;code&quot;:200,</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.3车辆销售信息-成功编辑（销售时间）" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&quot;vin&quot;:&quot;${vin}&quot;,&quot;sellDate&quot;:&quot;2019-06-02&quot;,&quot;sellPrice&quot;:15,&quot;sellForField&quot;:2,&quot;ownerId&quot;:&quot;&quot;,&quot;ownerName&quot;:&quot;&quot;,&quot;sellPriVehOwnerId&quot;:&quot;&quot;,&quot;sellPubUnitName&quot;:&quot;北理购车单位${Random}&quot;,&quot;sellPubUnitId&quot;:&quot;${unit_id2}&quot;,&quot;sell4sUnitId&quot;:&quot;${unit_id1}&quot;,&quot;sell4sUnitName&quot;:&quot;北理经销商${Random}&quot;,&quot;sellSellerId&quot;:&quot;${owner_id}&quot;,&quot;sellSellerName&quot;:&quot;经销商${Random1}&quot;,&quot;sellSecureDate&quot;:&quot;2019-06-01&quot;,&quot;sellFirstCheckDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceNo&quot;:&quot;${Random}&quot;,&quot;sellInvoiceDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceImgId&quot;:&quot;&quot;,&quot;sellLicenseNo&quot;:&quot;&quot;,&quot;sellLicenseGrantDate&quot;:&quot;&quot;,&quot;sellLicenseRegDate&quot;:&quot;&quot;,&quot;sellLicenseImgId&quot;:&quot;&quot;,&quot;sellCityName&quot;:&quot;北京市&quot;,&quot;sellCityId&quot;:&quot;110&quot;}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/sys/vehicleSells/${veh_id}</stringProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="810987723">更新成功</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.4车辆销售信息-成功编辑（销售时间+销售价格）" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&quot;vin&quot;:&quot;${vin}&quot;,&quot;sellDate&quot;:&quot;2019-06-02&quot;,&quot;sellPrice&quot;:25,&quot;sellForField&quot;:2,&quot;ownerId&quot;:&quot;&quot;,&quot;ownerName&quot;:&quot;&quot;,&quot;sellPriVehOwnerId&quot;:&quot;&quot;,&quot;sellPubUnitName&quot;:&quot;北理购车单位${Random}&quot;,&quot;sellPubUnitId&quot;:&quot;${unit_id2}&quot;,&quot;sell4sUnitId&quot;:&quot;${unit_id1}&quot;,&quot;sell4sUnitName&quot;:&quot;北理经销商${Random}&quot;,&quot;sellSellerId&quot;:&quot;${owner_id}&quot;,&quot;sellSellerName&quot;:&quot;经销商${Random1}&quot;,&quot;sellSecureDate&quot;:&quot;2019-06-01&quot;,&quot;sellFirstCheckDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceNo&quot;:&quot;${Random}&quot;,&quot;sellInvoiceDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceImgId&quot;:&quot;&quot;,&quot;sellLicenseNo&quot;:&quot;&quot;,&quot;sellLicenseGrantDate&quot;:&quot;&quot;,&quot;sellLicenseRegDate&quot;:&quot;&quot;,&quot;sellLicenseImgId&quot;:&quot;&quot;,&quot;sellCityName&quot;:&quot;北京市&quot;,&quot;sellCityId&quot;:&quot;110&quot;}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/sys/vehicleSells/${veh_id}</stringProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="810987723">更新成功</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.5车辆销售信息-成功编辑（销售时间+销售价格+销售城市）" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&quot;vin&quot;:&quot;${vin}&quot;,&quot;sellDate&quot;:&quot;2019-06-02&quot;,&quot;sellPrice&quot;:25,&quot;sellForField&quot;:2,&quot;ownerId&quot;:&quot;&quot;,&quot;ownerName&quot;:&quot;&quot;,&quot;sellPriVehOwnerId&quot;:&quot;&quot;,&quot;sellPubUnitName&quot;:&quot;北理购车单位${Random}&quot;,&quot;sellPubUnitId&quot;:&quot;${unit_id2}&quot;,&quot;sell4sUnitId&quot;:&quot;${unit_id1}&quot;,&quot;sell4sUnitName&quot;:&quot;北理经销商${Random}&quot;,&quot;sellSellerId&quot;:&quot;${owner_id}&quot;,&quot;sellSellerName&quot;:&quot;经销商${Random1}&quot;,&quot;sellSecureDate&quot;:&quot;2019-06-01&quot;,&quot;sellFirstCheckDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceNo&quot;:&quot;${Random}&quot;,&quot;sellInvoiceDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceImgId&quot;:&quot;&quot;,&quot;sellLicenseNo&quot;:&quot;&quot;,&quot;sellLicenseGrantDate&quot;:&quot;&quot;,&quot;sellLicenseRegDate&quot;:&quot;&quot;,&quot;sellLicenseImgId&quot;:&quot;&quot;,&quot;sellCityName&quot;:&quot;珠海市&quot;,&quot;sellCityId&quot;:&quot;110&quot;}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/sys/vehicleSells/${veh_id}</stringProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="810987723">更新成功</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.6车辆销售信息-成功编辑（销售时间+销售价格+销售城市+购车单位）" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&quot;vin&quot;:&quot;${vin}&quot;,&quot;sellDate&quot;:&quot;2019-06-02&quot;,&quot;sellPrice&quot;:15,&quot;sellForField&quot;:2,&quot;ownerId&quot;:&quot;&quot;,&quot;ownerName&quot;:&quot;&quot;,&quot;sellPriVehOwnerId&quot;:&quot;&quot;,&quot;sellPubUnitName&quot;:&quot;北理购车单位${Random}&quot;,&quot;sellPubUnitId&quot;:&quot;${unit_id2}&quot;,&quot;sell4sUnitId&quot;:&quot;${unit_id1}&quot;,&quot;sell4sUnitName&quot;:&quot;北理经销商${Random}&quot;,&quot;sellSellerId&quot;:&quot;${owner_id}&quot;,&quot;sellSellerName&quot;:&quot;经销商${Random1}&quot;,&quot;sellSecureDate&quot;:&quot;2019-06-01&quot;,&quot;sellFirstCheckDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceNo&quot;:&quot;${Random}&quot;,&quot;sellInvoiceDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceImgId&quot;:&quot;&quot;,&quot;sellLicenseNo&quot;:&quot;&quot;,&quot;sellLicenseGrantDate&quot;:&quot;&quot;,&quot;sellLicenseRegDate&quot;:&quot;&quot;,&quot;sellLicenseImgId&quot;:&quot;&quot;,&quot;sellCityName&quot;:&quot;北京市&quot;,&quot;sellCityId&quot;:&quot;110&quot;}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/sys/vehicleSells/${veh_id}</stringProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="810987723">更新成功</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.7车辆销售信息-成功编辑（销售时间+销售价格+销售城市+购车单位+经销商+销售人）" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&quot;vin&quot;:&quot;${vin}&quot;,&quot;sellDate&quot;:&quot;2019-06-02&quot;,&quot;sellPrice&quot;:15,&quot;sellForField&quot;:2,&quot;ownerId&quot;:&quot;&quot;,&quot;ownerName&quot;:&quot;&quot;,&quot;sellPriVehOwnerId&quot;:&quot;&quot;,&quot;sellPubUnitName&quot;:&quot;北理购车单位${Random}&quot;,&quot;sellPubUnitId&quot;:&quot;${unit_id2}&quot;,&quot;sell4sUnitId&quot;:&quot;${unit_id1}&quot;,&quot;sell4sUnitName&quot;:&quot;北理经销商${Random}&quot;,&quot;sellSellerId&quot;:&quot;${owner_id}&quot;,&quot;sellSellerName&quot;:&quot;经销商${Random1}&quot;,&quot;sellSecureDate&quot;:&quot;2019-06-01&quot;,&quot;sellFirstCheckDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceNo&quot;:&quot;${Random}&quot;,&quot;sellInvoiceDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceImgId&quot;:&quot;&quot;,&quot;sellLicenseNo&quot;:&quot;&quot;,&quot;sellLicenseGrantDate&quot;:&quot;&quot;,&quot;sellLicenseRegDate&quot;:&quot;&quot;,&quot;sellLicenseImgId&quot;:&quot;&quot;,&quot;sellCityName&quot;:&quot;北京市&quot;,&quot;sellCityId&quot;:&quot;110&quot;}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/sys/vehicleSells/${veh_id}</stringProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="810987723">更新成功</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.8车辆销售信息-成功编辑（保险投保日期+首次年检时间+销售发票编号+发票时间+发票）" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&quot;vin&quot;:&quot;${vin}&quot;,&quot;sellDate&quot;:&quot;2019-06-02&quot;,&quot;sellPrice&quot;:15,&quot;sellForField&quot;:2,&quot;ownerId&quot;:&quot;&quot;,&quot;ownerName&quot;:&quot;&quot;,&quot;sellPriVehOwnerId&quot;:&quot;&quot;,&quot;sellPubUnitName&quot;:&quot;北理购车单位${Random}&quot;,&quot;sellPubUnitId&quot;:&quot;${unit_id2}&quot;,&quot;sell4sUnitId&quot;:&quot;${unit_id1}&quot;,&quot;sell4sUnitName&quot;:&quot;北理经销商${Random}&quot;,&quot;sellSellerId&quot;:&quot;${owner_id}&quot;,&quot;sellSellerName&quot;:&quot;经销商${Random1}&quot;,&quot;sellSecureDate&quot;:&quot;2019-06-01&quot;,&quot;sellFirstCheckDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceNo&quot;:&quot;${Random}&quot;,&quot;sellInvoiceDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceImgId&quot;:&quot;&quot;,&quot;sellLicenseNo&quot;:&quot;&quot;,&quot;sellLicenseGrantDate&quot;:&quot;&quot;,&quot;sellLicenseRegDate&quot;:&quot;&quot;,&quot;sellLicenseImgId&quot;:&quot;&quot;,&quot;sellCityName&quot;:&quot;北京市&quot;,&quot;sellCityId&quot;:&quot;110&quot;}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/sys/vehicleSells/${veh_id}</stringProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="810987723">更新成功</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="1.9车辆销售信息-成功编辑（全部编辑）" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&quot;vin&quot;:&quot;${vin}&quot;,&quot;sellDate&quot;:&quot;2019-06-02&quot;,&quot;sellPrice&quot;:15,&quot;sellForField&quot;:2,&quot;ownerId&quot;:&quot;&quot;,&quot;ownerName&quot;:&quot;&quot;,&quot;sellPriVehOwnerId&quot;:&quot;&quot;,&quot;sellPubUnitName&quot;:&quot;北理购车单位${Random}&quot;,&quot;sellPubUnitId&quot;:&quot;${unit_id2}&quot;,&quot;sell4sUnitId&quot;:&quot;${unit_id1}&quot;,&quot;sell4sUnitName&quot;:&quot;北理经销商${Random}&quot;,&quot;sellSellerId&quot;:&quot;${owner_id}&quot;,&quot;sellSellerName&quot;:&quot;经销商${Random1}&quot;,&quot;sellSecureDate&quot;:&quot;2019-06-01&quot;,&quot;sellFirstCheckDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceNo&quot;:&quot;${Random}&quot;,&quot;sellInvoiceDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceImgId&quot;:&quot;&quot;,&quot;sellLicenseNo&quot;:&quot;&quot;,&quot;sellLicenseGrantDate&quot;:&quot;&quot;,&quot;sellLicenseRegDate&quot;:&quot;&quot;,&quot;sellLicenseImgId&quot;:&quot;&quot;,&quot;sellCityName&quot;:&quot;北京市&quot;,&quot;sellCityId&quot;:&quot;110&quot;}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/sys/vehicleSells/${veh_id}</stringProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="810987723">更新成功</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="全局删除并还原数据" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局删除并还原数据-删除新增的汽车" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value"></stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/vehicles/${veh_id}</stringProp>
+            <stringProp name="HTTPSampler.method">DELETE</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-2076543809">删除成功，共删除了1条记录</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局删除并还原数据-删除车载终端信息" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value"></stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/termModelUnits/${term_id}</stringProp>
+            <stringProp name="HTTPSampler.method">DELETE</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="-2076543809">删除成功，共删除了1条记录</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+          </ResponseAssertion>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局删除并还原数据-删除新增的sim卡" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value"></stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/simManagements/${sys_sim_management_id}</stringProp>
+            <stringProp name="HTTPSampler.method">DELETE</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-2076543809">删除成功，共删除了1条记录</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局删除并还原数据-删除车载终端型号" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value"></stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/termModels/${term_model_id}</stringProp>
+            <stringProp name="HTTPSampler.method">DELETE</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-2076543809">删除成功，共删除了1条记录</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局删除并还原数据-删除购车单位" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value"></stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/units/${unit_id2}</stringProp>
+            <stringProp name="HTTPSampler.method">DELETE</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-2076543809">删除成功，共删除了1条记录</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局删除并还原数据-删除新增的单位联系人" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value"></stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/ownerPeoples/${owner_id}</stringProp>
+            <stringProp name="HTTPSampler.method">DELETE</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-2076543809">删除成功，共删除了1条记录</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局删除并还原数据-删除经销商" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value"></stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/units/${unit_id1}</stringProp>
+            <stringProp name="HTTPSampler.method">DELETE</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-2076543809">删除成功，共删除了1条记录</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局删除并还原数据-删除运营商" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value"></stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/units/${unit_id}</stringProp>
+            <stringProp name="HTTPSampler.method">DELETE</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-2076543809">删除成功，共删除了1条记录</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="2.编辑-失败编辑" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="循环控制器" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <longProp name="ThreadGroup.start_time">1512550113000</longProp>
+        <longProp name="ThreadGroup.end_time">1512550113000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random Variable" enabled="true">
+          <stringProp name="maximumValue">99999999</stringProp>
+          <stringProp name="minimumValue">10000000</stringProp>
+          <stringProp name="outputFormat"></stringProp>
+          <boolProp name="perThread">false</boolProp>
+          <stringProp name="randomSeed"></stringProp>
+          <stringProp name="variableName">Random</stringProp>
+        </RandomVariableConfig>
+        <hashTree/>
+        <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random Variable" enabled="true">
+          <stringProp name="maximumValue">99999</stringProp>
+          <stringProp name="minimumValue">10000</stringProp>
+          <stringProp name="outputFormat"></stringProp>
+          <boolProp name="perThread">false</boolProp>
+          <stringProp name="randomSeed"></stringProp>
+          <stringProp name="variableName">Random1</stringProp>
+        </RandomVariableConfig>
+        <hashTree/>
+        <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random2" enabled="true">
+          <stringProp name="maximumValue">99999999</stringProp>
+          <stringProp name="minimumValue">10000000</stringProp>
+          <stringProp name="outputFormat"></stringProp>
+          <boolProp name="perThread">false</boolProp>
+          <stringProp name="randomSeed"></stringProp>
+          <stringProp name="variableName">Random2</stringProp>
+        </RandomVariableConfig>
+        <hashTree/>
+        <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="参数生成器" enabled="true">
+          <stringProp name="BeanShellSampler.query">import com.bitnei.util.*;
+
+
+
+          String cardNo=RandomValue.getCardNo(); //身份证号
+		vars.put(&quot;cardNo&quot;,cardNo);
+		
+		String  cardAddress=RandomValue.getRoad(); //地址
+		vars.put(&quot;cardAddress&quot;,cardAddress);
+		
+		String termModelName=RandomValue.getTermModelName(); //终端型号名
+		vars.put(&quot;termModelName&quot;,termModelName);
+		
+		String brandName=RandomValue.getBrandName();//品牌名
+		vars.put(&quot;brandName&quot;,brandName);
+		
+		String vin=RandomValue.getVin(); //vin码
+		vars.put(&quot;vin&quot;,vin);
+		
+		String interNo=RandomValue.getInterNo(); //内部编号
+		vars.put(&quot;interNo&quot;,interNo);
+		
+		String chinesename=RandomValue.getChineseName(); //中文姓名
+		vars.put(&quot;chinesename&quot;,chinesename);
+		
+		String email=RandomValue.getEmail(5,10); //邮箱
+		vars.put(&quot;email&quot;,email);
+		
+		String tel=RandomValue.getTel();//手机号码
+		vars.put(&quot;tel&quot;,tel);
+		
+		String iccid=RandomValue.getIccid(); //iccid
+		vars.put(&quot;iccid&quot;,iccid);
+		
+		String serialNumber=RandomValue.getSerialNum();//终端编号
+		vars.put(&quot;serialNumber&quot;,serialNumber);
+		
+		String imei=RandomValue.getImei(); //imei
+		vars.put(&quot;imei&quot;,imei);
+		
+	     String uuid=RandomValue.getUUID();//uuid
+	   	vars.put(&quot;uuid&quot;,uuid);
+	     </stringProp>
+          <stringProp name="BeanShellSampler.filename"></stringProp>
+          <stringProp name="BeanShellSampler.parameters"></stringProp>
+          <boolProp name="BeanShellSampler.resetInterpreter">false</boolProp>
+        </BeanShellSampler>
+        <hashTree/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="全局新增供应商" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局新增汽车数据-新增供应商" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;name&quot;:&quot;北理供应商${Random}&quot;,&quot;nickName&quot;:&quot;供应商${Random1}&quot;,&quot;unitTypeNames&quot;:&quot;运营单位&quot;,&quot;coordinate&quot;:&quot;113.497509,22.226091&quot;,&quot;address&quot;:&quot;广东省珠海市香洲区南屏镇南泰明湾南泰明湾花园2期&quot;,&quot;contactorName&quot;:&quot;黄大大&quot;,&quot;contactorPhone&quot;:159${Random},&quot;contactorAddress&quot;:&quot;珠海市香洲区${Random}&quot;,&quot;parentName&quot;:&quot;&quot;,&quot;parentId&quot;:0,&quot;organizationCode&quot;:&quot;RRXX112200${Random}&quot;,&quot;licenceImgId&quot;:&quot;&quot;,&quot;certImgId&quot;:&quot;&quot;,&quot;unitTypeIds&quot;:&quot;${id0}&quot;,&quot;lng&quot;:&quot;113.546261&quot;,&quot;lat&quot;:&quot;22.249608&quot;,&quot;telephone&quot;:&quot;15992667873&quot;,&quot;bussinessLines&quot;:&quot;业务${Random1}&quot;,&quot;brands&quot;:&quot;品牌${Random1}&quot;}&#xd;
+&#xd;
+</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/unit</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="798119933">新增成功</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="beanshell查询供应商的id" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_unit_type WHERE NAME=&apos;供应商&apos; &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;id0&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPreProcessor>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="beanshell查询新增供应商的id" enabled="true">
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_unit where name=&apos;北理供应商${Random}&apos; ORDER BY create_time DESC LIMIT 1 &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;unit_id0&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="全局新增运营单位" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局新增汽车数据-新增运营单位" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;name&quot;:&quot;北理运营单位${Random}&quot;,&quot;nickName&quot;:&quot;运营${Random1}&quot;,&quot;unitTypeNames&quot;:&quot;运营单位&quot;,&quot;coordinate&quot;:&quot;113.497509,22.226091&quot;,&quot;address&quot;:&quot;广东省珠海市香洲区南屏镇南泰明湾南泰明湾花园2期&quot;,&quot;contactorName&quot;:&quot;黄大大&quot;,&quot;contactorPhone&quot;:159${Random},&quot;contactorAddress&quot;:&quot;珠海市香洲区${Random}&quot;,&quot;parentName&quot;:&quot;&quot;,&quot;parentId&quot;:0,&quot;organizationCode&quot;:&quot;RRXX112233${Random}&quot;,&quot;licenceImgId&quot;:&quot;&quot;,&quot;certImgId&quot;:&quot;&quot;,&quot;unitTypeIds&quot;:&quot;${id}&quot;,&quot;lng&quot;:&quot;113.546261&quot;,&quot;lat&quot;:&quot;22.249608&quot;,&quot;telephone&quot;:&quot;15992667873&quot;,&quot;bussinessLines&quot;:&quot;业务${Random1}&quot;,&quot;brands&quot;:&quot;品牌${Random1}&quot;}&#xd;
+&#xd;
+</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/unit</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="798119933">新增成功</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="beanshell查询运营单位的id" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_unit_type WHERE NAME=&apos;运营单位&apos; &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;id&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPreProcessor>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="beanshell查询运营单位的id" enabled="true">
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_unit where name=&apos;北理运营单位${Random}&apos; ORDER BY create_time DESC LIMIT 1&quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;unit_id&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="全局新增经销商" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局新增汽车数据-新增经销商" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;name&quot;:&quot;北理经销商${Random}&quot;,&quot;nickName&quot;:&quot;经销商${Random1}&quot;,&quot;unitTypeNames&quot;:&quot;车辆经销商&quot;,&quot;coordinate&quot;:&quot;113.541305,22.365809&quot;,&quot;address&quot;:&quot;广东省珠海市香洲区唐家湾镇至美路北京理工大学珠海学院&quot;,&quot;contactorName&quot;:&quot;黄大大&quot;,&quot;contactorPhone&quot;:159${Random},&quot;contactorAddress&quot;:&quot;珠海市香洲区${Random}&quot;,&quot;parentName&quot;:&quot;&quot;,&quot;parentId&quot;:0,&quot;organizationCode&quot;:&quot;RRXX444433${Random}&quot;,&quot;licenceImgId&quot;:&quot;&quot;,&quot;certImgId&quot;:&quot;&quot;,&quot;unitTypeIds&quot;:&quot;${id1}&quot;,&quot;lng&quot;:&quot;113.512101&quot;,&quot;lat&quot;:&quot;22.223231&quot;,&quot;telephone&quot;:&quot;15992667873&quot;,&quot;bussinessLines&quot;:&quot;测试业务&quot;,&quot;brands&quot;:&quot;测试品牌&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/unit</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="798119933">新增成功</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="beanshell查询经销商" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_unit_type WHERE NAME=&apos;经销商&apos;&quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;id1&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPreProcessor>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="beanshell查询新增单位的id" enabled="true">
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_unit where name=&apos;北理经销商${Random}&apos; ORDER BY create_time DESC LIMIT 1&quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;unit_id1&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局新增汽车数据-新增单位联系人" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;ownerName&quot;:&quot;经销商${Random1}&quot;,&quot;unitName&quot;:&quot;北理经销商${Random}&quot;,&quot;jobPost&quot;:&quot;经销商&quot;,&quot;jobNumber&quot;:&quot;${Random1}&quot;,&quot;telPhone&quot;:159${Random},&quot;address&quot;:&quot;珠海香洲${Random}&quot;,&quot;email&quot;:&quot;159${Random}@qq.com&quot;,&quot;frontCardImgId&quot;:&quot;&quot;,&quot;backCardImgId&quot;:&quot;&quot;,&quot;faceCardImgId&quot;:&quot;&quot;,&quot;unitId&quot;:&quot;${unit_id}&quot;,&quot;sex&quot;:1,&quot;cardType&quot;:1,&quot;cardNo&quot;:&quot;4418821985${Random}&quot;,&quot;cardAddress&quot;:&quot;珠海香洲区${Random}&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/ownerPeople</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="798119933">新增成功</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="beanshell查询新增单位联系人的id" enabled="true">
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_owner_people where owner_name=&apos;经销商${Random1}&apos; ORDER BY create_time DESC LIMIT 1&quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;owner_id&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="全局新增购车单位" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局新增汽车数据-新增购车单位" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;name&quot;:&quot;北理购车单位${Random}&quot;,&quot;nickName&quot;:&quot;购车${Random1}&quot;,&quot;unitTypeNames&quot;:&quot;购车单位&quot;,&quot;coordinate&quot;:&quot;113.541305,22.365809&quot;,&quot;address&quot;:&quot;广东省珠海市香洲区唐家湾镇至美路北京理工大学珠海学院&quot;,&quot;contactorName&quot;:&quot;黄大大&quot;,&quot;contactorPhone&quot;:159${Random},&quot;contactorAddress&quot;:&quot;珠海市香洲区${Random}&quot;,&quot;parentName&quot;:&quot;&quot;,&quot;parentId&quot;:0,&quot;organizationCode&quot;:&quot;RRXX445533${Random}&quot;,&quot;licenceImgId&quot;:&quot;&quot;,&quot;certImgId&quot;:&quot;&quot;,&quot;unitTypeIds&quot;:&quot;${id2}&quot;,&quot;lng&quot;:&quot;113.512101&quot;,&quot;lat&quot;:&quot;22.223231&quot;,&quot;telephone&quot;:&quot;15992667873&quot;,&quot;bussinessLines&quot;:&quot;测试业务&quot;,&quot;brands&quot;:&quot;测试品牌&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/unit</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="798119933">新增成功</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="beanshell查询购车单位的id" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_unit_type WHERE NAME=&apos;购车单位&apos; &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;id2&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPreProcessor>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="beanshell查询新增购车单位的id" enabled="true">
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_unit where name=&apos;北理购车单位${Random}&apos; ORDER BY create_time DESC LIMIT 1 &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;unit_id2&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="全局新增车辆终端型号" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局新增汽车数据-新增车载终端型号" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;termModelName&quot;:&quot;${termModelName}&quot;,&quot;termCategory&quot;:2,&quot;brandName&quot;:&quot;${brandName}&quot;,&quot;workingVoltage&quot;:220,&quot;powerWaste&quot;:220,&quot;unitName&quot;:&quot;北理运营单位${Random}&quot;,&quot;sleepElectricCurrent&quot;:12,&quot;firmwareVersion&quot;:&quot;1.0&quot;,&quot;builtInBatteryCapacity&quot;:21,&quot;supportEncryptionChip&quot;:0,&quot;detectionReportImgId&quot;:&quot;&quot;,&quot;termDetectionNo&quot;:&quot;${Random2}&quot;,&quot;unitId&quot;:&quot;${unit_id0}&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/termModel</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="798119933">新增成功</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="beanshell查询新增车载终端型号id" enabled="true">
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_term_model where term_model_name=&apos;${termModelName}&apos; ORDER BY create_time DESC LIMIT 1 &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;term_model_id&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="全局新增sim卡" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局新增汽车数据-新增SIM卡" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;globalSimType&quot;:2,&quot;iccid&quot;:&quot;${iccid}&quot;,&quot;msisd&quot;:&quot;${tel}&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/simManagement</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="798119933">新增成功</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="beanshell查询新增的sys_sim_management_id" enabled="true">
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_sim_management where iccid= &apos;${iccid}&apos; ORDER BY create_time DESC LIMIT 1 &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;sys_sim_management_id&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="全局新增车载终端信息" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局新增汽车数据-新增车载终端信息" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;serialNumber&quot;:&quot;${serialNumber}&quot;,&quot;termModelName&quot;:&quot;${termModelName}&quot;,&quot;supportProtocolName&quot;:&quot;GBT32960标准版&quot;,&quot;protocolVersion&quot;:&quot;3.0&quot;,&quot;iccid&quot;:&quot;${iccid}&quot;,&quot;imei&quot;:&quot;${imei}&quot;,&quot;firewareVersion&quot;:&quot;2.0&quot;,&quot;produceBatch&quot;:&quot;100&quot;,&quot;sysTermModelId&quot;:&quot;${term_model_id}&quot;,&quot;supportProtocol&quot;:&quot;${rule_id}&quot;,&quot;factoryDate&quot;:&quot;2019/05/01&quot;}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/termModelUnit</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="798119933">新增成功</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="beanshell查询通讯协议的id" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM dc_rule WHERE name=&apos;GBT32960标准版&apos; &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;rule_id&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPreProcessor>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="beanshell查询新增的车辆终端id" enabled="true">
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_term_model_unit where serial_number=&apos;${serialNumber}&apos; ORDER BY create_time DESC LIMIT 1 &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;term_id&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="全局新增汽车数据" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局新增汽车数据-新增车辆" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">{&quot;stage&quot;:&quot;&quot;,&quot;vin&quot;:&quot;${vin}&quot;,&quot;interNo&quot;:&quot;${interNo}&quot;,&quot;vehModelName&quot;:&quot;默认车型&quot;,&quot;color&quot;:&quot;#FFFFFF&quot;,&quot;colorNickName&quot;:&quot;白晶晶&quot;,&quot;serialNumber&quot;:&quot;${serialNumber}&quot;,&quot;engeryDeviceIds&quot;:&quot;&quot;,&quot;engeryDeviceNames&quot;:&quot;&quot;,&quot;driveDeviceIds&quot;:&quot;&quot;,&quot;driveDeviceCodes&quot;:&quot;&quot;,&quot;powerDeviceIds&quot;:&quot;&quot;,&quot;powerDeviceCodes&quot;:&quot;&quot;,&quot;manuUnitId&quot;:&quot;${factory_id}&quot;,&quot;manuUnitName&quot;:&quot;默认车辆制造工厂&quot;,&quot;produceBatch&quot;:&quot;1001&quot;,&quot;qualityYears&quot;:&quot;2019-05&quot;,&quot;vehCertificateNumber&quot;:&quot;${Random1}&quot;,&quot;produceDate&quot;:&quot;2019-06-01&quot;,&quot;factoryDate&quot;:&quot;2019-06-01&quot;,&quot;certificateFront&quot;:null,&quot;certificateEnd&quot;:null,&quot;stageChangeDate&quot;:&quot;&quot;,&quot;termId&quot;:&quot;${term_id}&quot;,&quot;vehModelId&quot;:&quot;${model_id}&quot;}&#xd;
+</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/vehicle</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="798119933">新增成功</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+            <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="beanshell查询车辆型号的默认型号的id" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_veh_model WHERE veh_model_name=&apos;默认车型&apos;&quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;model_id&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPreProcessor>
+            <hashTree/>
+            <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="beanshell查询默认的制造工厂的id" enabled="true">
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="parameters"></stringProp>
+              <stringProp name="filename"></stringProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_unit WHERE NAME=&apos;默认车辆制造工厂&apos; &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;factory_id&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPreProcessor>
+            <hashTree/>
+            <BeanShellPostProcessor guiclass="TestBeanGUI" testclass="BeanShellPostProcessor" testname="beanshell查询新增的汽车的id" enabled="true">
+              <stringProp name="filename"></stringProp>
+              <stringProp name="parameters"></stringProp>
+              <boolProp name="resetInterpreter">false</boolProp>
+              <stringProp name="script">import java.sql.*;
+import com.bitnei.util.*;
+
+			
+		String sql=&quot; SELECT id FROM sys_vehicle WHERE vin=&apos;${vin}&apos; &quot;;
+	
+		Connection conn=null;
+		Statement stmt=null;
+		ResultSet rs = null ;	
+		conn=DbUtil.getCon();  
+	     stmt=conn.createStatement();
+		rs = stmt.executeQuery(sql) ;
+		
+		while(rs.next()){
+			String id=rs.getString(&quot;id&quot;);
+			vars.put(&quot;veh_id&quot;,id);
+		}	
+			
+	      DbUtil.closeCon(conn);
+
+	
+</stringProp>
+            </BeanShellPostProcessor>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.1车辆销售信息-成功新增车辆销售信息" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&quot;vin&quot;:&quot;${vin}&quot;,&quot;sellDate&quot;:&quot;2019-06-01&quot;,&quot;sellPrice&quot;:15,&quot;sellForField&quot;:2,&quot;ownerId&quot;:&quot;&quot;,&quot;ownerName&quot;:&quot;&quot;,&quot;sellPriVehOwnerId&quot;:&quot;&quot;,&quot;sellPubUnitName&quot;:&quot;北理购车单位${Random}&quot;,&quot;sellPubUnitId&quot;:&quot;${unit_id2}&quot;,&quot;sell4sUnitId&quot;:&quot;${unit_id1}&quot;,&quot;sell4sUnitName&quot;:&quot;北理经销商${Random}&quot;,&quot;sellSellerId&quot;:&quot;${owner_id}&quot;,&quot;sellSellerName&quot;:&quot;经销商${Random1}&quot;,&quot;sellSecureDate&quot;:&quot;2019-06-01&quot;,&quot;sellFirstCheckDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceNo&quot;:&quot;${Random}&quot;,&quot;sellInvoiceDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceImgId&quot;:&quot;&quot;,&quot;sellLicenseNo&quot;:&quot;&quot;,&quot;sellLicenseGrantDate&quot;:&quot;&quot;,&quot;sellLicenseRegDate&quot;:&quot;&quot;,&quot;sellLicenseImgId&quot;:&quot;&quot;,&quot;sellCityName&quot;:&quot;北京市&quot;,&quot;sellCityId&quot;:&quot;110&quot;}&#xd;
+</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/sys/vehicleSell</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="798119933">新增成功</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.3车辆销售信息-点击编辑进入编辑页面" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value"></stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/sys/vehicleSells/${veh_id}</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="948638433">&quot;code&quot;:200,</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.4车辆销售信息-失败编辑（销售时间格式不对）" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">&#xd;
+{&quot;vin&quot;:&quot;${vin}&quot;,&quot;sellDate&quot;:&quot;20190428&quot;,&quot;sellPrice&quot;:15,&quot;sellForField&quot;:2,&quot;ownerId&quot;:&quot;&quot;,&quot;ownerName&quot;:&quot;&quot;,&quot;sellPriVehOwnerId&quot;:&quot;&quot;,&quot;sellPubUnitName&quot;:&quot;北理购车单位${Random}&quot;,&quot;sellPubUnitId&quot;:&quot;${unit_id2}&quot;,&quot;sell4sUnitId&quot;:&quot;${unit_id1}&quot;,&quot;sell4sUnitName&quot;:&quot;北理经销商${Random}&quot;,&quot;sellSellerId&quot;:&quot;${owner_id}&quot;,&quot;sellSellerName&quot;:&quot;经销商${Random1}&quot;,&quot;sellSecureDate&quot;:&quot;2019-06-01&quot;,&quot;sellFirstCheckDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceNo&quot;:&quot;${Random}&quot;,&quot;sellInvoiceDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceImgId&quot;:&quot;&quot;,&quot;sellLicenseNo&quot;:&quot;&quot;,&quot;sellLicenseGrantDate&quot;:&quot;&quot;,&quot;sellLicenseRegDate&quot;:&quot;&quot;,&quot;sellLicenseImgId&quot;:&quot;&quot;,&quot;sellCityName&quot;:&quot;北京市&quot;,&quot;sellCityId&quot;:&quot;110&quot;}&#xd;
+&#xd;
+</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/sys/vehicleSells/${veh_id}</stringProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="1756668488">&quot;code&quot;:-1,&quot;resourceType&quot;:null</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.5车辆销售信息-失败编辑（购车领域不能为空）" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&quot;vin&quot;:&quot;${vin}&quot;,&quot;sellDate&quot;:&quot;2019-06-01&quot;,&quot;sellPrice&quot;:15,&quot;sellForField&quot;:&quot;&quot;,&quot;ownerId&quot;:&quot;&quot;,&quot;ownerName&quot;:&quot;&quot;,&quot;sellPriVehOwnerId&quot;:&quot;&quot;,&quot;sellPubUnitName&quot;:&quot;北理购车单位${Random}&quot;,&quot;sellPubUnitId&quot;:&quot;&quot;,&quot;sell4sUnitId&quot;:&quot;${unit_id1}&quot;,&quot;sell4sUnitName&quot;:&quot;北理经销商${Random}&quot;,&quot;sellSellerId&quot;:&quot;${owner_id}&quot;,&quot;sellSellerName&quot;:&quot;经销商${Random1}&quot;,&quot;sellSecureDate&quot;:&quot;2019-06-01&quot;,&quot;sellFirstCheckDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceNo&quot;:&quot;${Random}&quot;,&quot;sellInvoiceDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceImgId&quot;:&quot;&quot;,&quot;sellLicenseNo&quot;:&quot;&quot;,&quot;sellLicenseGrantDate&quot;:&quot;&quot;,&quot;sellLicenseRegDate&quot;:&quot;&quot;,&quot;sellLicenseImgId&quot;:&quot;&quot;,&quot;sellCityName&quot;:&quot;北京市&quot;,&quot;sellCityId&quot;:&quot;110&quot;}&#xd;
+&#xd;
+</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/sys/vehicleSells/${veh_id}</stringProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="1756668488">&quot;code&quot;:-1,&quot;resourceType&quot;:null</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.6车辆销售信息-失败编辑（销售人员不能为空）" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&quot;vin&quot;:&quot;${vin}&quot;,&quot;sellDate&quot;:&quot;2019-06-01&quot;,&quot;sellPrice&quot;:15,&quot;sellForField&quot;:2,&quot;ownerId&quot;:&quot;&quot;,&quot;ownerName&quot;:&quot;&quot;,&quot;sellPriVehOwnerId&quot;:&quot;&quot;,&quot;sellPubUnitName&quot;:&quot;北理购车单位${Random}&quot;,&quot;sellPubUnitId&quot;:&quot;${unit_id2}&quot;,&quot;sell4sUnitId&quot;:&quot;${unit_id1}&quot;,&quot;sell4sUnitName&quot;:&quot;北理经销商${Random}&quot;,&quot;sellSellerId&quot;:&quot;&quot;,&quot;sellSellerName&quot;:&quot;&quot;,&quot;sellSecureDate&quot;:&quot;2019-06-01&quot;,&quot;sellFirstCheckDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceNo&quot;:&quot;${Random}&quot;,&quot;sellInvoiceDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceImgId&quot;:&quot;&quot;,&quot;sellLicenseNo&quot;:&quot;&quot;,&quot;sellLicenseGrantDate&quot;:&quot;&quot;,&quot;sellLicenseRegDate&quot;:&quot;&quot;,&quot;sellLicenseImgId&quot;:&quot;&quot;,&quot;sellCityName&quot;:&quot;北京市&quot;,&quot;sellCityId&quot;:&quot;110&quot;}&#xd;
+&#xd;
+</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/sys/vehicleSells/${veh_id}</stringProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="1756668488">&quot;code&quot;:-1,&quot;resourceType&quot;:null</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="2.7车辆销售信息-失败编辑（vin码不存在）" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&quot;vin&quot;:&quot;${vin}1233&quot;,&quot;sellDate&quot;:&quot;2019-06-02&quot;,&quot;sellPrice&quot;:15,&quot;sellForField&quot;:2,&quot;ownerId&quot;:&quot;&quot;,&quot;ownerName&quot;:&quot;&quot;,&quot;sellPriVehOwnerId&quot;:&quot;&quot;,&quot;sellPubUnitName&quot;:&quot;北理购车单位${Random}&quot;,&quot;sellPubUnitId&quot;:&quot;${unit_id2}&quot;,&quot;sell4sUnitId&quot;:&quot;${unit_id1}&quot;,&quot;sell4sUnitName&quot;:&quot;北理经销商${Random}&quot;,&quot;sellSellerId&quot;:&quot;${owner_id}&quot;,&quot;sellSellerName&quot;:&quot;经销商${Random1}&quot;,&quot;sellSecureDate&quot;:&quot;2019-06-01&quot;,&quot;sellFirstCheckDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceNo&quot;:&quot;${Random}&quot;,&quot;sellInvoiceDate&quot;:&quot;2019-06-01&quot;,&quot;sellInvoiceImgId&quot;:&quot;&quot;,&quot;sellLicenseNo&quot;:&quot;&quot;,&quot;sellLicenseGrantDate&quot;:&quot;&quot;,&quot;sellLicenseRegDate&quot;:&quot;&quot;,&quot;sellLicenseImgId&quot;:&quot;&quot;,&quot;sellCityName&quot;:&quot;北京市&quot;,&quot;sellCityId&quot;:&quot;110&quot;}&#xd;
+</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/api/v1/sys/vehicleSells/${veh_id}</stringProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="1197306577">VIN码已不存在</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+          </ResponseAssertion>
+          <hashTree/>
+        </hashTree>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="全局删除并还原数据" enabled="true"/>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局删除并还原数据-删除新增的汽车" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value"></stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/vehicles/${veh_id}</stringProp>
+            <stringProp name="HTTPSampler.method">DELETE</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-2076543809">删除成功，共删除了1条记录</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局删除并还原数据-删除车载终端信息" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value"></stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/termModelUnits/${term_id}</stringProp>
+            <stringProp name="HTTPSampler.method">DELETE</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="-2076543809">删除成功，共删除了1条记录</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+            <boolProp name="Assertion.assume_success">false</boolProp>
+            <intProp name="Assertion.test_type">2</intProp>
+            <stringProp name="Assertion.custom_message"></stringProp>
+          </ResponseAssertion>
+          <hashTree/>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局删除并还原数据-删除新增的sim卡" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value"></stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/simManagements/${sys_sim_management_id}</stringProp>
+            <stringProp name="HTTPSampler.method">DELETE</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-2076543809">删除成功，共删除了1条记录</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局删除并还原数据-删除车载终端型号" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value"></stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/termModels/${term_model_id}</stringProp>
+            <stringProp name="HTTPSampler.method">DELETE</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-2076543809">删除成功，共删除了1条记录</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局删除并还原数据-删除购车单位" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value"></stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/units/${unit_id2}</stringProp>
+            <stringProp name="HTTPSampler.method">DELETE</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-2076543809">删除成功，共删除了1条记录</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局删除并还原数据-删除新增的单位联系人" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value"></stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/ownerPeoples/${owner_id}</stringProp>
+            <stringProp name="HTTPSampler.method">DELETE</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-2076543809">删除成功，共删除了1条记录</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局删除并还原数据-删除经销商" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value"></stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/units/${unit_id1}</stringProp>
+            <stringProp name="HTTPSampler.method">DELETE</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-2076543809">删除成功，共删除了1条记录</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+          </hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="全局删除并还原数据-删除运营商" enabled="true">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value"></stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+            <stringProp name="HTTPSampler.path">/api/v1/sys/units/${unit_id}</stringProp>
+            <stringProp name="HTTPSampler.method">DELETE</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+            <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="响应断言" enabled="true">
+              <collectionProp name="Asserion.test_strings">
+                <stringProp name="-2076543809">删除成功，共删除了1条记录</stringProp>
+              </collectionProp>
+              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+              <boolProp name="Assertion.assume_success">false</boolProp>
+              <intProp name="Assertion.test_type">2</intProp>
+              <stringProp name="Assertion.custom_message"></stringProp>
+            </ResponseAssertion>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+      </hashTree>
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="察看结果树" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>false</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <threadCounts>true</threadCounts>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="聚合报告" enabled="true">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>false</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>false</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <threadCounts>true</threadCounts>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

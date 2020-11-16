@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+  <meta charset='utf-8'>
+  <title>TestNG reports</title>
+
+    <link type="text/css" href="testng-reports.css" rel="stylesheet" />
+    <script type="text/javascript" src="jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="testng-reports.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type='text/javascript'>
+      google.load('visualization', '1', {packages:['table']});
+      google.setOnLoadCallback(drawTable);
+      var suiteTableInitFunctions = new Array();
+      var suiteTableData = new Array();
+    </script>
+    <!--
+      <script type="text/javascript" src="jquery-ui/js/jquery-ui-1.8.16.custom.min.js"></script>
+     -->
+  </head>
+
+  <body>
+    <div class="top-banner-root">
+      <span class="top-banner-title-font">Test results</span>
+      <br/>
+      <span class="top-banner-font-1">1 suite</span>
+    </div> <!-- top-banner-root -->
+    <div class="navigator-root">
+      <div class="navigator-suite-header">
+        <span>All suites</span>
+        <a href="#" class="collapse-all-link" title="Collapse/expand all the suites">
+          <img class="collapse-all-icon" src="collapseall.gif">
+          </img> <!-- collapse-all-icon -->
+        </a> <!-- collapse-all-link -->
+      </div> <!-- navigator-suite-header -->
+      <div class="suite">
+        <div class="rounded-window">
+          <div class="suite-header light-rounded-window-top">
+            <a href="#" class="navigator-link" panel-name="suite-apitest">
+              <span class="suite-name border-passed">apitest</span>
+            </a> <!-- navigator-link -->
+          </div> <!-- suite-header light-rounded-window-top -->
+          <div class="navigator-suite-content">
+            <div class="suite-section-title">
+              <span>Info</span>
+            </div> <!-- suite-section-title -->
+            <div class="suite-section-content">
+              <ul>
+                <li>
+                  <a href="#" class="navigator-link " panel-name="test-xml-apitest">
+                    <span>C:\Users\eric_\workspace\apitest\testng.xml</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" class="navigator-link " panel-name="testlist-apitest">
+                    <span class="test-stats">1 test</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" class="navigator-link " panel-name="group-apitest">
+                    <span>0 groups</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" class="navigator-link " panel-name="times-apitest">
+                    <span>Times</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" class="navigator-link " panel-name="reporter-apitest">
+                    <span>Reporter output</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" class="navigator-link " panel-name="ignored-methods-apitest">
+                    <span>Ignored methods</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" class="navigator-link " panel-name="chronological-apitest">
+                    <span>Chronological view</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+              </ul>
+            </div> <!-- suite-section-content -->
+            <div class="result-section">
+              <div class="suite-section-title">
+                <span>Results</span>
+              </div> <!-- suite-section-title -->
+              <div class="suite-section-content">
+                <ul>
+                  <li>
+                    <span class="method-stats">16 methods,   16 passed</span>
+                  </li>
+                  <li>
+                    <span class="method-list-title passed">Passed methods</span>
+                    <span class="show-or-hide-methods passed">
+                      <a href="#" panel-name="suite-apitest" class="hide-methods passed suite-apitest"> (hide)</a> <!-- hide-methods passed suite-apitest -->
+                      <a href="#" panel-name="suite-apitest" class="show-methods passed suite-apitest"> (show)</a> <!-- show-methods passed suite-apitest -->
+                    </span>
+                    <div class="method-list-content passed suite-apitest">
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-apitest" title="com.bitnei.apitest.testcases.openapi.ChargingData" hash-for-method="ChargingDataNo({&quot;status&quot;:400,&quot;errorMsg&quot;:&quot;VALID&quot;,&quot;data&quot;:&quot;Required String parameter &#039;licensePlate&#039; is not present&quot;,&quot;e...)">ChargingDataNo({"status":400,"errorMsg":"VALID","data":"Required String parameter 'licensePlate' is not present","e...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-apitest" title="com.bitnei.apitest.testcases.openapi.ChargingData" hash-for-method="ChargingDataNoFrom({&quot;status&quot;:400,&quot;errorMsg&quot;:&quot;VALID&quot;,&quot;data&quot;:&quot;参数 from  不符合规则：yyyy-MM-dd HH:mm:ss&quot;,&quot;error&quot;:true})">ChargingDataNoFrom({"status":400,"errorMsg":"VALID","data":"参数 from  不符合规则：yyyy-MM-dd HH:mm:ss","error":true})</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-apitest" title="com.bitnei.apitest.testcases.openapi.ChargingData" hash-for-method="ChargingDataNoTo({&quot;status&quot;:400,&quot;errorMsg&quot;:&quot;VALID&quot;,&quot;data&quot;:&quot;参数 to  不符合规则：yyyy-MM-dd HH:mm:ss&quot;,&quot;error&quot;:true})">ChargingDataNoTo({"status":400,"errorMsg":"VALID","data":"参数 to  不符合规则：yyyy-MM-dd HH:mm:ss","error":true})</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-apitest" title="com.bitnei.apitest.testcases.openapi.ChargingData" hash-for-method="ChargingDataNormal({&quot;status&quot;:200,&quot;errorMsg&quot;:null,&quot;data&quot;:[{&quot;startElectricity&quot;:124.25,&quot;endElectricity&quot;:150.5,&quot;startTime&quot;:...)">ChargingDataNormal({"status":200,"errorMsg":null,"data":[{"startElectricity":124.25,"endElectricity":150.5,"startTime":...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-apitest" title="com.bitnei.apitest.testcases.openapi.ChargingDataTest" hash-for-method="ChargingDataNormal(参数from不符合规则, /external/1/zhuhai/api/chargingData, ?licensePlate=粤C00859D&amp;from=&amp;to=2019-03-01+10:49:2...)">ChargingDataNormal(参数from不符合规则, /external/1/zhuhai/api/chargingData, ?licensePlate=粤C00859D&from=&to=2019-03-01+10:49:2...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-apitest" title="com.bitnei.apitest.testcases.openapi.ChargingDataTest" hash-for-method="ChargingDataNormal(查询结果正常, /external/1/zhuhai/api/chargingData, ?licensePlate=粤C00859D&amp;from=2019-03-01+07:49:21&amp;to=2019...)">ChargingDataNormal(查询结果正常, /external/1/zhuhai/api/chargingData, ?licensePlate=粤C00859D&from=2019-03-01+07:49:21&to=2019...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-apitest" title="com.bitnei.apitest.testcases.openapi.ChargingData" hash-for-method="ChargingDataUpOneDay({&quot;status&quot;:400,&quot;errorMsg&quot;:&quot;VALID&quot;,&quot;data&quot;:&quot;选择时间范围不得超过一个自然日&quot;,&quot;error&quot;:true})">ChargingDataUpOneDay({"status":400,"errorMsg":"VALID","data":"选择时间范围不得超过一个自然日","error":true})</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-apitest" title="com.bitnei.apitest.testcases.openapi.ChargingData" hash-for-method="ChargingDataWrongTime({&quot;status&quot;:400,&quot;errorMsg&quot;:&quot;VALID&quot;,&quot;data&quot;:&quot;参数 from 2019-03-03 10:49:21 不能大于 to 2019-03-02 10:49:21&quot;,&quot;e...)">ChargingDataWrongTime({"status":400,"errorMsg":"VALID","data":"参数 from 2019-03-03 10:49:21 不能大于 to 2019-03-02 10:49:21","e...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-apitest" title="com.bitnei.apitest.testcases.openapi.RunningData" hash-for-method="EnergyConservationInvalidtoken({&quot;status&quot;:401,&quot;errorMsg&quot;:&quot;invalid_token: f829155c-9374-4673-a005-10ce548af1=&gt;/external/1/zhuhai/api/...)">EnergyConservationInvalidtoken({"status":401,"errorMsg":"invalid_token: f829155c-9374-4673-a005-10ce548af1=>/external/1/zhuhai/api/...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-apitest" title="com.bitnei.apitest.testcases.openapi.RunningData" hash-for-method="EnergyConservationNolicensePlate({&quot;status&quot;:400,&quot;errorMsg&quot;:&quot;VALID&quot;,&quot;data&quot;:&quot;参数 licensePlate  不能为空&quot;,&quot;error&quot;:true})">EnergyConservationNolicensePlate({"status":400,"errorMsg":"VALID","data":"参数 licensePlate  不能为空","error":true})</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-apitest" title="com.bitnei.apitest.testcases.openapi.EnergyConservation" hash-for-method="EnergyConservationNormal({&quot;status&quot;:200,&quot;errorMsg&quot;:null,&quot;data&quot;:0.5072,&quot;error&quot;:false})">EnergyConservationNormal({"status":200,"errorMsg":null,"data":0.5072,"error":false})</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-apitest" title="com.bitnei.apitest.testcases.openapi.RunningData" hash-for-method="EnergyConservationNormal({&quot;status&quot;:200,&quot;errorMsg&quot;:null,&quot;data&quot;:[{&quot;startSoc&quot;:87.0,&quot;endSoc&quot;:81.0,&quot;startLocation&quot;:&quot;广东省珠海市金湾区红旗镇S3...)">EnergyConservationNormal({"status":200,"errorMsg":null,"data":[{"startSoc":87.0,"endSoc":81.0,"startLocation":"广东省珠海市金湾区红旗镇S3...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-apitest" title="com.bitnei.apitest.testcases.openapi.RunningData" hash-for-method="EnergyConservationUpScope({&quot;status&quot;:400,&quot;errorMsg&quot;:&quot;VALID&quot;,&quot;data&quot;:&quot;选择时间范围不得超过一个自然日&quot;,&quot;error&quot;:true})">EnergyConservationUpScope({"status":400,"errorMsg":"VALID","data":"选择时间范围不得超过一个自然日","error":true})</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-apitest" title="com.bitnei.apitest.testcases.openapi.EnergyConservation" hash-for-method="EnergyConservationUpScope({&quot;status&quot;:400,&quot;errorMsg&quot;:&quot;VALID&quot;,&quot;data&quot;:&quot;选择时间范围不得超过3个月&quot;,&quot;error&quot;:true})">EnergyConservationUpScope({"status":400,"errorMsg":"VALID","data":"选择时间范围不得超过3个月","error":true})</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-apitest" title="com.bitnei.apitest.testcases.openapi.EnergyConservation" hash-for-method="EnergyConservationWrongDateFormat({&quot;status&quot;:400,&quot;errorMsg&quot;:&quot;VALID&quot;,&quot;data&quot;:&quot;参数 from 2019.05.10 不符合规则：yyyy-MM-dd&quot;,&quot;error&quot;:true})">EnergyConservationWrongDateFormat({"status":400,"errorMsg":"VALID","data":"参数 from 2019.05.10 不符合规则：yyyy-MM-dd","error":true})</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-apitest" title="com.bitnei.apitest.testcases.openapi.EnergyConservation" hash-for-method="EnergyConservationWrongTime({&quot;status&quot;:400,&quot;errorMsg&quot;:&quot;VALID&quot;,&quot;data&quot;:&quot;参数 from 2019-05-10 不能大于 to 2019-04-13&quot;,&quot;error&quot;:true})">EnergyConservationWrongTime({"status":400,"errorMsg":"VALID","data":"参数 from 2019-05-10 不能大于 to 2019-04-13","error":true})</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                    </div> <!-- method-list-content passed suite-apitest -->
+                  </li>
+                </ul>
+              </div> <!-- suite-section-content -->
+            </div> <!-- result-section -->
+          </div> <!-- navigator-suite-content -->
+        </div> <!-- rounded-window -->
+      </div> <!-- suite -->
+    </div> <!-- navigator-root -->
+    <div class="wrapper">
+      <div class="main-panel-root">
+        <div panel-name="suite-apitest" class="panel apitest">
+          <div class="suite-apitest-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bitnei.apitest.testcases.openapi.ChargingData</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="ChargingDataNo({&quot;status&quot;:400,&quot;errorMsg&quot;:&quot;VALID&quot;,&quot;data&quot;:&quot;Required String parameter &#039;licensePlate&#039; is not present&quot;,&quot;e...)">
+                  </a> <!-- ChargingDataNo({"status":400,"errorMsg":"VALID","data":"Required String parameter 'licensePlate' is not present","e...) -->
+                  <span class="method-name">ChargingDataNo</span>
+                  <span class="parameters">({"status":400,"errorMsg":"VALID","data":"Required String parameter 'licensePlate' is not present","error":true})</span>
+                  <em>
+(查询珠海车辆充电数据缺少车牌号参数)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="ChargingDataNoFrom({&quot;status&quot;:400,&quot;errorMsg&quot;:&quot;VALID&quot;,&quot;data&quot;:&quot;参数 from  不符合规则：yyyy-MM-dd HH:mm:ss&quot;,&quot;error&quot;:true})">
+                  </a> <!-- ChargingDataNoFrom({"status":400,"errorMsg":"VALID","data":"参数 from  不符合规则：yyyy-MM-dd HH:mm:ss","error":true}) -->
+                  <span class="method-name">ChargingDataNoFrom</span>
+                  <span class="parameters">({"status":400,"errorMsg":"VALID","data":"参数 from  不符合规则：yyyy-MM-dd HH:mm:ss","error":true})</span>
+                  <em>
+(查询珠海车辆充电数据缺少from参数)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="ChargingDataNoTo({&quot;status&quot;:400,&quot;errorMsg&quot;:&quot;VALID&quot;,&quot;data&quot;:&quot;参数 to  不符合规则：yyyy-MM-dd HH:mm:ss&quot;,&quot;error&quot;:true})">
+                  </a> <!-- ChargingDataNoTo({"status":400,"errorMsg":"VALID","data":"参数 to  不符合规则：yyyy-MM-dd HH:mm:ss","error":true}) -->
+                  <span class="method-name">ChargingDataNoTo</span>
+                  <span class="parameters">({"status":400,"errorMsg":"VALID","data":"参数 to  不符合规则：yyyy-MM-dd HH:mm:ss","error":true})</span>
+                  <em>
+(查询珠海车辆充电数据缺少to参数)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="ChargingDataNormal({&quot;status&quot;:200,&quot;errorMsg&quot;:null,&quot;data&quot;:[{&quot;startElectricity&quot;:124.25,&quot;endElectricity&quot;:150.5,&quot;startTime&quot;:...)">
+                  </a> <!-- ChargingDataNormal({"status":200,"errorMsg":null,"data":[{"startElectricity":124.25,"endElectricity":150.5,"startTime":...) -->
+                  <span class="method-name">ChargingDataNormal</span>
+                  <span class="parameters">({"status":200,"errorMsg":null,"data":[{"startElectricity":124.25,"endElectricity":150.5,"startTime":"2019-03-01 09:19:34","endTime":"2019-03-01 09:42:34"}],"error":false})</span>
+                  <em>
+(查询珠海车辆充电数据正常)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="ChargingDataUpOneDay({&quot;status&quot;:400,&quot;errorMsg&quot;:&quot;VALID&quot;,&quot;data&quot;:&quot;选择时间范围不得超过一个自然日&quot;,&quot;error&quot;:true})">
+                  </a> <!-- ChargingDataUpOneDay({"status":400,"errorMsg":"VALID","data":"选择时间范围不得超过一个自然日","error":true}) -->
+                  <span class="method-name">ChargingDataUpOneDay</span>
+                  <span class="parameters">({"status":400,"errorMsg":"VALID","data":"选择时间范围不得超过一个自然日","error":true})</span>
+                  <em>
+(查询珠海车辆充电数据选择时间范围不得超过一个自然日)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="ChargingDataWrongTime({&quot;status&quot;:400,&quot;errorMsg&quot;:&quot;VALID&quot;,&quot;data&quot;:&quot;参数 from 2019-03-03 10:49:21 不能大于 to 2019-03-02 10:49:21&quot;,&quot;e...)">
+                  </a> <!-- ChargingDataWrongTime({"status":400,"errorMsg":"VALID","data":"参数 from 2019-03-03 10:49:21 不能大于 to 2019-03-02 10:49:21","e...) -->
+                  <span class="method-name">ChargingDataWrongTime</span>
+                  <span class="parameters">({"status":400,"errorMsg":"VALID","data":"参数 from 2019-03-03 10:49:21 不能大于 to 2019-03-02 10:49:21","error":true})</span>
+                  <em>
+(查询珠海车辆充电数据选择时间范围开始时间不能大于结束时间)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-apitest-class-passed -->
+          <div class="suite-apitest-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bitnei.apitest.testcases.openapi.EnergyConservation</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="EnergyConservationNormal({&quot;status&quot;:200,&quot;errorMsg&quot;:null,&quot;data&quot;:0.5072,&quot;error&quot;:false})">
+                  </a> <!-- EnergyConservationNormal({"status":200,"errorMsg":null,"data":0.5072,"error":false}) -->
+                  <span class="method-name">EnergyConservationNormal</span>
+                  <span class="parameters">({"status":200,"errorMsg":null,"data":0.5072,"error":false})</span>
+                  <em>
+(碳排放接口查询正常)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="EnergyConservationUpScope({&quot;status&quot;:400,&quot;errorMsg&quot;:&quot;VALID&quot;,&quot;data&quot;:&quot;选择时间范围不得超过3个月&quot;,&quot;error&quot;:true})">
+                  </a> <!-- EnergyConservationUpScope({"status":400,"errorMsg":"VALID","data":"选择时间范围不得超过3个月","error":true}) -->
+                  <span class="method-name">EnergyConservationUpScope</span>
+                  <span class="parameters">({"status":400,"errorMsg":"VALID","data":"选择时间范围不得超过3个月","error":true})</span>
+                  <em>
+(碳排放接口时间超3个月)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="EnergyConservationWrongDateFormat({&quot;status&quot;:400,&quot;errorMsg&quot;:&quot;VALID&quot;,&quot;data&quot;:&quot;参数 from 2019.05.10 不符合规则：yyyy-MM-dd&quot;,&quot;error&quot;:true})">
+                  </a> <!-- EnergyConservationWrongDateFormat({"status":400,"errorMsg":"VALID","data":"参数 from 2019.05.10 不符合规则：yyyy-MM-dd","error":true}) -->
+                  <span class="method-name">EnergyConservationWrongDateFormat</span>
+                  <span class="parameters">({"status":400,"errorMsg":"VALID","data":"参数 from 2019.05.10 不符合规则：yyyy-MM-dd","error":true})</span>
+                  <em>
+(碳排放接口开始时间不符合规则)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="EnergyConservationWrongTime({&quot;status&quot;:400,&quot;errorMsg&quot;:&quot;VALID&quot;,&quot;data&quot;:&quot;参数 from 2019-05-10 不能大于 to 2019-04-13&quot;,&quot;error&quot;:true})">
+                  </a> <!-- EnergyConservationWrongTime({"status":400,"errorMsg":"VALID","data":"参数 from 2019-05-10 不能大于 to 2019-04-13","error":true}) -->
+                  <span class="method-name">EnergyConservationWrongTime</span>
+                  <span class="parameters">({"status":400,"errorMsg":"VALID","data":"参数 from 2019-05-10 不能大于 to 2019-04-13","error":true})</span>
+                  <em>
+(碳排放接口开始间大于结束时间)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-apitest-class-passed -->
+          <div class="suite-apitest-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bitnei.apitest.testcases.openapi.RunningData</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="EnergyConservationInvalidtoken({&quot;status&quot;:401,&quot;errorMsg&quot;:&quot;invalid_token: f829155c-9374-4673-a005-10ce548af1=&gt;/external/1/zhuhai/api/...)">
+                  </a> <!-- EnergyConservationInvalidtoken({"status":401,"errorMsg":"invalid_token: f829155c-9374-4673-a005-10ce548af1=>/external/1/zhuhai/api/...) -->
+                  <span class="method-name">EnergyConservationInvalidtoken</span>
+                  <span class="parameters">({"status":401,"errorMsg":"invalid_token: f829155c-9374-4673-a005-10ce548af1=>/external/1/zhuhai/api/runningData","data":null,"error":true})</span>
+                  <em>
+(车辆行驶数数据查询token无效)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="EnergyConservationNolicensePlate({&quot;status&quot;:400,&quot;errorMsg&quot;:&quot;VALID&quot;,&quot;data&quot;:&quot;参数 licensePlate  不能为空&quot;,&quot;error&quot;:true})">
+                  </a> <!-- EnergyConservationNolicensePlate({"status":400,"errorMsg":"VALID","data":"参数 licensePlate  不能为空","error":true}) -->
+                  <span class="method-name">EnergyConservationNolicensePlate</span>
+                  <span class="parameters">({"status":400,"errorMsg":"VALID","data":"参数 licensePlate  不能为空","error":true})</span>
+                  <em>
+(车辆行驶数数据查询车牌号为空)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="EnergyConservationNormal({&quot;status&quot;:200,&quot;errorMsg&quot;:null,&quot;data&quot;:[{&quot;startSoc&quot;:87.0,&quot;endSoc&quot;:81.0,&quot;startLocation&quot;:&quot;广东省珠海市金湾区红旗镇S3...)">
+                  </a> <!-- EnergyConservationNormal({"status":200,"errorMsg":null,"data":[{"startSoc":87.0,"endSoc":81.0,"startLocation":"广东省珠海市金湾区红旗镇S3...) -->
+                  <span class="method-name">EnergyConservationNormal</span>
+                  <span class="parameters">({"status":200,"errorMsg":null,"data":[{"startSoc":87.0,"endSoc":81.0,"startLocation":"广东省珠海市金湾区红旗镇S3211珠海机场高速","endLocation":"广东省珠海市金湾区红旗镇永泰路","runTime":2730,"rumMileage":23.0,"startTime":"2019-03-01 13:08:19","endTime":"2019-03-01 13:53:49"},{"startSoc":93.0,"endSoc":87.0,"startLocation":"广东省珠海市金湾区红旗镇永泰路","endLocation":"广东省珠海市金湾区红旗镇589县道","runTime":2638,"rumMileage":20.0,"startTime":"2019-03-01 12:05:28","endTime":"2019-03-01 12:49:26"}],"error":false})</span>
+                  <em>
+(车辆行驶数据查询正常)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="EnergyConservationUpScope({&quot;status&quot;:400,&quot;errorMsg&quot;:&quot;VALID&quot;,&quot;data&quot;:&quot;选择时间范围不得超过一个自然日&quot;,&quot;error&quot;:true})">
+                  </a> <!-- EnergyConservationUpScope({"status":400,"errorMsg":"VALID","data":"选择时间范围不得超过一个自然日","error":true}) -->
+                  <span class="method-name">EnergyConservationUpScope</span>
+                  <span class="parameters">({"status":400,"errorMsg":"VALID","data":"选择时间范围不得超过一个自然日","error":true})</span>
+                  <em>
+(车辆行驶数选择时间范围不得超过一个自然日)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-apitest-class-passed -->
+          <div class="suite-apitest-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.bitnei.apitest.testcases.openapi.ChargingDataTest</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="ChargingDataNormal(参数from不符合规则, /external/1/zhuhai/api/chargingData, ?licensePlate=粤C00859D&amp;from=&amp;to=2019-03-01+10:49:2...)">
+                  </a> <!-- ChargingDataNormal(参数from不符合规则, /external/1/zhuhai/api/chargingData, ?licensePlate=粤C00859D&from=&to=2019-03-01+10:49:2...) -->
+                  <span class="method-name">ChargingDataNormal</span>
+                  <span class="parameters">(参数from不符合规则, /external/1/zhuhai/api/chargingData, ?licensePlate=粤C00859D&from=&to=2019-03-01+10:49:21, {"status":400,"errorMsg":"VALID","data":"参数 from  不符合规则：yyyy-MM-dd HH:mm:ss","error":true})</span>
+                  <em>
+(查询珠海车辆充电数据)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="ChargingDataNormal(查询结果正常, /external/1/zhuhai/api/chargingData, ?licensePlate=粤C00859D&amp;from=2019-03-01+07:49:21&amp;to=2019...)">
+                  </a> <!-- ChargingDataNormal(查询结果正常, /external/1/zhuhai/api/chargingData, ?licensePlate=粤C00859D&from=2019-03-01+07:49:21&to=2019...) -->
+                  <span class="method-name">ChargingDataNormal</span>
+                  <span class="parameters">(查询结果正常, /external/1/zhuhai/api/chargingData, ?licensePlate=粤C00859D&from=2019-03-01+07:49:21&to=2019-03-01+10:49:21, {"status":200,"errorMsg":null,"data":[{"startElectricity":124.25,"endElectricity":150.5,"startTime":"2019-03-01 09:19:34","endTime":"2019-03-01 09:42:34"}],"error":false})</span>
+                  <em>
+(查询珠海车辆充电数据)                  </em>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-apitest-class-passed -->
+        </div> <!-- panel apitest -->
+        <div panel-name="test-xml-apitest" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">C:\Users\eric_\workspace\apitest\testng.xml</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <pre>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE suite SYSTEM &quot;http://testng.org/testng-1.0.dtd&quot;&gt;
+&lt;suite guice-stage=&quot;DEVELOPMENT&quot; name=&quot;apitest&quot;&gt;
+  &lt;parameter name=&quot;suite&quot; value=&quot;suiteParameter&quot;/&gt;
+  &lt;parameter name=&quot;hostopenapi&quot; value=&quot;http://61.149.8.78:83&quot;/&gt;
+  &lt;parameter name=&quot;pathroad&quot; value=&quot;D:\\TEST.xlsx&quot;/&gt;
+  &lt;parameter name=&quot;host&quot; value=&quot;http://bdp-app.bitnei.cn:7788&quot;/&gt;
+  &lt;parameter name=&quot;hostsaas&quot; value=&quot;http://61.149.8.78:85&quot;/&gt;
+  &lt;parameter name=&quot;host7789&quot; value=&quot;http://bdp-app.bitnei.cn:7789&quot;/&gt;
+  &lt;test thread-count=&quot;1&quot; verbose=&quot;2&quot; name=&quot;OPENAPI&quot; parallel=&quot;classes&quot;&gt;
+    &lt;classes&gt;
+      &lt;class name=&quot;com.bitnei.apitest.testcases.openapi.ChargingData&quot;/&gt;
+      &lt;class name=&quot;com.bitnei.apitest.testcases.openapi.EnergyConservation&quot;/&gt;
+      &lt;class name=&quot;com.bitnei.apitest.testcases.openapi.RunningData&quot;/&gt;
+      &lt;class name=&quot;com.bitnei.apitest.testcases.openapi.ChargingDataTest&quot;/&gt;
+    &lt;/classes&gt;
+  &lt;/test&gt; &lt;!-- OPENAPI --&gt;
+&lt;/suite&gt; &lt;!-- apitest --&gt;
+            </pre>
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="testlist-apitest" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Tests for apitest</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <ul>
+              <li>
+                <span class="test-name">OPENAPI (4 classes)</span>
+              </li>
+            </ul>
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="group-apitest" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Groups for apitest</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="times-apitest" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Times for apitest</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <div class="times-div">
+              <script type="text/javascript">
+suiteTableInitFunctions.push('tableData_apitest');
+function tableData_apitest() {
+var data = new google.visualization.DataTable();
+data.addColumn('number', 'Number');
+data.addColumn('string', 'Method');
+data.addColumn('string', 'Class');
+data.addColumn('number', 'Time (ms)');
+data.addRows(16);
+data.setCell(0, 0, 0)
+data.setCell(0, 1, 'EnergyConservationNormal')
+data.setCell(0, 2, 'com.bitnei.apitest.testcases.openapi.RunningData')
+data.setCell(0, 3, 795);
+data.setCell(1, 0, 1)
+data.setCell(1, 1, 'ChargingDataNormal')
+data.setCell(1, 2, 'com.bitnei.apitest.testcases.openapi.ChargingData')
+data.setCell(1, 3, 460);
+data.setCell(2, 0, 2)
+data.setCell(2, 1, 'ChargingDataNo')
+data.setCell(2, 2, 'com.bitnei.apitest.testcases.openapi.ChargingData')
+data.setCell(2, 3, 367);
+data.setCell(3, 0, 3)
+data.setCell(3, 1, 'ChargingDataNormal')
+data.setCell(3, 2, 'com.bitnei.apitest.testcases.openapi.ChargingDataTest')
+data.setCell(3, 3, 351);
+data.setCell(4, 0, 4)
+data.setCell(4, 1, 'ChargingDataNoFrom')
+data.setCell(4, 2, 'com.bitnei.apitest.testcases.openapi.ChargingData')
+data.setCell(4, 3, 218);
+data.setCell(5, 0, 5)
+data.setCell(5, 1, 'EnergyConservationWrongTime')
+data.setCell(5, 2, 'com.bitnei.apitest.testcases.openapi.EnergyConservation')
+data.setCell(5, 3, 111);
+data.setCell(6, 0, 6)
+data.setCell(6, 1, 'ChargingDataWrongTime')
+data.setCell(6, 2, 'com.bitnei.apitest.testcases.openapi.ChargingData')
+data.setCell(6, 3, 102);
+data.setCell(7, 0, 7)
+data.setCell(7, 1, 'ChargingDataUpOneDay')
+data.setCell(7, 2, 'com.bitnei.apitest.testcases.openapi.ChargingData')
+data.setCell(7, 3, 82);
+data.setCell(8, 0, 8)
+data.setCell(8, 1, 'ChargingDataNoTo')
+data.setCell(8, 2, 'com.bitnei.apitest.testcases.openapi.ChargingData')
+data.setCell(8, 3, 77);
+data.setCell(9, 0, 9)
+data.setCell(9, 1, 'EnergyConservationWrongDateFormat')
+data.setCell(9, 2, 'com.bitnei.apitest.testcases.openapi.EnergyConservation')
+data.setCell(9, 3, 76);
+data.setCell(10, 0, 10)
+data.setCell(10, 1, 'EnergyConservationNolicensePlate')
+data.setCell(10, 2, 'com.bitnei.apitest.testcases.openapi.RunningData')
+data.setCell(10, 3, 71);
+data.setCell(11, 0, 11)
+data.setCell(11, 1, 'EnergyConservationNormal')
+data.setCell(11, 2, 'com.bitnei.apitest.testcases.openapi.EnergyConservation')
+data.setCell(11, 3, 70);
+data.setCell(12, 0, 12)
+data.setCell(12, 1, 'EnergyConservationUpScope')
+data.setCell(12, 2, 'com.bitnei.apitest.testcases.openapi.EnergyConservation')
+data.setCell(12, 3, 63);
+data.setCell(13, 0, 13)
+data.setCell(13, 1, 'EnergyConservationUpScope')
+data.setCell(13, 2, 'com.bitnei.apitest.testcases.openapi.RunningData')
+data.setCell(13, 3, 59);
+data.setCell(14, 0, 14)
+data.setCell(14, 1, 'ChargingDataNormal')
+data.setCell(14, 2, 'com.bitnei.apitest.testcases.openapi.ChargingDataTest')
+data.setCell(14, 3, 58);
+data.setCell(15, 0, 15)
+data.setCell(15, 1, 'EnergyConservationInvalidtoken')
+data.setCell(15, 2, 'com.bitnei.apitest.testcases.openapi.RunningData')
+data.setCell(15, 3, 33);
+window.suiteTableData['apitest']= { tableData: data, tableDiv: 'times-div-apitest'}
+return data;
+}
+              </script>
+              <span class="suite-total-time">Total running time: 2 seconds</span>
+              <div id="times-div-apitest">
+              </div> <!-- times-div-apitest -->
+            </div> <!-- times-div -->
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="reporter-apitest" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Reporter output for apitest</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="ignored-methods-apitest" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">0 ignored methods</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="chronological-apitest" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Methods in chronological order</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bitnei.apitest.testcases.openapi.ChargingData</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">setUp(http://61.149.8.78:83)</span>
+                <span class="method-start">0 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">ChargingDataNo({"status":400,"errorMsg":"VALID","data":"Required String parameter 'licensePlate' is not present","e...)</span>
+                <span class="method-start">1020 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">ChargingDataNoFrom({"status":400,"errorMsg":"VALID","data":"参数 from  不符合规则：yyyy-MM-dd HH:mm:ss","error":true})</span>
+                <span class="method-start">1394 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">ChargingDataNoTo({"status":400,"errorMsg":"VALID","data":"参数 to  不符合规则：yyyy-MM-dd HH:mm:ss","error":true})</span>
+                <span class="method-start">1617 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">ChargingDataNormal({"status":200,"errorMsg":null,"data":[{"startElectricity":124.25,"endElectricity":150.5,"startTime":...)</span>
+                <span class="method-start">1695 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">ChargingDataUpOneDay({"status":400,"errorMsg":"VALID","data":"选择时间范围不得超过一个自然日","error":true})</span>
+                <span class="method-start">2159 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">ChargingDataWrongTime({"status":400,"errorMsg":"VALID","data":"参数 from 2019-03-03 10:49:21 不能大于 to 2019-03-02 10:49:21","e...)</span>
+                <span class="method-start">2245 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bitnei.apitest.testcases.openapi.EnergyConservation</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">setUp(http://61.149.8.78:83)</span>
+                <span class="method-start">2351 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">EnergyConservationNormal({"status":200,"errorMsg":null,"data":0.5072,"error":false})</span>
+                <span class="method-start">2440 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">EnergyConservationUpScope({"status":400,"errorMsg":"VALID","data":"选择时间范围不得超过3个月","error":true})</span>
+                <span class="method-start">2511 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">EnergyConservationWrongDateFormat({"status":400,"errorMsg":"VALID","data":"参数 from 2019.05.10 不符合规则：yyyy-MM-dd","error":true})</span>
+                <span class="method-start">2577 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">EnergyConservationWrongTime({"status":400,"errorMsg":"VALID","data":"参数 from 2019-05-10 不能大于 to 2019-04-13","error":true})</span>
+                <span class="method-start">2655 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bitnei.apitest.testcases.openapi.RunningData</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">setUp(http://61.149.8.78:83)</span>
+                <span class="method-start">2768 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">EnergyConservationInvalidtoken({"status":401,"errorMsg":"invalid_token: f829155c-9374-4673-a005-10ce548af1=>/external/1/zhuhai/api/...)</span>
+                <span class="method-start">2857 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">EnergyConservationNolicensePlate({"status":400,"errorMsg":"VALID","data":"参数 licensePlate  不能为空","error":true})</span>
+                <span class="method-start">2893 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">EnergyConservationNormal({"status":200,"errorMsg":null,"data":[{"startSoc":87.0,"endSoc":81.0,"startLocation":"广东省珠海市金湾区红旗镇S3...)</span>
+                <span class="method-start">2965 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">EnergyConservationUpScope({"status":400,"errorMsg":"VALID","data":"选择时间范围不得超过一个自然日","error":true})</span>
+                <span class="method-start">3763 ms</span>
+              </div> <!-- test-method -->
+            </div> <!-- chronological-class -->
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.bitnei.apitest.testcases.openapi.ChargingDataTest</div> <!-- chronological-class-name -->
+              <div class="configuration-class before">
+                <span class="method-name">setUp(http://61.149.8.78:83, D:\\TEST.xlsx)</span>
+                <span class="method-start">3826 ms</span>
+              </div> <!-- configuration-class before -->
+              <div class="test-method">
+                <span class="method-name">ChargingDataNormal(查询结果正常, /external/1/zhuhai/api/chargingData, ?licensePlate=粤C00859D&from=2019-03-01+07:49:21&to=2019...)</span>
+                <span class="method-start">4485 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">ChargingDataNormal(参数from不符合规则, /external/1/zhuhai/api/chargingData, ?licensePlate=粤C00859D&from=&to=2019-03-01+10:49:2...)</span>
+                <span class="method-start">4839 ms</span>
+              </div> <!-- test-method -->
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+      </div> <!-- main-panel-root -->
+    </div> <!-- wrapper -->
+  </body>
+</html>

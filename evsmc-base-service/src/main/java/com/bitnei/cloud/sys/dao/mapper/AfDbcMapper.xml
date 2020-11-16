@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.AfDbcMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.AfDbc" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    dbc.id  ,dbc.name ,dbc.type ,dbc.path ,dbc.can_radio ,dbc.can_report_id ,dbc.can_byte_num ,dbc.signal_begin_position ,dbc.signal_position_num ,dbc.signal_byte_order ,dbc.signal_data_type ,dbc.signal_gain ,dbc.signal_bias ,dbc.signal_min_value ,dbc.signal_max_value ,dbc.signal_default_value ,dbc.signal_unit ,dbc.signal_channel_qualit ,dbc.signal_name_id ,dbc.state ,dbc.create_time ,dbc.update_time ,dbc.operator_id ,dbc.dbc_remark ,dbc.parent_id ,dbc.data_source ,dbc.baud_rate1 ,dbc.baud_rate2 ,dbc.baud_rate3 ,dbc.edit_name ,dbc.veh_model_id ,dbc.md5code ,dbc.serial_num ,dbc.data_item_id
+    </sql>
+    <sql id="moreColumns">
+    dbc.id  ,dbc.name ,dbc.type ,dbc.path ,dbc.can_radio ,dbc.can_report_id ,dbc.can_byte_num ,dbc.signal_begin_position ,dbc.signal_position_num ,dbc.signal_byte_order ,dbc.signal_data_type ,dbc.signal_gain ,dbc.signal_bias ,dbc.signal_min_value ,dbc.signal_max_value ,dbc.signal_default_value ,dbc.signal_unit ,dbc.signal_channel_qualit ,dbc.signal_name_id ,dbc.state ,dbc.create_time ,dbc.update_time ,dbc.operator_id ,dbc.dbc_remark ,dbc.parent_id ,dbc.data_source ,dbc.baud_rate1 ,dbc.baud_rate2 ,dbc.baud_rate3 ,dbc.edit_name ,dbc.veh_model_id ,dbc.md5code ,dbc.serial_num ,dbc.data_item_id
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.AfDbc"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_af_dbc dbc
+        <where>
+            dbc.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_af_dbc (id,name,type,path,can_radio,can_report_id,can_byte_num,signal_begin_position,signal_position_num,signal_byte_order,signal_data_type,signal_gain,signal_bias,signal_min_value,signal_max_value,signal_default_value,signal_unit,signal_channel_qualit,signal_name_id,state,create_time,operator_id,dbc_remark,parent_id,data_source,baud_rate1,baud_rate2,baud_rate3,edit_name,veh_model_id,md5code,serial_num,data_item_id)
+        values
+        (#{id},#{name},#{type},#{path},#{canRadio},#{canReportId},#{canByteNum},#{signalBeginPosition},#{signalPositionNum},#{signalByteOrder},#{signalDataType},#{signalGain},#{signalBias},#{signalMinValue},#{signalMaxValue},#{signalDefaultValue},#{signalUnit},#{signalChannelQualit},#{signalNameId},#{state},#{createTime},#{operatorId},#{dbcRemark},#{parentId},#{dataSource},#{baudRate1},#{baudRate2},#{baudRate3},#{editName},#{vehModelId},#{md5code},#{serialNum},#{dataItemId})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_af_dbc set
+        id=id,name=#{name},type=#{type},path=#{path},can_radio=#{canRadio},can_report_id=#{canReportId},can_byte_num=#{canByteNum},signal_begin_position=#{signalBeginPosition},signal_position_num=#{signalPositionNum},signal_byte_order=#{signalByteOrder},signal_data_type=#{signalDataType},signal_gain=#{signalGain},signal_bias=#{signalBias},signal_min_value=#{signalMinValue},signal_max_value=#{signalMaxValue},signal_default_value=#{signalDefaultValue},signal_unit=#{signalUnit},signal_channel_qualit=#{signalChannelQualit},signal_name_id=#{signalNameId},state=#{state},update_time=#{updateTime},operator_id=#{operatorId},dbc_remark=#{dbcRemark},parent_id=#{parentId},data_source=#{dataSource},baud_rate1=#{baudRate1},baud_rate2=#{baudRate2},baud_rate3=#{baudRate3},edit_name=#{editName},veh_model_id=#{vehModelId},md5code=#{md5code},serial_num=#{serialNum},data_item_id=#{dataItemId}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        sys_af_dbc
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+       <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_af_dbc dbc
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </select>
+
+    <select id="getAllByParams" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_af_dbc dbc
+        <where>
+            1=1
+            <if test="state != null and state!= ''">
+                and dbc.state = #{state}
+            </if>
+            <if test="path != null and path!= ''">
+                and dbc.path like "%"#{path}"%"
+            </if>
+            <if test="type != null and type!= ''">
+                and dbc.type = #{type}
+            </if>
+            <if test="id != null and id!= ''">
+                and dbc.id = #{id}
+            </if>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </select>
+
+</mapper>

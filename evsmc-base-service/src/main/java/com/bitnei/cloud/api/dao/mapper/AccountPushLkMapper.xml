@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.api.dao.AccountPushLkMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.api.domain.AccountPushLk" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    ap.id  ,ap.account_id ,ap.push_id ,ap.push_url ,ap.create_time ,ap.create_by ,ap.update_time ,ap.update_by
+    </sql>
+    <sql id="moreColumns">
+    ap.id  ,ap.account_id ,ap.push_id ,ap.push_url ,ap.create_time ,ap.create_by ,ap.update_time ,ap.update_by
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.api.domain.AccountPushLk" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        api_account_push_lk ap
+        <where>
+            ap.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <select id="getAuthorityPushes" resultType="com.bitnei.cloud.api.model.PushDetailAuthorityModel"
+            parameterType="java.util.HashMap">
+        select ap.*, push.name as pushName, push.id as pushId, push.version, push.note,
+        app.name as applicationName
+        from (select * from api_account_push_lk where account_id = #{accountId}) ap
+        left join api_push_detail push on ap.push_id = push.id
+        left join api_application app on push.application_code = app.code
+        where 1=1
+        <include refid="authorityPushesCondition" />
+    </select>
+
+    <select id="countAuthorityPushes" resultType="java.lang.Long" parameterType="java.util.HashMap">
+        select count(*)
+        from (select * from api_account_push_lk where account_id = #{accountId}) ap
+        left join api_push_detail push on ap.push_id = push.id
+        left join api_application app on push.application_code = app.code
+        where 1=1
+        <include refid="authorityPushesCondition" />
+    </select>
+
+    <sql id="authorityPushesCondition">
+        <if test="pushName != null and pushName!= ''">
+            and push.name like concat('%',#{pushName},'%')
+        </if>
+        <if test="applicationName != null and applicationName!= ''">
+            and app.name like concat('%',#{applicationName},'%')
+        </if>
+    </sql>
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        api_account_push_lk (id,account_id,push_id,push_url,create_time,create_by)
+        values
+        (#{id},#{accountId},#{pushId},#{pushUrl},#{createTime},#{createBy})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update api_account_push_lk set
+        id=id,account_id=#{accountId},push_id=#{pushId},push_url=#{pushUrl},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="java.util.HashMap">
+        delete from
+        api_account_push_lk
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        api_account_push_lk ap
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </select>
+</mapper>

@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.UserMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.User" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+        u.id,u.username,u.password,u.owner_id,u.permit_start_date,u.permit_end_date,u.is_never_expire,u.is_valid,u.def_role_id,u.open_app,u.open_wx,u.is_all_permissions,u.create_time,u.create_by, u.photo_id
+    </sql>
+
+    <sql id="moreColumns">
+        u.id,u.username,u.owner_id,u.permit_start_date,u.permit_end_date,u.is_never_expire,u.is_valid,u.def_role_id,u.open_app,u.open_wx,u.is_all_permissions,u.create_time,u.create_by, u.photo_id
+    </sql>
+
+    <sql id="infoColumns">
+        u.id,u.username,u.owner_id,u.permit_start_date,u.permit_end_date,u.is_never_expire,u.is_valid,u.def_role_id,u.open_app,u.open_wx,u.is_all_permissions,u.create_time,u.create_by
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.User" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>,
+        ro.name AS roleName,
+        group_concat(distinct lk.dept_id) AS deptIds,
+        group_concat(distinct dept.name) AS deptNames,
+        group_concat(distinct glk.group_id) AS groupIds,
+        group_concat(distinct gr.name) AS groupNames,
+        group_concat(distinct rlk.role_id) AS roleIds,
+        group_concat(distinct ros.name) AS roleNames
+        from
+        sys_user u
+        LEFT JOIN sys_user_dept_lk lk ON u.id = lk.user_id
+        LEFT JOIN sys_dept dept ON lk.dept_id = dept.id
+        LEFT JOIN sys_user_group_lk glk ON u.id = glk.user_id
+        LEFT JOIN sys_group gr ON glk.group_id = gr.id
+        LEFT JOIN sys_role ro ON u.def_role_id = ro.id
+        LEFT JOIN sys_user_role_lk rlk ON u.id = rlk.user_id
+        LEFT JOIN sys_role ros ON rlk.role_id = ros.id
+        <where>
+            u.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+        group by u.id
+    </select>
+
+    <!-- 根据id查询 -->
+    <select id="findByUsername" resultType="com.bitnei.cloud.sys.domain.User" parameterType="java.util.HashMap">
+        select
+        <include refid="baseColumns"/>
+        from
+        sys_user u
+        <where>
+            u.username=#{username}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_user (id,username,password,owner_id,permit_start_date,permit_end_date,is_never_expire,is_valid,def_role_id,open_app,open_wx,is_all_permissions,create_time,create_by)
+        values
+        (#{id},#{username},#{password},#{ownerId},#{permitStartDate},#{permitEndDate},#{isNeverExpire},#{isValid},#{defRoleId},#{openApp},#{openWx},#{isAllPermissions},#{createTime},#{createBy})
+    </insert>
+
+    <!--批量插入用户组织架构信息-->
+    <insert id="insertUserDeptLk" parameterType="java.util.HashMap">
+        insert into sys_user_dept_lk (id, user_id, dept_id, create_time,create_by)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id}, #{item.userId}, #{item.deptId}, #{item.createTime}, #{item.createBy})
+        </foreach>
+    </insert>
+
+    <!--批量插入用户组织架构信息-->
+    <insert id="insertUserGroupLk" parameterType="java.util.HashMap">
+        insert into sys_user_group_lk (id, user_id, group_id, create_time,create_by)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id}, #{item.userId}, #{item.groupId}, #{item.createTime}, #{item.createBy})
+        </foreach>
+    </insert>
+
+    <!--批量插入用户角色信息-->
+    <insert id="insertUserRoleLk" parameterType="java.util.HashMap">
+        insert into sys_user_role_lk (id, user_id, role_id)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id}, #{item.userId}, #{item.roleId})
+        </foreach>
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_user set
+        id=id,username=#{username},owner_id=#{ownerId},permit_start_date=#{permitStartDate},permit_end_date=#{permitEndDate},is_never_expire=#{isNeverExpire},is_valid=#{isValid},def_role_id=#{defRoleId},open_app=#{openApp},open_wx=#{openWx},is_all_permissions=#{isAllPermissions},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="java.util.HashMap">
+        delete from
+        sys_user
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!--删除用户组织架构信息-->
+    <delete id="deleteUserDeptsByUserId" parameterType="java.util.HashMap">
+        DELETE FROM sys_user_dept_lk WHERE user_id = #{userId}
+    </delete>
+
+    <!--删除用户数据权限信息-->
+    <delete id="deleteUserGroupsByUserId" parameterType="java.util.HashMap">
+        DELETE FROM sys_user_group_lk WHERE user_id = #{userId}
+    </delete>
+
+    <!--查询用户数据权限信息-->
+    <select id="findListUserGroupsByUserId" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        select
+          id,
+          user_id AS userId,
+          group_id AS groupId
+        FROM sys_user_group_lk WHERE user_id = #{userId}
+    </select>
+
+    <!--删除用户角色信息-->
+    <delete id="deleteUserRolesByUserId" parameterType="java.util.HashMap">
+        DELETE FROM sys_user_role_lk WHERE user_id = #{userId}
+    </delete>
+
+    <!--查询用户角色信息-->
+    <select id="findListUserRolesByUserId" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        select
+            srl.id,
+            srl.user_id userId,
+            srl.role_id AS roleId,
+			sr.is_valid AS isValid
+        FROM sys_user_role_lk srl
+        LEFT JOIN sys_role sr ON srl.role_id = sr.id
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="findRoleByRoleIds" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        select sr.is_valid isValid, sr.id roleId
+        FROM sys_role sr
+        WHERE
+        <if test="roleIds != null and roleIds.size()>0">
+            and sr.id in
+            <foreach collection="roleIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        u.id,
+        u.username,
+        u.owner_id AS ownerId,
+        u.permit_start_date AS permitStartDate,
+        u.permit_end_date AS permitEndDate,
+        u.is_never_expire AS isNeverExpire,
+        u.is_valid AS isValid,
+        u.def_role_id AS defRoleId,
+        u.open_app AS openApp,
+        u.open_wx AS openWx,
+        u.is_all_permissions AS isAllPermissions,
+        u.create_time AS createTime,
+        u.create_by AS createBy,
+        u.update_time AS updateTime,
+        u.update_by AS updateBy,
+        op.owner_name AS ownerName,
+        ro.name AS roleName,
+        group_concat(distinct lk.dept_id) AS deptIds,
+        group_concat(distinct dept.name) AS deptNames,
+        group_concat(distinct glk.group_id) AS groupIds,
+        group_concat(distinct gr.name) AS groupNames,
+        group_concat(distinct rlk.role_id) AS roleIds,
+        group_concat(distinct ros.name) AS roleNames
+        from
+        sys_user u
+        LEFT JOIN sys_owner_people op ON u.owner_id = op.id
+        LEFT JOIN sys_user_dept_lk lk ON u.id = lk.user_id
+        LEFT JOIN sys_dept dept ON lk.dept_id = dept.id
+        LEFT JOIN sys_user_group_lk glk ON u.id = glk.user_id
+        LEFT JOIN sys_group gr ON glk.group_id = gr.id
+        LEFT JOIN sys_role ro ON u.def_role_id = ro.id
+        LEFT JOIN sys_unit unit ON op.unit_id = unit.id
+        LEFT JOIN sys_user_role_lk rlk ON u.id = rlk.user_id
+        LEFT JOIN sys_role ros ON rlk.role_id = ros.id
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="importSearchValues != null and importSearchValues.size()>0">
+                and u.username in
+                <foreach collection="importSearchValues" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="username != null and username != ''">
+                AND u.username LIKE CONCAT('%',#{username},'%')
+            </if>
+            <if test="usernameEq != null and usernameEq != ''">
+                AND u.username = #{usernameEq}
+            </if>
+            <if test="password != null">
+                AND u.password = #{password}
+            </if>
+            <if test="ownerId != null">
+                AND u.owner_id = #{ownerId}
+            </if>
+            <if test="ownerName != null and ownerName != ''">
+                AND op.owner_name LIKE CONCAT('%',#{ownerName},'%')
+            </if>
+            <if test="telPhone != null and telPhone != ''">
+                AND op.tel_phone LIKE CONCAT('%',#{telPhone},'%')
+            </if>
+            <if test="unitName != null and unitName != ''">
+                AND unit.name LIKE CONCAT('%',#{unitName},'%')
+            </if>
+            <if test="permitStartDate != null">
+                <![CDATA[ AND u.permit_start_date >= #{permitStartDate} ]]>
+            </if>
+            <if test="permitEndDate != null">
+                <![CDATA[ AND u.permit_end_date <= #{permitEndDate} ]]>
+            </if>
+            <if test="isNeverExpire != null">
+                and u.is_never_expire = #{isNeverExpire}
+            </if>
+            <if test="isValid != null">
+                and u.is_valid = #{isValid}
+            </if>
+            <if test="isAllPermissions != null and isAllPermissions!=''">
+                and u.is_all_permissions = #{isAllPermissions}
+            </if>
+            <if test="defRoleId != null">
+                and u.def_role_id = #{defRoleId}
+            </if>
+            <if test="openApp != null">
+                and u.open_app = #{openApp}
+            </if>
+            <if test="openWx != null">
+                and u.open_wx = #{openWx}
+            </if>
+            <if test="createBy != null">
+                and u.create_by = #{createBy}
+            </if>
+            <if test="updateBy != null">
+                and u.update_by = #{updateBy}
+            </if>
+            <if test="groupId !=null and groupId!='' ">
+                and glk.group_id = #{groupId}
+            </if>
+            <!-- 排除报警通知人（fault_notifier_setting）的用户 -->
+            <if test="excludeFault == 'true'">
+                and u.id not in(SELECT DISTINCT user_id FROM fault_notifier_setting)
+            </if>
+        </where>
+        group by u.id
+        <!-- 角色查询 -->
+        <choose>
+            <when test="roleNames != null and roleId != null">
+                HAVING group_concat(ros.name) LIKE CONCAT('%',#{roleNames},'%')
+                AND concat(',',group_concat(rlk.role_id), ',') LIKE CONCAT('%,',#{roleId},',%')m ,hgv
+            </when>
+            <when test="roleNames != null">
+                HAVING group_concat(ros.name) LIKE CONCAT('%',#{roleNames},'%')
+            </when>
+            <when test="roleId != null">
+                HAVING concat(',',group_concat(rlk.role_id), ',') LIKE CONCAT('%,',#{roleId},',%')
+            </when>
+        </choose>
+        ORDER BY u.create_time DESC
+    </select>
+
+    <!--重置密码-->
+    <update id="resetPwd" parameterType="java.util.HashMap">
+        UPDATE sys_user SET password=#{password} WHERE username=#{username}
+    </update>
+
+    <!--更新用户的默认角色-->
+    <update id="updateUserRole" parameterType="java.util.HashMap">
+        update sys_user set def_role_id=#{defaultRoleId}
+        <where>
+            id = #{userId}
+        </where>
+
+    </update>
+
+
+    <update id="personalCenterModifyPsw" parameterType="java.util.HashMap">
+        UPDATE sys_user SET password=#{password} WHERE id = #{userId}
+    </update>
+
+    <select id="personalCenterGetUser" parameterType="String" resultType="com.bitnei.cloud.sys.domain.User">
+        select * from sys_user
+        <where>
+            id = #{userId}
+        </where>
+    </select>
+    <!--登录模块，账户回收机制启用的话，用户已90天没有登录成功，则使账户失效-->
+    <update id="deValidUser" parameterType="java.util.HashMap">
+        update sys_user set is_valid = #{isValid}
+        <where>
+            id = #{userId}
+        </where>
+
+    </update>
+    <update id="updateDefRoleId">
+        update sys_user set def_role_id = #{roleId} where id = #{userId}
+    </update>
+
+    <select id="findUserRole" parameterType="String" resultType="java.util.HashMap">
+        select sr.id as id,sr.name as name,sr.is_valid as isValid,sr.id as roleId
+        from sys_role sr
+        <where>
+            sr.id = #{roleId}
+        </where>
+    </select>
+
+    <select id="getRoleId" resultType="java.lang.String">
+        select lk.role_id from sys_user_role_lk lk inner join sys_role ro on ro.id=lk.role_id where lk.user_id=#{userId}  limit 0,1
+    </select>
+
+    <!--修改头像-->
+    <update id="resetPhoto" parameterType="java.util.HashMap">
+        UPDATE sys_user SET photo_id=#{photoId} WHERE id=#{id}
+    </update>
+
+    <!-- 根据电话查询 -->
+    <select id="findByUserMobile" resultType="com.bitnei.cloud.sys.domain.User" parameterType="java.util.HashMap">
+        select
+        <include refid="baseColumns"/>
+        from
+        sys_user u left join sys_owner_people op on u.owner_id = op.id
+        <where>
+            op.tel_phone = #{mobile}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <update id="updateOpenApp" parameterType="java.util.HashMap">
+        update sys_user SET open_app = #{openApp} where id = #{id}
+    </update>
+</mapper>

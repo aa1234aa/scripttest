@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.UserBlockResourceMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.UserBlockResource" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    ubr.id  ,ubr.user_id ,ubr.resource_item_id ,ubr.resource_object_id ,ubr.create_time ,ubr.create_by
+    </sql>
+    <sql id="moreColumns">
+    ubr.id  ,ubr.user_id ,ubr.resource_item_id ,ubr.resource_object_id ,ubr.create_time ,ubr.create_by
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.UserBlockResource"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_user_block_resource ubr
+        <where>
+            ubr.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_user_block_resource (id,user_id,resource_item_id,resource_object_id,create_time,create_by)
+        values
+        (#{id},#{userId},#{resourceItemId},#{resourceObjectId},#{createTime},#{createBy})
+    </insert>
+
+
+    <!-- 增加 -->
+    <insert id="insertList" parameterType="java.util.HashMap">
+        insert into
+        sys_user_block_resource (id,user_id,resource_item_id,resource_object_id,create_time,create_by)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id},#{item.userId},#{item.resourceItemId},#{item.resourceObjectId},#{item.createTime},#{item.createBy})
+        </foreach>
+
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_user_block_resource set
+        id=id,user_id=#{userId},resource_item_id=#{resourceItemId},resource_object_id=#{resourceObjectId}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        sys_user_block_resource
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+    <delete id="deleteByUserId">
+      delete from sys_user_block_resource where user_id = #{userId}
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap" resultOrdered="true">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_user_block_resource ubr
+        <where>
+        <if test="authSQL != null">
+        <include refid="authSQL"/>
+        </if>
+        </where>
+
+    </select>
+
+    <!-- 分页查询 -->
+    <select id="pagerModelVehicle" resultType="com.bitnei.cloud.sys.domain.UserBlockResourceVehicle" parameterType="java.util.HashMap" resultOrdered="true">
+        select
+        ubr.id, sv.vin, sv.license_plate, sv.inter_no, sv.manu_unit_id, svn.brand_id, svn.series_id,
+        svm.veh_model_name, svt.name as veh_type_name, tmu.serial_number as term_no, tmu.iccid, svo.owner_name, svo.tel_phone as owner_tel_phone,
+        sv.stage, svn.name as veh_notice_name, sv.oper_unit_id, area.NAME as on_plate_city, sell_unit.name sell_pub_unit_name, sell_unit.telephone sell_pub_unit_telephone,  sv.sell_for_field
+        from
+        sys_user_block_resource ubr
+        inner join sys_vehicle sv on (sv.id = ubr.resource_object_id and ubr.resource_item_id = '2ac0576787ee4742adb61cb0e6e0e98d')
+        left join sys_veh_model svm on svm.id = sv.veh_model_id
+        left join sys_veh_notice svn on svn.id = svm.notice_id
+        left join sys_veh_type svt on svt.id = svn.veh_type_id
+        left join sys_veh_owner svo on svo.id = sv.sell_pri_veh_owner_id
+        left join sys_term_model_unit tmu on tmu.id = sv.term_id
+        left join sys_area area on area.id = sv.oper_license_city_id
+        left join sys_unit operUnit on operUnit.id=sv.oper_unit_id
+        left join sys_unit sell_unit on sell_unit.id = sv.sell_pub_unit_id
+
+        <where>
+            sv.is_delete = 0
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="importSearchValues != null and importSearchValues.size()>0">
+                and sv.vin in
+                <foreach collection="importSearchValues" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="idList != null and idList.size()>0">
+                and sv.id in
+                <foreach collection="idList" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <!-- 车牌号模糊查询 -->
+            <if test="licensePlate != null and licensePlate != ''">
+                AND sv.license_plate LIKE CONCAT('%',#{licensePlate},'%')
+            </if>
+            <!-- 用户id -->
+            <if test="userId != null and userId != ''">
+                AND ubr.user_id = #{userId}
+            </if>
+            <!-- vin码模糊查询 -->
+            <if test="vin != null and vin != ''">
+                AND sv.vin LIKE CONCAT('%',#{vin},'%')
+            </if>
+            <!-- 制造工厂 -->
+            <if test="manuUnitId != null and manuUnitId != ''">
+                AND sv.manu_unit_id = #{manuUnitId}
+            </if>
+            <!-- 车辆运营单位id -->
+            <if test="operUnitId != null and operUnitId != ''">
+                AND sv.oper_unit_id = #{operUnitId}
+            </if>
+            <!-- 车辆种类id -->
+            <if test="vehTypeId != null and vehTypeId != ''">
+                AND svt.path LIKE CONCAT('%/',#{vehTypeId},'/%')
+            </if>
+            <!-- 车型id -->
+            <if test="vehModelId != null and vehModelId != ''">
+                AND sv.veh_model_id = #{vehModelId}
+            </if>
+            <!-- 上牌地区 -->
+            <if test="operLicenseCityId != null and operLicenseCityId != ''">
+                and area.path LIKE CONCAT('%/',#{operLicenseCityId},'/%')
+            </if>
+        </where>
+
+    </select>
+    <select id="getBlockIds" resultType="java.lang.String">
+        select ubr.resource_object_id from sys_user_block_resource ubr where user_id=#{userId}
+    </select>
+</mapper>

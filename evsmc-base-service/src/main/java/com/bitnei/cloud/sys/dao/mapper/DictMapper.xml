@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.DictMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.Dict" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+        d.id, d.name, d.val as value, d.type, d.note, d.group_name, d.order_num, d.create_time, d.create_by
+    </sql>
+    <sql id="moreColumns">
+        d.id, d.name, d.val as value, d.type, d.note, d.group_name, d.order_num, d.create_time, d.create_by
+    </sql>
+
+    <!-- 查询所有的结果 -->
+    <select id="all" resultType="com.bitnei.cloud.sys.domain.Dict" parameterType="java.util.HashMap">
+        select
+        <include refid="baseColumns"/>
+        from
+        sys_dict d
+        <where>
+            <if test="authSQL != null">
+            <include refid="authSQL"/>
+            </if>
+        </where>
+        order by d.type, d.order_num
+    </select>
+
+    <!-- 查询所有的结果 -->
+    <select id="findByType" resultType="com.bitnei.cloud.sys.domain.Dict" parameterType="java.util.HashMap">
+        select
+         d.name, d.val as value, d.note, d.group_name, d.id, d.order_num
+        from
+        sys_dict d
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="dictType != null">
+                and d.type = #{dictType}
+            </if>
+        </where>
+        order by d.order_num asc
+    </select>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.Dict"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_dict d
+        <where>
+            d.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据type与name查询 -->
+    <select id="getByTypeAndName" resultType="com.bitnei.cloud.sys.domain.Dict"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_dict d where d.type = #{type} and d.name = #{name}
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_dict (id,name,val,type,note,group_name,order_num,create_time,create_by)
+        values
+        (#{id},#{name},#{value},#{type},#{note},#{groupName},#{orderNum},#{createTime},#{createBy})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_dict set
+        id=id,name=#{name},val=#{value},type=#{type},note=#{note},group_name=#{groupName},order_num=#{orderNum},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        sys_dict
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_dict d
+        <where>
+            d.type = #{type}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="name != null">
+                and d.name like "%"#{name}"%"
+            </if>
+            <if test="value != null">
+                and d.val like "%"#{value}"%"
+            </if>
+            <if test="dictType != null">
+                and d.type = #{dictType}
+            </if>
+        </where>
+        order by d.order_num asc
+
+    </select>
+
+
+    <select id="getByPhone" resultType="java.lang.Integer" parameterType="com.bitnei.cloud.sys.domain.VehOwner">
+        select count(1) from sys_veh_owner where tel_phone = #{telPhone}
+        <if test="id != null and id != ''">
+            AND id!=#{id}
+        </if>
+    </select>
+</mapper>

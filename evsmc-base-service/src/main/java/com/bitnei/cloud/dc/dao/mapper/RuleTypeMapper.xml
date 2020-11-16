@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.dc.mapper.RuleTypeMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.dc.domain.RuleType" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    rt.id  ,rt.name ,rt.code ,rt.order_num ,rt.note ,rt.create_time ,rt.create_by ,rt.update_time ,rt.update_by, rt.port, rt.support_encrypt, rt.protocol
+    </sql>
+    <sql id="moreColumns">
+    rt.id  ,rt.name ,rt.code ,rt.order_num ,rt.note ,rt.create_time ,rt.create_by ,rt.update_time ,rt.update_by, rt.port, rt.support_encrypt, rt.protocol
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.dc.domain.RuleType"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        dc_rule_type rt
+        <where>
+            rt.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+     <!-- 根据类型名称查询 -->
+    <select id="findByName" resultType="com.bitnei.cloud.dc.domain.RuleType"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        dc_rule_type rt
+        <where>
+            rt.name=#{name}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>    
+     <!-- 根据类型编号查询 -->
+    <select id="findByCode" resultType="com.bitnei.cloud.dc.domain.RuleType"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        dc_rule_type rt
+        <where>
+            rt.code=#{code}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>    
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        dc_rule_type (id,name,code,order_num,note,create_time,create_by,port, support_encrypt, protocol)
+        values
+        (#{id},#{name},#{code},#{orderNum},#{note},#{createTime},#{createBy},#{port}, #{supportEncrypt}, #{protocol})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update dc_rule_type set
+        id=id,name=#{name},code=#{code},order_num=#{orderNum},note=#{note},update_time=#{updateTime},update_by=#{updateBy}, port=#{port}, support_encrypt=#{supportEncrypt}, protocol=#{protocol}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        dc_rule_type
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        dc_rule_type rt
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="name != null">
+                and rt.name like "%"#{name}"%"
+            </if>
+            <if test="code != null">
+                and rt.code like "%"#{code}"%"
+            </if>
+        </where>
+        order by rt.create_time desc
+    </select>
+
+    <select id="findByRuleId" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from dc_rule ru
+        left join dc_rule_type rt on ru.rule_type_id = rt.id
+        where ru.id = #{supportProtocol}
+    </select>
+</mapper>

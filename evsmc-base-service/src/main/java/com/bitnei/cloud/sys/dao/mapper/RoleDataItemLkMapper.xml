@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.RoleDataItemLkMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.RoleDataItemLk" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+            <result column="module_id" property="moduleId"></result>
+        </association>
+    </resultMap>
+    <resultMap id="stringListResults" type="java.lang.String" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+         rdik.*
+    </sql>
+    <sql id="moreColumns">
+         rdik.*
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.RoleDataItemLk"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_role_data_item_lk rdik
+        <where>
+            rdik.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_role_data_item_lk (id,role_module_id,module_data_id,is_hidden,is_sensitive,create_time,create_by)
+        values
+        (#{id},#{roleModuleId},#{moduleDataId},#{isHidden},#{isSensitive},#{createTime},#{createBy})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_role_data_item_lk set
+        id=id,role_module_id=#{roleModuleId},module_data_id=#{moduleDataId},is_hidden=#{isHidden},is_sensitive=#{isSensitive},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        sys_role_data_item_lk
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_role_data_item_lk rdik
+        <where>
+        <if test="authSQL != null">
+        <include refid="authSQL"/>
+        </if>
+        </where>
+
+    </select>
+
+    <!-- 查询角色分配权限 -->
+    <select id="queryRoleDateItem" resultMap="tailResults" parameterType="java.util.HashMap">
+        SELECT rdik.*,mdl.module_data_id as module_data_item_id
+        FROM sys_role_data_item_lk rdik,sys_role_module_lk rmk,sys_module_data_lk mdl
+        where rdik.role_module_id = rmk.id and rdik.module_data_id = mdl.id
+        and rmk.role_id=#{roleId} and rmk.module_id=#{moduleId}
+    </select>
+
+    <!-- 查询角色分配权限 -->
+    <select id="queryRoleDateItemByRoleId" resultMap="tailResults" parameterType="java.util.HashMap">
+        SELECT rdik.*,mdl.module_data_id as module_data_item_id, rmk.module_id as module_id
+        FROM sys_role_data_item_lk rdik,sys_role_module_lk rmk,sys_module_data_lk mdl
+        where rdik.role_module_id = rmk.id and rdik.module_data_id = mdl.id
+        and rmk.role_id=#{roleId} and rmk.module_id is not null
+    </select>
+
+    <!-- 查询角色模块列表 -->
+    <select id="queryRoleModuleList" resultType="java.lang.String" parameterType="java.util.HashMap">
+        SELECT module_id
+        FROM sys_role_module_lk a
+        where a.role_id=#{roleId}
+    </select>
+
+
+
+    <!-- 查询角色模块id -->
+    <select id="queryRoleModuleId" resultType="java.lang.String" parameterType="java.util.HashMap">
+        SELECT id
+        FROM sys_role_module_lk
+        where role_id=#{roleId} and module_id=#{moduleId}
+    </select>
+
+    <!-- 查询模块数据id -->
+    <select id="queryModuleDataId" resultType="java.lang.String" parameterType="java.util.HashMap">
+        SELECT id
+        FROM sys_module_data_lk
+        where module_id=#{moduleId} and module_data_id=#{moduleDataId}
+    </select>
+    <select id="findByRoleIdAndResourceCode" resultType="com.bitnei.cloud.sys.domain.RoleDataItemDetail">
+        select mdi.name, mdi.field_name,dilk.is_hidden,dilk.is_sensitive
+        from sys_role_data_item_lk dilk
+        INNER JOIN sys_module_data_lk malk on malk.id=dilk.module_data_id
+        INNER JOIN sys_module_data_item mdi on mdi.id=malk.module_data_id
+        INNER JOIN sys_role_module_lk rmlk on rmlk.id=dilk.role_module_id
+        INNER JOIN sys_module m on m.id=rmlk.module_id
+        where
+        rmlk.role_id=#{roleId} and m.`code`=#{code} and mdi.is_enable=1
+    </select>
+
+
+    <!-- 更新 -->
+    <update id="updateForHidden" parameterType="java.util.HashMap">
+        update sys_role_data_item_lk set
+        is_hidden=#{isHidden},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            role_module_id=#{roleModuleId} and module_data_id=#{moduleDataId}
+        </where>
+    </update>
+    <!-- 更新 -->
+    <update id="updateForSensitive" parameterType="java.util.HashMap">
+        update sys_role_data_item_lk set
+        is_sensitive=#{isSensitive},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            role_module_id=#{roleModuleId} and module_data_id=#{moduleDataId}
+        </where>
+    </update>
+
+    <!-- 删除 -->
+    <delete id="deleteRoleDataItem"  parameterType="java.util.HashMap">
+        delete from
+        sys_role_data_item_lk
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            role_module_id in (select id from sys_role_module_lk where role_id=#{roleId})
+        </where>
+    </delete>
+
+    <!-- 增加角色模块关系 -->
+    <insert id="addRoleModuleLk" parameterType="java.util.HashMap">
+        insert into
+        sys_role_module_lk (id,role_id,module_id,create_time,create_by)
+        values
+        (#{id},#{roleId},#{moduleId},#{createTime},#{createBy})
+    </insert>
+
+    <!-- 删除角色模块关系 -->
+    <delete id="deleteRoleModuleLk"  parameterType="java.util.HashMap">
+        delete from
+        sys_role_module_lk
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            role_id =#{roleId}
+        </where>
+    </delete>
+
+    <!-- 查询角色按钮权限标识 -->
+    <select id="queryRoleModuleByRoleId" resultType="java.util.Map" parameterType="java.util.HashMap">
+        select m.code,m.is_hidden hide from sys_module m
+        where
+        <!--  (m.is_fun = 1 or m.code like '%@tab%')  -->
+              1=1
+        <if test="roleId != null">
+            and m.id in(
+            select rmlk.module_id from sys_role_module_lk rmlk where rmlk.role_id = #{roleId}
+            )
+        </if>
+        ORDER BY m.parent_id, m.create_time ASC
+
+
+    </select>
+    <select id="queryModuleByRoleId" resultType="java.util.Map">
+      SELECT
+        a.module_id, (select count(1) FROM sys_module m where m.parent_id=a.module_id) as sub_module_count
+      FROM sys_role_module_lk a
+      where a.role_id=#{roleId}
+    </select>
+
+</mapper>

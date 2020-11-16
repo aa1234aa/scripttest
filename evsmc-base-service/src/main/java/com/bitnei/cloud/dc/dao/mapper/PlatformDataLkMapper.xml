@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.dc.mapper.PlatformDataLkMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.dc.domain.PlatformDataLk" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    palk.id  ,palk.platform_id ,palk.data_item_id ,palk.create_time ,palk.create_by
+    </sql>
+    <sql id="moreColumns">
+    palk.id  ,palk.platform_id ,palk.data_item_id ,palk.create_time ,palk.create_by
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.dc.domain.PlatformDataLk"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        dc_platform_data_lk palk
+        <where>
+            palk.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        dc_platform_data_lk (id,platform_id,data_item_id,create_time,create_by)
+        values
+        (#{id},#{platformId},#{dataItemId},#{createTime},#{createBy})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update dc_platform_data_lk set
+        id=id,platform_id=#{platformId},data_item_id=#{dataItemId}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        dc_platform_data_lk
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 根据转发平台ID删除数据项 -->
+    <delete id="deleteByPlatformId" parameterType="java.util.HashMap">
+        DELETE FROM
+        dc_platform_data_lk
+        WHERE platform_id = #{platformId}
+            <if test="dataItemId != null">
+                and data_item_id = #{dataItemId}
+            </if>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        dc_platform_data_lk palk
+        <where>
+            <if test="platformId != null">
+                and palk.platform_id = #{platformId}
+            </if>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </select>
+</mapper>

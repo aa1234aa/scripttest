@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.fault.dao.CodeRuleItemMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.fault.domain.CodeRuleItem" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    fcri.id  ,fcri.fault_code_rule_id ,fcri.exception_code ,fcri.produce_alarm ,fcri.alarm_level ,fcri.response_mode ,fcri.delete_status
+    </sql>
+    <sql id="moreColumns">
+    fcri.id  ,fcri.fault_code_rule_id ,fcri.exception_code ,fcri.produce_alarm ,fcri.alarm_level ,fcri.response_mode ,fcri.delete_status
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.fault.domain.CodeRuleItem"  parameterType="java.lang.String">
+        select
+        <include refid="moreColumns"/>
+        from
+        fault_code_rule_item fcri
+        where
+            fcri.id=#{id}
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="com.bitnei.cloud.fault.domain.CodeRuleItem">
+        insert into
+        fault_code_rule_item (id,fault_code_rule_id,exception_code,produce_alarm,alarm_level,response_mode,delete_status, create_time,create_by)
+        values
+        (#{id},#{faultCodeRuleId},upper(#{exceptionCode}),0,#{alarmLevel},#{responseMode}, 0, #{createTime},#{createBy})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="com.bitnei.cloud.fault.domain.CodeRuleItem">
+        update fault_code_rule_item set
+            alarm_level=#{alarmLevel},response_mode=#{responseMode}
+        where
+            id = #{id}
+    </update>
+
+    <!-- 逻辑删除 -->
+    <update id="delete"  parameterType="java.lang.String">
+        update fault_code_rule_item set delete_status = 1
+        where
+            id = #{id}
+    </update>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>, fcr.fault_name as faultName, fcr.analyze_type as analyzeType,
+        fcr.start_point as startPoint, fcr.normal_code as normalCode, fcr.veh_model_id as vehModelId,
+               fct.type_code faultCodeType,fcr.enabled_status enabledStatus
+        from
+        fault_code_rule_item fcri
+        left join fault_code_rule fcr on fcri.fault_code_rule_id = fcr.id
+        left join fault_code_type fct on fcr.fault_code_type_id = fct.id
+        <where>
+            <if test="containDelete == null or containDelete == false">
+                and fcri.delete_status = 0
+            </if>
+            <if test="faultCodeRuleId != null">
+                and fcri.fault_code_rule_id = #{faultCodeRuleId}
+            </if>
+            <if test="typeCode != null">
+                and fct.type_code = upper(#{typeCode})
+            </if>
+            <if test="veh_model_id != null">
+                and (fcr.veh_model_id like  concat('%',#{veh_model_id},'%') or fcr.veh_model_id='all')
+            </if>
+        </where>
+        order by fcri.create_time
+    </select>
+
+    <!-- 根据规则id删除 -->
+    <delete id="deleteById">
+        update fault_code_rule_item set delete_status = 1 where id = #{id}
+    </delete>
+
+    <!-- 根据故障种类ID获取所有故障码项集合 -->
+    <select id="getByFaultCodeTypeId" parameterType="java.lang.String" resultMap="tailResults">
+        select
+        <include refid="baseColumns"/>, fcr.fault_name as faultName, fcr.analyze_type as analyzeType,
+        fcr.start_point as startPoint, fcr.normal_code as normalCode, fcr.veh_model_id as vehModelId,
+        fcr.fault_code_type_id as faultCodeType
+        from
+            fault_code_rule_item fcri
+        left join fault_code_rule fcr on fcri.fault_code_rule_id = fcr.id
+        where
+            fcri.delete_status = 0
+        and  fcr.fault_code_type_id = #{faultCodeTypeId}
+    </select>
+
+
+</mapper>

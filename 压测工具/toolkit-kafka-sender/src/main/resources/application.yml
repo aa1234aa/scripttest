@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: toolkit-kafka-sender
+  # 配置文件切换,可选值:dev,test,prod
+  profiles:
+    active: @profileActive@

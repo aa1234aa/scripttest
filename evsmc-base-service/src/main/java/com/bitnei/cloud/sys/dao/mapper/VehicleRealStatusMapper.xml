@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.VehicleRealStatusMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.VehicleRealStatus" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+            <result property="vin" column="vin"/>
+            <result property="licensePlate" column="licensePlate"/>
+            <result property="operLicenseCityName" column="operLicenseCityName"/>
+            <!--<result property="licensePlate" column="licensePlate" />-->
+            <!--<result property="licensePlate" column="licensePlate" />-->
+            <!--<result property="licensePlate" column="licensePlate" />-->
+
+
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    vs.id  ,vs.vehicle_id ,vs.onlined ,vs.first_reg_time ,vs.online_status ,vs.mils ,vs.create_time ,vs.update_time ,vs.lock_status ,vs.power_lock_status ,vs.prevent_dismantle_status ,vs.prevent_dismantle_func, vs.is_gps
+    </sql>
+    <sql id="moreColumns">
+    vs.id  ,vs.vehicle_id ,vs.onlined ,vs.first_reg_time ,vs.online_status ,vs.mils ,vs.create_time ,vs.update_time ,vs.lock_status ,vs.power_lock_status ,vs.prevent_dismantle_status ,vs.prevent_dismantle_func, vs.is_gps
+    </sql>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_vehicle_real_status (id,vehicle_id,onlined,first_reg_time,online_status,mils,create_time,lock_status,power_lock_status,prevent_dismantle_status,prevent_dismantle_func,is_gps)
+        values
+        (#{id},#{vehicleId},#{onlined},#{firstRegTime},#{onlineStatus},#{mils},#{createTime},#{lockStatus},#{powerLockStatus},#{preventDismantleStatus},#{preventDismantleFunc},#{isGps})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_vehicle_real_status set
+        id=id,vehicle_id=#{vehicleId},onlined=#{onlined},first_reg_time=#{firstRegTime},online_status=#{onlineStatus},mils=#{mils},update_time=#{updateTime},lock_status=#{lockStatus},power_lock_status=#{powerLockStatus},prevent_dismantle_status=#{preventDismantleStatus},prevent_dismantle_func=#{preventDismantleFunc},is_gps=#{isGps}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+    <update id="updateByVehicleIdBatch" parameterType="java.util.List">
+        <foreach collection="list" item="map" index="index" open="" close="" separator=";">
+
+            update sys_vehicle_real_status set
+            create_time=create_time
+            <if test="map.updateTime != null">
+                ,update_time=#{map.updateTime}
+            </if>
+            <if test="map.onlineStatus != null">
+                , online_status= #{map.onlineStatus}
+            </if>
+            <if test="map.mils != null">
+                ,mils=#{map.mils}
+            </if>
+            <if test="map.onlined != null">
+                ,onlined=#{map.onlined}
+            </if>
+            <if test="map.firstRegTime != null">
+                ,first_reg_time=#{map.firstRegTime}
+            </if>
+            <if test="map.lng != null">
+                ,lng=#{map.lng}
+            </if>
+            <if test="map.lat != null">
+                ,lat=#{map.lat}
+            </if>
+            <if test="map.region != null">
+                ,current_gps_area_id=#{map.region}
+            </if>
+            <if test="map.isGps != null">
+                ,is_gps=#{map.isGps}
+            </if>
+
+            <where>
+                vehicle_id=#{map.vehicleId}
+            </where>
+        </foreach>
+    </update>
+    <update id="updateByVehicleId" parameterType="java.util.HashMap">
+        update sys_vehicle_real_status set
+        create_time=create_time
+        <if test="updateTime != null">
+            ,update_time=#{updateTime}
+        </if>
+        <if test="onlineStatus != null">
+            , online_status= #{onlineStatus}
+
+
+        </if>
+        <if test="mils != null">
+            ,mils=#{mils}
+        </if>
+        <if test="onlined != null">
+            ,onlined=#{onlined}
+        </if>
+        <if test="firstRegTime != null">
+            ,first_reg_time=#{firstRegTime}
+        </if>
+        <if test="lng != null">
+            ,lng=#{lng}
+        </if>
+        <if test="lat != null">
+            ,lat=#{lat}
+        </if>
+        <if test="region != null">
+            ,current_gps_area_id=#{region}
+        </if>
+        <if test="isGps != null">
+            ,is_gps=#{isGps}
+        </if>
+        <where>
+            vehicle_id=#{vehicleId}
+        </where>
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="java.util.HashMap">
+        delete from
+        sys_vehicle_real_status
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <select id="pagerModel_COUNT" resultType="java.lang.Long" parameterType="java.util.HashMap">
+        select count(distinct vs.vehicle_id)
+        from
+        sys_vehicle_real_status vs
+        join sys_vehicle v on v.id=vs.vehicle_id
+        left join sys_veh_model svm on v.veh_model_id = svm.id
+        left join dc_rule_type rule_type on rule_type.id = svm.rule_id
+        LEFT JOIN sys_term_model_unit stmu ON stmu.id = v.term_id
+        LEFT JOIN sys_term_model stm ON stm.id = stmu.sys_term_model_id
+        LEFT JOIN sys_unit sut ON sut.id = v.oper_unit_id
+        left join sys_area area on area.id = v.oper_license_city_id
+        left join sys_area sell_area on sell_area.id=v.sell_city_id
+        left join sys_area gps_area on gps_area.id=vs.current_gps_area_id
+        LEFT JOIN sys_unit vehUnit ON vehUnit.id = svm.veh_unit_id
+        left join sys_unit term_unit on term_unit.id=stm.unit_id
+        left join sys_veh_notice svn on svn.id=svm.notice_id
+        left join sys_veh_series svs on svs.id=svn.series_id
+        left join sys_veh_brand vehBrand on vehBrand.id=svs.brand_id
+        LEFT JOIN sys_veh_owner svo ON svo.id = v.oper_veh_owner_id
+        LEFT JOIN sys_owner_people sop ON sop.id = v.oper_support_owner_id
+        LEFT JOIN sys_veh_owner sopSell ON sopSell.id = v.sell_pri_veh_owner_id
+        <if test="userId != null and userId != ''">
+            left join sys_attention_veh sav on sav.veh_id = v.id
+        </if>
+        left join dc_rule ru on ru.id = stmu.support_protocol
+        left join dc_rule_type rt on ru.rule_type_id = rt.id
+        <where>
+            v.is_delete=0
+            and vs.online_status in (0,1,2)
+
+            <if test="vin != null and vin != ''">
+                AND v.vin LIKE CONCAT('%',#{vin},'%')
+            </if>
+            <if test="licensePlate != null and licensePlate != ''">
+                AND v.license_plate LIKE CONCAT('%',#{licensePlate},'%')
+            </if>
+            <if test="interNo != null and interNo != ''">
+                AND v.inter_no LIKE CONCAT('%',#{interNo},'%')
+            </if>
+            <if test="vehModelId != null and vehModelId != ''">
+                AND v.veh_model_id = #{vehModelId}
+            </if>
+            <if test="powerMode != null and powerMode!=''">
+                AND svm.power_mode = #{powerMode}
+            </if>
+            <if test="iccid != null and iccid != ''">
+                AND stmu.iccid LIKE CONCAT('%',#{iccid},'%')
+            </if>
+            <if test="termId != null and termId != ''">
+                AND stm.id =#{termId}
+            </if>
+            <if test="termSerialNumber != null and termSerialNumber != ''">
+                AND stmu.serial_number LIKE CONCAT('%',#{termSerialNumber},'%')
+            </if>
+            <if test="termModelName != null and termModelName != ''">
+                AND stm.name LIKE CONCAT('%',#{termModelName},'%')
+            </if>
+
+            <if test="operUnitId != null and operUnitId != ''">
+                AND v.oper_unit_id = #{operUnitId}
+            </if>
+            <if test="operUnitName != null and operUnitName != ''">
+                AND sut.name = #{operUnitName}
+            </if>
+            <if test="onlineStatus != null and onlineStatus != '' and onlineStatus gt 0
+                and onlineStatus lt 3">
+                AND vs.online_status = #{onlineStatus}
+                AND vs.onlined=1
+            </if>
+            <if test="onlineStatus != null and onlineStatus != '' and onlineStatus == 3">
+                AND vs.onlined=1
+            </if>
+            <if test="onlineStatus != null and onlineStatus != '' and onlineStatus == 4">
+                AND (vs.lng is null or vs.lng=0 or vs.lat is null or vs.lat=0 )
+            </if>
+            <if test="userId != null and userId != ''">
+                AND sav.user_id = #{userId} and sav.type = 0
+            </if>
+            <if test="onlineStatus != null and onlineStatus != ''  and  onlineStatus lt 1">
+                AND (vs.onlined is null or vs.onlined=0 )
+            </if>
+            <if test="offlineTime != null and offlineTime != ''">
+                AND vs.update_time is not null and TIMESTAMPDIFF(hour ,vs.update_time,now()) <![CDATA[>=]]>
+                #{offlineTime}
+                AND vs.online_status=2
+            </if>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+
+            <if test="operLicenseCityId != null and operLicenseCityId != ''">
+                and area.path LIKE CONCAT('%/',#{operLicenseCityId},'/%')
+            </if>
+            <if test="gpsCityId != null and gpsCityId != ''">
+                AND gps_area.path LIKE CONCAT('%/',#{gpsCityId},'/%')
+            </if>
+            <if test="keyword != null and keyword !=''">
+                and (v.vin like "%"#{keyword}"%" or v.license_plate like "%"#{keyword}"%")
+            </if>
+            <if test="isGps != null and isGps != '' and isGps != '9999' and isGps != '8888'">
+                AND vs.is_gps = #{isGps}
+            </if>
+            <if test="isGps == '9999'">
+                and vs.is_gps is null
+            </if>
+            <if test="isGps == '8888'">
+                AND (vs.lng is null or vs.lng=0 or vs.lat is null or vs.lat=0 )
+            </if>
+        </where>
+    </select>
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" resultOrdered="true" parameterType="java.util.HashMap">
+        select
+        v.license_plate licensePlate, v.vin,vehUnit.name vehUnitName,rt.name termRuleTypeName,rt.code termRuleTypeCode,
+        <if test="isFault!=null and isFault!=''">
+          ( case (select count(1) from fault_alarm_info f where f.vehicle_id=v.id and f.fault_status=1 and f.proces_status=1) when 0 then 2 else 1 end) faultStatus,
+        </if>
+        <include refid="more"/>
+
+        <include refid="moreColumns"/>
+
+        from
+        sys_vehicle_real_status vs
+        join sys_vehicle v on v.id=vs.vehicle_id
+        left join sys_veh_model svm on v.veh_model_id = svm.id
+        left join dc_rule_type rule_type on rule_type.id = svm.rule_id
+        LEFT JOIN sys_term_model_unit stmu ON stmu.id = v.term_id
+        LEFT JOIN sys_term_model stm ON stm.id = stmu.sys_term_model_id
+        LEFT JOIN sys_unit sut ON sut.id = v.oper_unit_id
+        left join sys_area area on area.id = v.oper_license_city_id
+        left join sys_area sell_area on sell_area.id=v.sell_city_id
+        left join sys_area gps_area on gps_area.id=vs.current_gps_area_id
+        LEFT JOIN sys_unit vehUnit ON vehUnit.id = svm.veh_unit_id
+        left join sys_unit term_unit on term_unit.id=stm.unit_id
+        left join sys_veh_notice svn on svn.id=svm.notice_id
+        left join sys_veh_series svs on svs.id=svn.series_id
+        left join sys_veh_brand vehBrand on vehBrand.id=svs.brand_id
+        LEFT JOIN sys_veh_owner svo ON svo.id = v.oper_veh_owner_id
+        LEFT JOIN sys_owner_people sop ON sop.id = v.oper_support_owner_id
+        LEFT JOIN sys_veh_owner sopSell ON sopSell.id = v.sell_pri_veh_owner_id
+        <if test="userId != null and userId != ''">
+            left join sys_attention_veh sav on sav.veh_id = v.id
+        </if>
+
+        left join dc_rule ru on ru.id = stmu.support_protocol
+        left join dc_rule_type rt on ru.rule_type_id = rt.id
+        <where>
+            v.is_delete=0
+            and vs.online_status in (0,1,2)
+
+            <if test="vin != null and vin != ''">
+                AND v.vin LIKE CONCAT('%',#{vin},'%')
+            </if>
+            <if test="licensePlate != null and licensePlate != ''">
+                AND v.license_plate LIKE CONCAT('%',#{licensePlate},'%')
+            </if>
+            <if test="interNo != null and interNo != ''">
+                AND v.inter_no LIKE CONCAT('%',#{interNo},'%')
+            </if>
+            <if test="vehModelId != null and vehModelId != ''">
+                AND v.veh_model_id = #{vehModelId}
+            </if>
+            <if test="powerMode != null and powerMode!=''">
+                AND svm.power_mode = #{powerMode}
+            </if>
+            <if test="iccid != null and iccid != ''">
+                AND stmu.iccid LIKE CONCAT('%',#{iccid},'%')
+            </if>
+            <if test="termId != null and termId != ''">
+                AND stm.id =#{termId}
+            </if>
+            <if test="termSerialNumber != null and termSerialNumber != ''">
+                AND stmu.serial_number LIKE CONCAT('%',#{termSerialNumber},'%')
+            </if>
+            <if test="termModelName != null and termModelName != ''">
+                AND stm.name LIKE CONCAT('%',#{termModelName},'%')
+            </if>
+
+            <if test="operUnitId != null and operUnitId != ''">
+                AND v.oper_unit_id = #{operUnitId}
+            </if>
+            <if test="operUnitName != null and operUnitName != ''">
+                AND sut.name = #{operUnitName}
+            </if>
+            <!-- 运营个人车主 -->
+            <if test="operVehOwnerId != null and operVehOwnerId != ''">
+                AND v.oper_veh_owner_id = #{operVehOwnerId}
+            </if>
+            <if test="onlineStatus != null and onlineStatus != '' and onlineStatus gt 0
+                and onlineStatus lt 3">
+                AND vs.online_status = #{onlineStatus}
+                AND vs.onlined=1
+            </if>
+            <if test="onlineStatus != null and onlineStatus != '' and onlineStatus == 3">
+                AND vs.onlined=1
+            </if>
+            <if test="onlineStatus != null and onlineStatus != '' and onlineStatus == 4">
+                AND (vs.lng is null or vs.lng=0 or vs.lat is null or vs.lat=0 )
+            </if>
+            <if test="userId != null and userId != ''">
+                AND sav.user_id = #{userId} and sav.type = 0
+            </if>
+            <if test="onlineStatus != null and onlineStatus != ''  and  onlineStatus lt 1">
+                AND (vs.onlined is null or vs.onlined=0 )
+            </if>
+            <if test="offlineTime != null and offlineTime != ''">
+                AND vs.update_time is not null and TIMESTAMPDIFF(hour ,vs.update_time,now()) <![CDATA[>=]]>
+                #{offlineTime}
+                AND vs.online_status=2
+            </if>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+
+            <if test="operLicenseCityId != null and operLicenseCityId != ''">
+                and area.path LIKE CONCAT('%/',#{operLicenseCityId},'/%')
+            </if>
+            <if test="gpsCityId != null and gpsCityId != ''">
+                AND gps_area.path LIKE CONCAT('%/',#{gpsCityId},'/%')
+            </if>
+
+            <if test="keyword != null and keyword !=''">
+                and (v.vin like "%"#{keyword}"%" or v.license_plate like "%"#{keyword}"%")
+            </if>
+            <if test="isGps != null and isGps != '' and isGps != '9999' and isGps != '8888'">
+                AND vs.is_gps = #{isGps}
+            </if>
+            <if test="isGps == '9999'">
+                and vs.is_gps is null
+            </if>
+            <if test="isGps == '8888'">
+                AND (vs.lng is null or vs.lng=0 or vs.lat is null or vs.lat=0 )
+            </if>
+            <if test="importSearchValues != null and importSearchValues.size()>0">
+                and v.vin in
+                <foreach collection="importSearchValues" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        <if test="orderBy == null or orderBy == 1">
+            order by vs.update_time desc
+        </if>
+        <if test="orderBy != null and orderBy == 2">
+            order by v.create_time desc
+        </if>
+    </select>
+
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.VehicleRealStatus" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_vehicle_real_status vs
+
+        <where>
+            vs.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 车辆的其它join 信息统一放这里 -->
+    <sql id="more">
+        v.uuid,
+        gps_area.name gpsCityName,
+        area.name operLicenseCityName,
+        v.inter_no as interNo,
+        svm.veh_model_name as vehModelName,
+        stm.term_model_name as termModelName,
+        sut.`name` as operUnitName,
+        rule_type.name ruleTypeName,
+        svm.power_mode as powerMode,
+        v.veh_model_id as vehModelId,
+        stmu.iccid as iccid,
+        stmu.serial_number termSerialNumber,
+        v.term_id as termId,
+        v.oper_unit_id as operUnitId,
+        <if test="userId != null and userId != ''">
+            sav.user_id as userId,
+        </if>
+        sell_area.name sellCityName,
+        term_unit.name termUnitName,
+        svs.name vehSeriesName,
+        vehBrand.name vehBrandName,
+        svo.owner_name operOwnerName,
+        sopSell.owner_name ownerName,
+        sop.owner_name operSupportOwnerName,
+    </sql>
+
+
+    <!-- 根据车辆id查询 此处统一获取单车的静态数据 -->
+    <select id="findByVehicleId" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="more"/>
+        v.license_plate licensePlate,v.vin,vehUnit.name vehUnitName,
+        rt.name termRuleTypeName,rt.code termRuleTypeCode, svm.efficiency_json efficiencyJson,
+        chp.identification_id identificationId,chp.filing_status filingStatus,chp.term_public_key termPubKey,
+        svf.update_time filingTime,
+        <include refid="moreColumns"/>
+        from
+        sys_vehicle v
+        left join sys_vehicle_real_status vs on v.id=vs.vehicle_id
+        left join sys_area area on area.id = v.oper_license_city_id
+        left join sys_veh_model svm on v.veh_model_id = svm.id
+        left join dc_rule_type rule_type on rule_type.id = svm.rule_id
+        LEFT JOIN sys_term_model_unit stmu ON stmu.id = v.term_id
+        LEFT JOIN sys_term_model stm ON stm.id = stmu.sys_term_model_id
+        LEFT JOIN sys_unit sut ON sut.id = v.oper_unit_id
+        LEFT JOIN sys_unit vehUnit ON vehUnit.id = svm.veh_unit_id
+
+        left join sys_veh_notice svn on svn.id=svm.notice_id
+        left join sys_veh_series svs on svs.id=svn.series_id
+        left join sys_veh_brand vehBrand on vehBrand.id=svs.brand_id
+        left join sys_area sell_area on sell_area.id=v.sell_city_id
+        left join sys_unit term_unit on term_unit.id=stm.unit_id
+        left join sys_area gps_area on gps_area.id=vs.current_gps_area_id
+        LEFT JOIN sys_veh_owner svo ON svo.id = v.oper_veh_owner_id
+        LEFT JOIN sys_owner_people sop ON sop.id = v.oper_support_owner_id
+        LEFT JOIN sys_veh_owner sopSell ON sopSell.id = v.sell_pri_veh_owner_id
+        left join dc_rule ru on ru.id = stmu.support_protocol
+        left join dc_rule_type rt on ru.rule_type_id = rt.id
+
+        LEFT JOIN sys_encryption_chip chp on chp.id = stmu.encryption_chip_id
+        left join sys_vehicle_filing svf on svf.vehicle_id=v.id
+
+        <where>
+
+            v.id=#{vehicleId}
+            and v.is_delete=0
+
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 同步车辆状态Task中使用,简单查询uuid和id -->
+    <select id="pagerSimple" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        select
+        v.uuid,v.id ,vs.onlined,vs.update_time,vs.first_reg_time firstRegTime, rt.name ruleTypeName
+        from
+        sys_vehicle v
+        join sys_vehicle_real_status vs on v.id=vs.vehicle_id
+        left join sys_term_model_unit stmu on v.term_id = stmu.id
+        left join dc_rule ru on ru.id = stmu.support_protocol
+        left join dc_rule_type rt on ru.rule_type_id = rt.id
+
+        where v.is_delete=0
+        and vs.online_status in (0,1,2)
+        <if test="sharding != null and sharding eq 0">
+            and (substring(v.id,-1) REGEXP '[0-9]')
+        </if>
+        <if test="sharding != null and sharding eq 1">
+            and (substring(v.id,-1) REGEXP '[^0-9]')
+        </if>
+
+        limit #{offset},#{limit};
+
+    </select>
+
+    <select id="findByRuleId" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from dc_rule ru
+        left join dc_rule_type rt on ru.rule_type_id = rt.id
+        where ru.id = #{supportProtocol}
+    </select>
+
+    <select id="findAreaByCode" resultType="java.util.Map" parameterType="java.lang.String">
+        select
+          a.id,a.code
+        from
+            sys_area a
+        where a.code=#{code}
+
+    </select>
+    <select id="findAreaByCodes" resultType="java.util.Map" parameterType="java.util.List">
+        select
+        a.id,a.code
+        from
+        sys_area a
+        where a.code in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+
+    </select>
+    <select id="dayReport" resultType="java.util.Map" parameterType="java.util.Map">
+        select  date_format(report_date,'%Y-%m') month ,group_concat(concat(date_format(report_date,'%d'),'|',day_gps_mileage,'_',day_valid_mileage) order by date_format(report_date,'%d') asc) days
+         from veh_dayreport_mileage_check
+        where vin=#{vin}
+        and report_date<![CDATA[>=]]> #{startTime}
+        and report_date<![CDATA[<=]]>#{endTime}
+
+        group by date_format(report_date,'%Y-%m')
+    </select>
+    <select id="vehOnMap" parameterType="java.util.Map" resultType="java.util.Map">
+        select v.id,v.uuid, svs.lng, svs.lat,svs.online_status onlneStatus,svm.power_mode powerMode,
+        v.license_plate licensePlate,v.vin,v.inter_no interNo
+        from sys_vehicle_real_status svs
+        join sys_vehicle v on v.id=svs.vehicle_id
+        left join sys_veh_model svm on v.veh_model_id = svm.id
+
+        where v.is_delete=0 and v.is_fictitious=0
+        <if test="cityId != null">
+            and v.oper_license_city_id=#{cityId}
+        </if>
+        <if test="checkLngLat != null">
+            and svs.lng>0
+            and svs.lat>0
+        </if>
+        <if test="authSQL != null">
+            <include refid="authSQL"/>
+        </if>
+    </select>
+    <insert id="syncVehicle">
+
+
+        insert into sys_vehicle_real_status(id,vehicle_id,create_time)
+            (select  replace(v.uuid,'-','') , v.id,now()  from sys_vehicle v
+        left join sys_vehicle_real_status vs on v.id=vs.vehicle_id
+        where v.is_delete=0
+        and vs.id is null)
+    </insert>
+
+    <select id="selectGpsArea" parameterType="java.util.Map" resultType="java.util.Map">
+        select * from view_area_code
+    </select>
+</mapper>

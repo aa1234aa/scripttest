@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.fault.dao.NotifierVehicleLkMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.fault.domain.NotifierVehicleLk" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+        fnvl.id  ,fnvl.notifier_id ,fnvl.vehicle_id ,fnvl.create_by ,fnvl.create_time
+    </sql>
+    <sql id="moreColumns">
+        fnvl.id  ,fnvl.notifier_id ,fnvl.vehicle_id ,fnvl.create_by ,fnvl.create_time
+    </sql>
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        fault_notifier_vehicle_lk (id,notifier_id,vehicle_id,create_by,create_time)
+        values
+        (#{id},#{notifierId},#{vehicleId},#{createBy},#{createTime})
+    </insert>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="java.util.HashMap">
+        delete from
+        fault_notifier_vehicle_lk
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>, sv.vin, sv.license_plate, sa.`name` operLicenseCity, sv.inter_no interNo,
+        vm.veh_model_name from fault_notifier_vehicle_lk fnvl
+        left join sys_vehicle sv on fnvl.vehicle_id = sv.id
+        left join sys_veh_model vm on sv.veh_model_id = vm.id
+        left join sys_area sa on sv.oper_license_city_id = sa.id
+        <where>
+            fnvl.notifier_id = #{notifierId}
+            <if test="vin != null and vin !=''">
+                and sv.vin like "%"#{vin}"%"
+            </if>
+            <if test="licensePlate != null and licensePlate !=''">
+                and sv.license_plate like "%"#{licensePlate}"%"
+            </if>
+            <if test="operLicenseCity != null and operLicenseCity !=''">
+                and sv.oper_area_id = #{operLicenseCity}
+            </if>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+        order by fnvl.create_time desc
+    </select>
+
+    <!-- 分配人数 -->
+    <select id="allocateCount"  resultType="java.lang.Integer">
+        select count(*) from fault_notifier_vehicle_lk fnvl where vehicle_id = #{vehicleId}
+    </select>
+
+    <!-- 分配的车辆数 -->
+    <select id="allocateVehicleCount"  resultType="java.lang.Integer">
+        select count(*) from fault_notifier_vehicle_lk fnvl where notifier_id = #{notifierId}
+    </select>
+
+    <!-- 分配的车辆 -->
+    <select id="allocateVehicle"  resultMap="tailResults">
+        select  <include refid="moreColumns"/> from fault_notifier_vehicle_lk fnvl where notifier_id = #{notifierId}
+    </select>
+
+    <!-- 根据用户id删除 -->
+    <delete id="deleteByUserId">
+        delete lk from fault_notifier_vehicle_lk lk, fault_notifier_setting fns
+        where lk.notifier_id = fns.id and fns.user_id = #{userId}
+    </delete>
+
+    <!-- 根据负责人id删除 -->
+    <delete id="deleteByNotifierId">
+        delete from fault_notifier_vehicle_lk where notifier_id = #{notifierId}
+    </delete>
+
+    <!-- 批量删除 -->
+    <delete id="deleteBatch">
+        delete from fault_notifier_vehicle_lk
+        where notifier_id = #{notifierId}
+        and vehicle_id in
+        <foreach collection="vehicleIds" item="vehicleId" open="(" separator="," close=")">
+            #{vehicleId}
+        </foreach>
+    </delete>
+
+    <insert id="insertBatch" parameterType="list">
+        insert into
+        fault_notifier_vehicle_lk (id, notifier_id, vehicle_id, create_by, create_time)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id}, #{item.notifierId}, #{item.vehicleId}, #{item.createBy}, #{item.createTime})
+        </foreach>
+    </insert>
+
+</mapper>

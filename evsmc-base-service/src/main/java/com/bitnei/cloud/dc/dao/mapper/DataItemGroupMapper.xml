@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.dc.mapper.DataItemGroupMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.dc.domain.DataItemGroup" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+            <result property="ruleTypeDisplay" column="rule_type_display"/>
+            <result property="port" column="port"/>
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        <if test="authSQL != null and '' != authSQL">
+            and ${authSQL}
+        </if>
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    dig.id  ,dig.name ,dig.rule_type_id ,dig.code ,dig.note ,dig.create_time ,dig.create_by ,dig.update_time ,dig.update_by,dig.parent_id,dig.path,dig.path_name,dig.is_national_standard
+    </sql>
+    <sql id="moreColumns">
+    dig.id  ,dig.name ,dig.rule_type_id ,dig.code ,dig.note ,dig.create_time ,dig.create_by ,dig.update_time ,dig.update_by,dig.parent_id,dig.path,dig.path_name,dig.is_national_standard
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.dc.domain.DataItemGroup"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        dc_data_item_group dig
+        <where>
+            dig.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+     <!-- 根据组名查询 -->
+    <select id="findByName" resultType="com.bitnei.cloud.dc.domain.DataItemGroup"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        dc_data_item_group dig
+        <where>
+            dig.name=#{name}
+            <if test="ruleTypeId != null">
+              and dig.rule_type_id = #{ruleTypeId}
+            </if>
+            <if test="id != null">
+                and dig.id != #{id}
+            </if>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据组编码查询 -->
+    <select id="findByCode" resultType="com.bitnei.cloud.dc.domain.DataItemGroup"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        dc_data_item_group dig
+        <where>
+            dig.code=#{code}
+            and dig.parent_id = #{parentId}
+            <if test="id != null">
+                and dig.id != #{id}
+            </if>
+            <if test="ruleTypeId != null">
+                and dig.rule_type_id = #{ruleTypeId}
+            </if>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据组编码查询 -->
+    <select id="searchByCode" resultType="com.bitnei.cloud.dc.domain.DataItemGroup"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        dc_data_item_group dig
+        <where>
+            dig.code like concat('%',#{code},'%')
+            and dig.rule_type_id=#{ruleTypeId}
+            <if test="name != null">
+                and dig.name like CONCAT('%',#{name},'%')
+            </if>
+            <if test="id != null">
+                and dig.id != #{id}
+            </if>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        dc_data_item_group (id,name,rule_type_id,code,note,create_time,create_by,parent_id,path,path_name,is_national_standard)
+        values
+        (#{id},#{name},#{ruleTypeId},#{code},#{note},#{createTime},#{createBy},#{parentId},#{path},#{pathName},#{isNationalStandard})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update dc_data_item_group set
+        id=id,name=#{name},rule_type_id=#{ruleTypeId},code=#{code},note=#{note},update_time=#{updateTime},update_by=#{updateBy},parent_id=#{parentId},path=#{path},path_name=#{pathName},is_national_standard=#{isNationalStandard}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        dc_data_item_group
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>, rt.name as rule_type_display
+        from
+        dc_data_item_group dig
+        left join dc_rule_type rt on rt.id = dig.rule_type_id
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="name != null">
+                and dig.name like "%"#{name}"%"
+            </if>
+            <if test="code != null">
+                and dig.code like "%"#{code}"%"
+            </if>
+            <if test="ruleTypeId != null">
+                and dig.rule_type_id = #{ruleTypeId}
+            </if>
+            <if test="excludeId != null and excludeId != ''">
+                and dig.path not like concat('%/',#{excludeId},'/%')
+            </if>
+            <!-- 过滤id -->
+            <if test="excludeIds != null">
+                AND dig.id NOT IN
+                <foreach collection="excludeIds" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="parentId != null">
+                and dig.parent_id = #{parentId}
+            </if>
+        </where>
+
+    </select>
+
+    <!-- 树结构查询 -->
+    <select id="treeModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>, null as rule_type_display, null as port
+        from dc_data_item_group dig
+        where dig.id = '0'
+        <if test="authSQL != null">
+            <include refid="authSQL"/>
+        </if>
+        union all
+        select
+        <include refid="moreColumns"/>, rt.name as rule_type_display, rt.port
+        from
+        dc_data_item_group dig
+        left join dc_rule_type rt on rt.id = dig.rule_type_id
+        <where>
+            dig.id != '0'
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="name != null">
+                and dig.name like "%"#{name}"%"
+            </if>
+            <if test="code != null">
+                and dig.code like "%"#{code}"%"
+            </if>
+            <if test="ruleTypeId != null">
+                and dig.rule_type_id = #{ruleTypeId}
+            </if>
+            <if test="excludeId != null and excludeId != ''">
+                and dig.path not like concat('%/',#{excludeId},'/%')
+            </if>
+        </where>
+
+    </select>
+
+    <!-- 根据协议类型ID查询包含数据项的数据项类型IDs -->
+    <select id="findItemGroupIds" resultType="java.lang.String" parameterType="java.util.HashMap">
+        select distinct di.item_group_id from dc_data_item di
+        where di.rule_type_id = #{ruleTypeId}
+    </select>
+
+    <!-- 根据协议类型计算数据项类型数量 -->
+    <select id="findByRuleTypeIdCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        SELECT COUNT(dig.id) FROM dc_data_item_group dig
+        WHERE dig.rule_type_id = #{ruleTypeId}
+    </select>
+
+    <!-- 根据父节点ID计算数据项类型数量 -->
+    <select id="findByParentIdCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        SELECT COUNT(dig.id) FROM dc_data_item_group dig
+        WHERE dig.parent_id = #{parentId}
+    </select>
+</mapper>

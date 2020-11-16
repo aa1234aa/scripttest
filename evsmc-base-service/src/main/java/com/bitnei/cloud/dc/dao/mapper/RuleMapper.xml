@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.dc.dao.RuleMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.dc.domain.Rule" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        <if test="authSQL != null and '' != authSQL">
+            and ${authSQL}
+        </if>
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    ru.id  ,ru.name ,ru.rule_type_id ,ru.note ,ru.create_time ,ru.create_by ,ru.update_time ,ru.update_by, ru.sync_data_item
+    </sql>
+    <sql id="moreColumns">
+    ru.id  ,ru.name ,ru.rule_type_id ,ru.note ,ru.create_time ,ru.create_by ,ru.update_time ,ru.update_by, ru.sync_data_item
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.dc.domain.Rule"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        dc_rule ru
+        <where>
+            ru.id=#{id}
+        </where>
+    </select>
+
+     <!-- 根据名称查询 -->
+    <select id="findByName" resultType="com.bitnei.cloud.dc.domain.Rule"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        dc_rule ru
+        <where>
+            ru.name=#{name}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>    
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        dc_rule (id,name,rule_type_id,note,create_time,create_by)
+        values
+        (#{id},#{name},#{ruleTypeId},#{note},#{createTime},#{createBy})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update dc_rule set
+        id=id,name=#{name},rule_type_id=#{ruleTypeId},note=#{note},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        dc_rule
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>, rt.support_encrypt, rt.protocol
+        from
+        dc_rule ru
+        left join dc_rule_type rt
+        on ru.rule_type_id = rt.id
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="name != null">
+                and ru.name like "%"#{name}"%"
+            </if>
+            <if test="ruleTypeId != null">
+                and ru.rule_type_id = #{ruleTypeId}
+            </if>
+            <if test="syncDataItem != null">
+                and ru.sync_data_item = #{syncDataItem}
+            </if>
+        </where>
+        order by ru.create_time desc
+    </select>
+
+    <!-- 根据协议类型计算协议数量 -->
+    <select id="findByRuleTypeIdCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        SELECT COUNT(ru.id) FROM dc_rule ru
+        WHERE ru.rule_type_id = #{ruleTypeId}
+    </select>
+
+    <!-- 修改同步数据项状态 -->
+    <update id="updateSyncDataItem" parameterType="java.util.HashMap">
+        update dc_rule set sync_data_item = #{syncItem},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </update>
+</mapper>

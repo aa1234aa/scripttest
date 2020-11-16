@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.LogMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.Log" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+        log.id , log.module_name ,log.action ,log.url ,log.oper ,log.ip ,date_format(log.time, '%Y-%m-%d %H:%i:%s') as time ,log.times ,log.content ,log.result
+    </sql>
+    <sql id="moreColumns">
+        log.id , log.module_name ,log.action ,log.url ,log.oper ,log.ip ,date_format(log.time, '%Y-%m-%d %H:%i:%s') as time ,log.times ,log.content ,log.result
+    </sql>
+    <insert id="insert" parameterType="com.bitnei.cloud.sys.domain.Log">
+        insert into
+          sys_log( id, module_name, action, url, oper, ip, time, times, content, result )
+        values
+          (#{id}, #{moduleName}, #{action}, #{url}, #{oper}, #{ip}, #{time}, #{times}, #{content}, #{result} )
+    </insert>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.Log"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_log log
+        <where>
+            log.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        sys_log
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" resultOrdered="true" parameterType="java.util.HashMap">
+        SELECT
+        <include refid="moreColumns"/>
+        FROM
+        sys_log log
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="moduleName != null and moduleName!= ''">
+                AND log.module_name LIKE CONCAT('%',#{moduleName},'%')
+            </if>
+            <if test="action != null and action!= ''">
+                AND log.action LIKE CONCAT('%',#{action},'%')
+            </if>
+            <if test="oper != null and oper!= ''">
+                AND log.oper LIKE CONCAT('%',#{oper},'%')
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                AND <![CDATA[log.time >= #{beginTime,jdbcType=DATE} ]]>
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND <![CDATA[log.time <= #{endTime,jdbcType=DATE} ]]>
+            </if>
+        </where>
+        order by log.time desc
+
+    </select>
+
+    <!-- 分页计数 -->
+    <select id="pagerModel_COUNT" resultType="long">
+        select count(log.id) from
+        sys_log log
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="moduleName != null and moduleName!= ''">
+                AND log.module_name LIKE CONCAT('%',#{moduleName},'%')
+            </if>
+            <if test="action != null and action!= ''">
+                AND log.action LIKE CONCAT('%',#{action},'%')
+            </if>
+            <if test="oper != null and oper!= ''">
+                AND log.oper LIKE CONCAT('%',#{oper},'%')
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                AND <![CDATA[log.time >= #{beginTime,jdbcType=DATE} ]]>
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND <![CDATA[log.time <= #{endTime,jdbcType=DATE} ]]>
+            </if>
+        </where>
+    </select>
+</mapper>

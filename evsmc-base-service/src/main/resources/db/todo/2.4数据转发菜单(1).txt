@@ -1,0 +1,55 @@
+
+
+-- 1、字典
+
+INSERT IGNORE INTO `sys_dict_category` (`id`, `name`, `code`, `note`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('fdb45d5d9da940949635266a42e76de3', '添加方式', 'ADD_MODE', '转发规则添加方式', '2019-07-11 11:35:00', 'admin', NULL, NULL);
+INSERT IGNORE INTO `sys_dict` (`id`, `name`, `val`, `type`, `note`, `group_name`, `order_num`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('03da313f43ce456ebed6ca408587ecfd', '手动添加', '2', 'ADD_MODE', '手动添加', '', '2', '2019-07-11 11:36:35', 'admin', NULL, NULL);
+INSERT IGNORE INTO `sys_dict` (`id`, `name`, `val`, `type`, `note`, `group_name`, `order_num`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('df45dec6646745119728f83d50ab1548', '规则添加', '1', 'ADD_MODE', '规则添加', '', '1', '2019-07-11 11:36:04', 'admin', NULL, NULL);
+
+INSERT IGNORE INTO `sys_dict_category` (`id`, `name`, `code`, `note`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('15d85688efcf4b819c2624b7788a1cfe', '通讯方式', 'PROTOCOL_MODE', '协议类型的通讯方式', '2019-07-08 19:49:05', 'admin', NULL, NULL);
+INSERT IGNORE INTO `sys_dict` (`id`, `name`, `val`, `type`, `note`, `group_name`, `order_num`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('2fb146fcf4544211a394232436c39e7f', 'GB_T17691', '2', 'PROTOCOL_MODE', 'GB_T17691', '', '2', '2019-07-08 19:51:19', 'admin', NULL, NULL);
+INSERT IGNORE INTO `sys_dict` (`id`, `name`, `val`, `type`, `note`, `group_name`, `order_num`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('c59353da5067413e9a417b412a309465', 'JT/T808交通部', '3', 'PROTOCOL_MODE', 'JT/T808（交通部）', '', '3', '2019-07-08 19:51:50', 'admin', NULL, NULL);
+INSERT IGNORE INTO `sys_dict` (`id`, `name`, `val`, `type`, `note`, `group_name`, `order_num`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('da16bea9fa9f4c64b3ae5c7dd740d61c', 'GB/T-32960', '1', 'PROTOCOL_MODE', 'GB/T-32960', '', '1', '2019-07-08 19:49:51', 'admin', NULL, NULL);
+
+
+-- 2、功能按钮
+
+-- 转发车辆-->已添加车辆
+INSERT IGNORE INTO `sys_module` (`id`, `parent_id`, `name`, `code`, `is_root`, `is_fun`, `path`, `icon`, `action`, `is_fullscreen`, `order_num`, `is_hidden`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('2d486bdb359144f3bd0da40115a87740', '33f6bb5ac5da43f7b2638d4bfbc54cf4', '已添加车辆添加', 'forwardVehicleRuleAddedAdd', NULL, '1', '4ca23230445a439aa46443e97fc22adf/6842c8c5dbe2422083026471a29ce99f/33f6bb5ac5da43f7b2638d4bfbc54cf4/2d486bdb359144f3bd0da40115a87740/', '', '', NULL, '1', '0', '2019-07-16 10:42:37', 'admin', '2019-07-16 10:46:32', 'admin');
+INSERT IGNORE INTO `sys_module` (`id`, `parent_id`, `name`, `code`, `is_root`, `is_fun`, `path`, `icon`, `action`, `is_fullscreen`, `order_num`, `is_hidden`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('86d453486d58480cbcdc76eaf67e4700', '33f6bb5ac5da43f7b2638d4bfbc54cf4', '已添加车辆删除', 'forwardVehicleRuleAddedBatchRemove', NULL, '1', '4ca23230445a439aa46443e97fc22adf/6842c8c5dbe2422083026471a29ce99f/33f6bb5ac5da43f7b2638d4bfbc54cf4/86d453486d58480cbcdc76eaf67e4700/', '', '', NULL, '1', '0', '2019-07-16 10:45:46', 'admin', NULL, NULL);
+INSERT IGNORE INTO `sys_module` (`id`, `parent_id`, `name`, `code`, `is_root`, `is_fun`, `path`, `icon`, `action`, `is_fullscreen`, `order_num`, `is_hidden`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('f733d4c408d748828936a28200d32b0d', '33f6bb5ac5da43f7b2638d4bfbc54cf4', '已添加车辆导出', 'forwardVehicleRuleAddedExport', NULL, '1', '4ca23230445a439aa46443e97fc22adf/6842c8c5dbe2422083026471a29ce99f/33f6bb5ac5da43f7b2638d4bfbc54cf4/f733d4c408d748828936a28200d32b0d/', '', '', NULL, '1', '0', '2019-07-16 10:45:05', 'admin', NULL, NULL);
+
+
+-- 转发车辆-->黑名单
+INSERT IGNORE INTO `sys_module` (`id`, `parent_id`, `name`, `code`, `is_root`, `is_fun`, `path`, `icon`, `action`, `is_fullscreen`, `order_num`, `is_hidden`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('38c9807dd5f743c0a57f41d02d3a6c7e', '6842c8c5dbe2422083026471a29ce99f', '转发车辆黑名单', 'blackList', NULL, '0', '4ca23230445a439aa46443e97fc22adf/6842c8c5dbe2422083026471a29ce99f/38c9807dd5f743c0a57f41d02d3a6c7e/', '', '/forwardedVehicleBlackList', NULL, '6', '0', '2019-07-05 11:40:36', 'admin', '2019-07-05 13:42:26', 'admin');
+INSERT IGNORE INTO `sys_module` (`id`, `parent_id`, `name`, `code`, `is_root`, `is_fun`, `path`, `icon`, `action`, `is_fullscreen`, `order_num`, `is_hidden`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('69664898ea23445893785d2115e28f33', '38c9807dd5f743c0a57f41d02d3a6c7e', '移出黑名单', 'moveBlackList', NULL, '1', '4ca23230445a439aa46443e97fc22adf/6842c8c5dbe2422083026471a29ce99f/38c9807dd5f743c0a57f41d02d3a6c7e/69664898ea23445893785d2115e28f33/', '', '', NULL, '1', '0', '2019-07-05 14:39:00', 'admin', NULL, NULL);
+INSERT IGNORE INTO `sys_module` (`id`, `parent_id`, `name`, `code`, `is_root`, `is_fun`, `path`, `icon`, `action`, `is_fullscreen`, `order_num`, `is_hidden`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('9bb7ffa050f14fe4bf44994adf005ede', '38c9807dd5f743c0a57f41d02d3a6c7e', '导出', 'blackListExport', NULL, '1', '4ca23230445a439aa46443e97fc22adf/6842c8c5dbe2422083026471a29ce99f/38c9807dd5f743c0a57f41d02d3a6c7e/9bb7ffa050f14fe4bf44994adf005ede/', '', '', NULL, '1', '0', '2019-07-05 14:38:21', 'admin', NULL, NULL);
+
+
+-- 上面部分已经迁移到flyway
+
+-- 3、升级平台默认规则
+
+drop table dc_forward_rule_platform;
+create temporary table dc_forward_rule_platform
+select uuid() as id, concat(dp.name, '-默认规则') as name, 1 as status, '升级2.4时sql生成' as note, now() as create_time, 'admin' as create_by, 1 as rule_type,  1 as default_rule, dp.id as platform_id from dc_forward_platform dp where id not in (
+select dp.id from dc_forward_rule df, dc_forward_platform dp, dc_platform_rule_lk lk
+where df.id = lk.forward_rule_id and dp.id = lk.platform_id and df.default_rule = 1
+);
+
+
+-- #创建默认规则
+insert IGNORE into dc_forward_rule(id, name, status, note, create_time, create_by, rule_type, default_rule)
+select dfrp.id, dfrp.name, dfrp.status, dfrp.note, dfrp.create_time, dfrp.create_by, dfrp.rule_type, dfrp.default_rule from dc_forward_rule_platform dfrp;
+
+
+-- #创建规则项
+insert IGNORE into dc_forward_rule_item(forward_rule_id, create_time, create_by)
+select dfrp.id, now(), 'admin' from dc_forward_rule_platform dfrp;
+
+
+-- #创建平台规则关系
+insert IGNORE into dc_platform_rule_lk (id, forward_rule_id, platform_id, create_time, create_by)
+select uuid(), dfrp.id, dfrp.platform_id, now(), 'admin' from dc_forward_rule_platform dfrp;
+
+

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.FilingRecordMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.FilingRecord" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    sfr.id  ,sfr.from_type ,sfr.from_id ,sfr.from_status ,sfr.create_time ,sfr.create_by ,sfr.update_time ,sfr.update_by
+    </sql>
+    <sql id="moreColumns">
+    sfr.id  ,sfr.from_type ,sfr.from_id ,sfr.from_status ,sfr.create_time ,sfr.create_by ,sfr.update_time ,sfr.update_by
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.FilingRecord"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_filing_record sfr
+        <where>
+            sfr.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据fromId查询 -->
+    <select id="findByFromId" resultType="com.bitnei.cloud.sys.domain.FilingRecord"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_filing_record sfr
+        where sfr.from_id = #{fromId}
+        <if test="authSQL != null">
+            <include refid="authSQL"/>
+        </if>
+        <if test="fromStatus != null">
+            and sfr.from_status = #{fromStatus}
+        </if>
+
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_filing_record (id,from_type,from_id,from_status,create_time,create_by)
+        values
+        (#{id},#{fromType},#{fromId},#{fromStatus},#{createTime},#{createBy})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_filing_record set
+        id=id,from_type=#{fromType},from_id=#{fromId},from_status=#{fromStatus},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        sys_filing_record
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap" resultOrdered="true">
+        select
+          <include refid="moreColumns"/>
+        from
+        sys_filing_record sfr
+        <where>
+            <if test="authSQL != null">
+              <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </select>
+</mapper>

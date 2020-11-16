@@ -1,0 +1,1 @@
+INSERT IGNORE INTO `sys_unit_type` (`id`, `name`, `code`, `parent_id`, `path`, `notes`, `is_root`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('369bdaf48ba34e9aac67bf200790c26c', '加密芯片生产企业', '1008', '0', '/0/369bdaf48ba34e9aac67bf200790c26c/', '', '0', '2019-07-16 11:29:51', 'admin', '2019-07-16 11:30:13', 'admin');

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.veh.mapper.DayreportRegionMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.veh.domain.DayreportRegion" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+            <result property="licensePlate" column="license_plate" />
+            <result property="interNo" column="inter_no" />
+            <result property="operLicenseCityId" column="oper_license_city_id" />
+            <result property="operUnitId" column="oper_unit_id" />
+            <result property="stage" column="stage" />
+            <result property="endTime" column="end_time" />
+            <result property="vehModelId" column="veh_model_id" />
+            <result property="isDelete" column="is_delete" javaType="java.lang.Byte" />
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    dreg.id  ,dreg.vid ,dreg.vin ,dreg.report_date ,dreg.province ,dreg.city ,dreg.first_online_time ,dreg.first_start_mileage ,dreg.last_commit_time ,dreg.last_end_mileage ,dreg.check_data_total_num ,dreg.invalid_num ,dreg.abnormal_num ,dreg.meter_total_mileage ,dreg.deduct_jump_mileage ,dreg.deduct_current_mileage ,dreg.valid_total_mileage ,dreg.gps_total_mileage ,dreg.valid_gps_deviation ,dreg.online_valid_deviation ,dreg.check_total_mileage ,dreg.run_time_sum ,dreg.charge_time_sum ,dreg.charge_soc_min ,dreg.power ,dreg.charge_soc_max ,dreg.online_time_sum ,dreg.speed_max ,dreg.speed_avg
+    </sql>
+    <sql id="moreColumns">
+    dreg.id  ,dreg.vid ,dreg.vin ,dreg.report_date ,dreg.province ,dreg.city ,dreg.first_online_time ,dreg.first_start_mileage ,dreg.last_commit_time ,dreg.last_end_mileage ,dreg.check_data_total_num ,dreg.invalid_num ,dreg.abnormal_num ,dreg.meter_total_mileage ,dreg.deduct_jump_mileage ,dreg.deduct_current_mileage ,dreg.valid_total_mileage ,dreg.gps_total_mileage ,dreg.valid_gps_deviation ,dreg.online_valid_deviation ,dreg.check_total_mileage ,dreg.run_time_sum ,dreg.charge_time_sum ,dreg.charge_soc_min ,dreg.power ,dreg.charge_soc_max ,dreg.online_time_sum ,dreg.speed_max ,dreg.speed_avg
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.veh.domain.DayreportRegion"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        veh_dayreport_region dreg
+        <where>
+            dreg.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        veh_dayreport_region (id,vid,vin,report_date,province,city,first_online_time,first_start_mileage,last_commit_time,last_end_mileage,check_data_total_num,invalid_num,abnormal_num,meter_total_mileage,deduct_jump_mileage,deduct_current_mileage,valid_total_mileage,gps_total_mileage,valid_gps_deviation,online_valid_deviation,check_total_mileage,run_time_sum,charge_time_sum,charge_soc_min,power,charge_soc_max,online_time_sum,speed_max,speed_avg)
+        values
+        (#{id},#{vid},#{vin},#{reportDate},#{province},#{city},#{firstOnlineTime},#{firstStartMileage},#{lastCommitTime},#{lastEndMileage},#{checkDataTotalNum},#{invalidNum},#{abnormalNum},#{meterTotalMileage},#{deductJumpMileage},#{deductCurrentMileage},#{validTotalMileage},#{gpsTotalMileage},#{validGpsDeviation},#{onlineValidDeviation},#{checkTotalMileage},#{runTimeSum},#{chargeTimeSum},#{chargeSocMin},#{power},#{chargeSocMax},#{onlineTimeSum},#{speedMax},#{speedAvg})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update veh_dayreport_region set
+        id=id,vid=#{vid},vin=#{vin},report_date=#{reportDate},province=#{province},city=#{city},first_online_time=#{firstOnlineTime},first_start_mileage=#{firstStartMileage},last_commit_time=#{lastCommitTime},last_end_mileage=#{lastEndMileage},check_data_total_num=#{checkDataTotalNum},invalid_num=#{invalidNum},abnormal_num=#{abnormalNum},meter_total_mileage=#{meterTotalMileage},deduct_jump_mileage=#{deductJumpMileage},deduct_current_mileage=#{deductCurrentMileage},valid_total_mileage=#{validTotalMileage},gps_total_mileage=#{gpsTotalMileage},valid_gps_deviation=#{validGpsDeviation},online_valid_deviation=#{onlineValidDeviation},check_total_mileage=#{checkTotalMileage},run_time_sum=#{runTimeSum},charge_time_sum=#{chargeTimeSum},charge_soc_min=#{chargeSocMin},power=#{power},charge_soc_max=#{chargeSocMax},online_time_sum=#{onlineTimeSum},speed_max=#{speedMax},speed_avg=#{speedAvg}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        veh_dayreport_region
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select u.*,(u.all_area_mileage/u.all_mileage*100) as ratio
+        from
+        (select
+        #{endTime} as end_time,
+        sum(dreg.meter_total_mileage) as all_area_mileage,
+        sum(dreg.gps_total_mileage) as all_gps_mileage,
+        vds.last_end_mileage as all_mileage,
+        dreg.vin,
+        dreg.city,
+        dreg.province,dreg.id,dreg.vid,
+        sv.is_delete,sv.license_plate,sv.inter_no,sv.oper_license_city_id,sv.veh_model_id,sv.oper_unit_id,sv.stage
+        from
+        veh_dayreport_region dreg
+        inner join sys_vehicle sv on sv.vin = dreg.vin
+        left join sys_area area on area.id = sv.oper_license_city_id
+        left join veh_dayreport_summary vds on vds.vid = dreg.vid and vds.report_date = #{endTime,jdbcType=DATE}
+        <where>
+            dreg.province != 'INVALID'
+        <if test="authSQL != null">
+        <include refid="authSQL"/>
+        </if>
+            <if test="licensePlate != null and licensePlate != ''">
+                and sv.license_plate like concat('%',#{licensePlate},'%')
+            </if>
+            <if test="vin != null and vin != ''">
+                and dreg.vin like concat('%',#{vin},'%')
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and <![CDATA[ dreg.report_date <= #{endTime,jdbcType=DATE} ]]>
+            </if>
+            <if test="operUnitId != null and operUnitId != ''">
+                and sv.oper_unit_id = #{operUnitId}
+            </if>
+            <if test="operLicenseCityId != null and operLicenseCityId != ''">
+                and area.path like concat('%/',#{operLicenseCityId},'/%')
+            </if>
+            <if test="vehModelId != null and vehModelId != ''">
+                and sv.veh_model_id = #{vehModelId}
+            </if>
+            <if test="stage != null and stage != ''">
+                and sv.stage = #{stage}
+            </if>
+            <if test="city != null">
+                and
+                <foreach collection="city" index="index" item="item" open="(" separator="or" close=")">
+                    (dreg.city = #{item} or dreg.province = #{item})
+                </foreach>
+            </if>
+        </where>
+        group by sv.license_plate,dreg.city
+        ) u
+        <where>
+            <if test="allAreaMileage != null and allAreaMileage != ''">
+                and <![CDATA[ u.all_area_mileage > #{allAreaMileage} ]]>
+            </if>
+        </where>
+        order by u.all_area_mileage desc
+    </select>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel2" resultMap="tailResults" parameterType="java.util.HashMap">
+        select u.*,(u.all_area_mileage/u.all_mileage*100) as ratio
+        from
+        (select
+        #{endTime} as end_time,
+        sum(dreg.meter_total_mileage) as all_area_mileage,
+        sum(dreg.gps_total_mileage) as all_gps_mileage,
+        vds.last_end_mileage as all_mileage,
+        dreg.vin,dreg.city,dreg.province,dreg.id,dreg.vid,
+        sv.is_delete,sv.license_plate,sv.inter_no,sv.oper_license_city_id,svm.veh_model_name,sv.oper_unit_id,sv.stage,veh_model_id,
+        max(dreg.last_commit_time) as last_commit_time
+        from
+        veh_dayreport_region dreg
+        inner join sys_vehicle sv on sv.vin = dreg.vin
+        left join sys_veh_model svm on svm.id = sv.veh_model_id
+        left join veh_dayreport_summary vds on vds.vid = dreg.vid and vds.report_date = #{endTime,jdbcType=DATE}
+        <where>
+            dreg.province != 'INVALID' and
+            sv.oper_unit_id = #{operUnitId}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+        group by sv.license_plate,dreg.city
+        ) u
+        order by u.last_commit_time desc
+    </select>
+</mapper>

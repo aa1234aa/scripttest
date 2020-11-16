@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.SocVehicleLogMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.SocVehicleLog" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+            <result property="licensePlate" column="license_plate" />
+            <result property="vin" column="vin" />
+            <result property="interNo" column="inter_no" />
+            <result property="vehModelId" column="veh_model_id" />
+            <result property="operLicenseCityId" column="oper_license_city_id" />
+            <result property="operUnitId" column="oper_unit_id" />
+            <result property="isDelete" column="is_delete" />
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    svl.id  ,svl.vid ,svl.start_soc ,svl.start_time ,svl.end_time ,svl.end_soc ,svl.create_time ,svl.location ,svl.lng ,svl.lat ,svl.near_battery_truck ,svl.extra1 ,svl.extra2 ,svl.extra3 ,svl.extra4 ,svl.status ,svl.soc_threshold ,svl.time_threshold
+    </sql>
+    <sql id="moreColumns">
+    svl.id  ,svl.vid ,svl.start_soc ,svl.start_time ,svl.end_time ,svl.end_soc ,svl.create_time ,svl.location ,svl.lng ,svl.lat ,svl.near_battery_truck ,svl.extra1 ,svl.extra2 ,svl.extra3 ,svl.extra4 ,svl.status ,svl.soc_threshold ,svl.time_threshold
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.SocVehicleLog"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_soc_vehicle_log svl
+        <where>
+            svl.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据vid查询 -->
+    <select id="getByVid" resultType="com.bitnei.cloud.sys.domain.SocVehicleLog"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_soc_vehicle_log svl
+        <where>
+            svl.status = 0
+            and svl.start_time = #{beginTime}
+            and svl.vid = #{uuid}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 增加 -->
+    <insert id="insert2" parameterType="java.util.HashMap">
+        insert into
+        sys_soc_vehicle_log (id,vid,start_soc,start_time,end_time,end_soc,create_time,location,lng,lat,near_battery_truck,extra1,extra2,extra3,extra4,status,soc_threshold,time_threshold)
+        values
+        (#{id},#{vid},#{startSoc},#{startTime},#{endTime},#{endSoc},#{createTime},#{location},#{lng},#{lat},#{nearBatteryTruck},#{extra1},#{extra2},#{extra3},#{extra4},#{status},#{socThreshold},#{timeThreshold})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_soc_vehicle_log set
+        id=id,vid=#{vid},start_soc=#{startSoc},start_time=#{startTime},end_time=#{endTime},end_soc=#{endSoc},location=#{location},lng=#{lng},lat=#{lat},near_battery_truck=#{nearBatteryTruck},extra1=#{extra1},extra2=#{extra2},extra3=#{extra3},extra4=#{extra4},status=#{status},soc_threshold=#{socThreshold},time_threshold=#{timeThreshold}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_soc_vehicle_log (id,vid,start_soc,start_time,create_time,location,lng,lat,status,soc_threshold,time_threshold)
+        values
+        (#{id},#{vid},#{startSoc},#{startTime},#{createTime},#{location},#{lng},#{lat},#{status},#{socThreshold},#{timeThreshold})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="updateByVid" parameterType="java.util.HashMap">
+        update sys_soc_vehicle_log set
+        end_time=#{endTime},end_soc=#{endSoc},status=#{status}
+        <where>
+            vid = #{vid} and status = 0 and start_time = #{startTime}
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        sys_soc_vehicle_log
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 实时分页查询 -->
+    <select id="findByRealTime" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        svl.id  ,svl.vid ,svl.start_soc ,
+        date_format(svl.start_time,'%Y-%m-%d %H:%i:%s') as start_time ,
+        date_format(svl.end_time,'%Y-%m-%d %H:%i:%s') as end_time ,
+        svl.end_soc ,svl.create_time ,svl.location ,svl.lng ,svl.lat ,svl.near_battery_truck ,svl.extra1 ,svl.extra2 ,svl.extra3 ,svl.extra4 ,svl.status ,svl.soc_threshold ,svl.time_threshold,
+        sv.is_delete*1 as is_delete,sv.license_plate,sv.vin,sv.inter_no,sv.veh_model_id,sv.oper_license_city_id,sv.oper_unit_id
+        from
+        sys_soc_vehicle_log svl
+        inner join sys_vehicle sv on sv.uuid = svl.vid and sv.is_delete = 0
+        <if test="operLicenseCityId != null and operLicenseCityId != ''">
+            left join sys_area area on area.id = sv.oper_license_city_id
+        </if>
+        <where>
+            svl.status = 0
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="licensePlate != null and licensePlate != ''">
+                and sv.license_plate like concat('%',#{licensePlate},'%')
+            </if>
+            <if test="vin != null and vin != ''">
+                and sv.vin like concat('%',#{vin},'%')
+            </if>
+            <if test="interNo != null and interNo != ''">
+                and sv.inter_no like concat('%',#{interNo},'%')
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                and <![CDATA[svl.start_time >= #{beginTime,jdbcType=DATE} ]]>
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and <![CDATA[svl.start_time <= #{endTime,jdbcType=DATE} ]]>
+            </if>
+            <if test="vehModelId != null and vehModelId != ''">
+                and sv.veh_model_id = #{vehModelId}
+            </if>
+            <if test="operLicenseCityId != null and operLicenseCityId != ''">
+                and area.path like concat('%/',#{operLicenseCityId},'/%')
+            </if>
+            <if test="operUnitId != null and operUnitId != ''">
+                and sv.oper_unit_id = #{operUnitId}
+            </if>
+        </where>
+        order by svl.start_time desc
+    </select>
+
+    <!-- 历史分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" resultOrdered="true" parameterType="java.util.HashMap">
+        select
+        svl.id  ,svl.vid ,svl.start_soc ,
+        date_format(svl.start_time,'%Y-%m-%d %H:%i:%s') as start_time ,
+        date_format(svl.end_time,'%Y-%m-%d %H:%i:%s') as end_time ,
+        svl.end_soc ,svl.create_time ,svl.location ,svl.lng ,svl.lat ,svl.near_battery_truck ,svl.extra1 ,svl.extra2 ,svl.extra3 ,svl.extra4 ,svl.status ,svl.soc_threshold ,svl.time_threshold,
+        sv.is_delete*1 as is_delete,sv.license_plate,sv.vin,sv.inter_no,sv.veh_model_id,sv.oper_license_city_id,sv.oper_unit_id
+        from
+        sys_soc_vehicle_log svl
+        inner join sys_vehicle sv on sv.uuid = svl.vid
+        <if test="operLicenseCityId != null and operLicenseCityId != ''">
+            left join sys_area area on area.id = sv.oper_license_city_id
+        </if>
+        <where>
+            (svl.status = 1 or sv.is_delete = 1)
+        <if test="authSQL != null">
+        <include refid="authSQL"/>
+        </if>
+            <if test="licensePlate != null and licensePlate != ''">
+                and sv.license_plate like concat('%',#{licensePlate},'%')
+            </if>
+            <if test="vin != null and vin != ''">
+                and sv.vin like concat('%',#{vin},'%')
+            </if>
+            <if test="interNo != null and interNo != ''">
+                and sv.inter_no like concat('%',#{interNo},'%')
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                and <![CDATA[svl.start_time >= #{beginTime,jdbcType=DATE} ]]>
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and <![CDATA[svl.start_time <= #{endTime,jdbcType=DATE} ]]>
+            </if>
+            <if test="vehModelId != null and vehModelId != ''">
+                and sv.veh_model_id = #{vehModelId}
+            </if>
+            <if test="operLicenseCityId != null and operLicenseCityId != ''">
+                and area.path like concat('%/',#{operLicenseCityId},'/%')
+            </if>
+            <if test="operUnitId != null and operUnitId != ''">
+                and sv.oper_unit_id = #{operUnitId}
+            </if>
+        </where>
+        order by svl.end_time desc
+    </select>
+
+    <!-- 分页计数 -->
+    <select id="pagerModel_COUNT" resultType="long">
+        select count(svl.id) from
+        sys_soc_vehicle_log svl
+        inner join sys_vehicle sv on sv.uuid = svl.vid
+        <if test="operLicenseCityId != null and operLicenseCityId != ''">
+            left join sys_area area on area.id = sv.oper_license_city_id
+        </if>
+        <where>
+            (svl.status = 1 or sv.is_delete = 1)
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="licensePlate != null and licensePlate != ''">
+                and sv.license_plate like concat('%',#{licensePlate},'%')
+            </if>
+            <if test="vin != null and vin != ''">
+                and sv.vin like concat('%',#{vin},'%')
+            </if>
+            <if test="interNo != null and interNo != ''">
+                and sv.inter_no like concat('%',#{interNo},'%')
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                and <![CDATA[svl.start_time >= #{beginTime,jdbcType=DATE} ]]>
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and <![CDATA[svl.start_time <= #{endTime,jdbcType=DATE} ]]>
+            </if>
+            <if test="vehModelId != null and vehModelId != ''">
+                and sv.veh_model_id = #{vehModelId}
+            </if>
+            <if test="operLicenseCityId != null and operLicenseCityId != ''">
+                and area.path like concat('%/',#{operLicenseCityId},'/%')
+            </if>
+            <if test="operUnitId != null and operUnitId != ''">
+                and sv.oper_unit_id = #{operUnitId}
+            </if>
+        </where>
+        order by svl.end_time desc
+    </select>
+</mapper>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.mapper.VehModelAlarmMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.VehModelAlarm" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    alarm.id, alarm.temperature_difference_alarm ,alarm.battery_high_temperatur_alarm ,alarm.energy_device_overvoltage_alarm ,alarm.energy_device_undervoltage_alarm ,alarm.drive_motor_controller_tempera_alarm ,alarm.drive_motor_temperature_alarm ,alarm.single_battery_overvoltage_alarm ,alarm.single_battery_undervoltage_alarm ,alarm.soc_Low_alarm ,alarm.soc_jump_alarm ,alarm.soc_high_alarm ,alarm.battery_consistency_alarm ,alarm.vehicular_device_overcharge_alarm ,alarm.insulation_fault_alarm,alarm.enable,alarm.response_mode,alarm.begin_threshold,alarm.end_threshold
+    </sql>
+    <sql id="moreColumns">
+    alarm.id, alarm.temperature_difference_alarm ,alarm.battery_high_temperatur_alarm ,alarm.energy_device_overvoltage_alarm ,alarm.energy_device_undervoltage_alarm ,alarm.drive_motor_controller_tempera_alarm ,alarm.drive_motor_temperature_alarm ,alarm.single_battery_overvoltage_alarm ,alarm.single_battery_undervoltage_alarm ,alarm.soc_Low_alarm ,alarm.soc_jump_alarm ,alarm.soc_high_alarm ,alarm.battery_consistency_alarm ,alarm.vehicular_device_overcharge_alarm ,alarm.insulation_fault_alarm,alarm.enable,alarm.response_mode,alarm.begin_threshold,alarm.end_threshold
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.VehModelAlarm"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_veh_model_alarm alarm
+        <where>
+            alarm.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_veh_model_alarm (id,temperature_difference_alarm,battery_high_temperatur_alarm,energy_device_overvoltage_alarm,energy_device_undervoltage_alarm,drive_motor_controller_tempera_alarm,drive_motor_temperature_alarm,single_battery_overvoltage_alarm,single_battery_undervoltage_alarm,soc_Low_alarm,soc_jump_alarm,soc_high_alarm,battery_consistency_alarm,vehicular_device_overcharge_alarm,insulation_fault_alarm,enable,response_mode,begin_threshold,end_threshold)
+        values
+        (#{id},#{temperatureDifferenceAlarm},#{batteryHighTemperaturAlarm},#{energyDeviceOvervoltageAlarm},#{energyDeviceUndervoltageAlarm},#{driveMotorControllerTemperaAlarm},#{driveMotorTemperatureAlarm},#{singleBatteryOvervoltageAlarm},#{singleBatteryUndervoltageAlarm},#{socLowAlarm},#{socJumpAlarm},#{socHighAlarm},#{batteryConsistencyAlarm},#{vehicularDeviceOverchargeAlarm},#{insulationFaultAlarm},#{enable},#{responseMode},#{beginThreshold},#{endThreshold})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_veh_model_alarm set
+        id=id,temperature_difference_alarm=#{temperatureDifferenceAlarm},battery_high_temperatur_alarm=#{batteryHighTemperaturAlarm},energy_device_overvoltage_alarm=#{energyDeviceOvervoltageAlarm},energy_device_undervoltage_alarm=#{energyDeviceUndervoltageAlarm},drive_motor_controller_tempera_alarm=#{driveMotorControllerTemperaAlarm},drive_motor_temperature_alarm=#{driveMotorTemperatureAlarm},single_battery_overvoltage_alarm=#{singleBatteryOvervoltageAlarm},single_battery_undervoltage_alarm=#{singleBatteryUndervoltageAlarm},soc_Low_alarm=#{socLowAlarm},soc_jump_alarm=#{socJumpAlarm},soc_high_alarm=#{socHighAlarm},battery_consistency_alarm=#{batteryConsistencyAlarm},vehicular_device_overcharge_alarm=#{vehicularDeviceOverchargeAlarm},insulation_fault_alarm=#{insulationFaultAlarm},
+        enable=#{enable},response_mode=#{responseMode},begin_threshold=#{beginThreshold},end_threshold=#{endThreshold}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        sys_veh_model_alarm
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_veh_model_alarm alarm
+        <where>
+        <if test="authSQL != null">
+        <include refid="authSQL"/>
+        </if>
+        </where>
+
+    </select>
+</mapper>

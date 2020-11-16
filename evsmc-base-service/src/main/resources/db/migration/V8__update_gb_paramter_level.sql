@@ -1,0 +1,1 @@
+UPDATE fault_parameter_rule SET response_mode = "1,2" WHERE subordinate_parts_id = "2809"

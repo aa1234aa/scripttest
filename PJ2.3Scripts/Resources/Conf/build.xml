@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="JmeterTest" default="all" basedir=".">
+    <tstamp>
+        <format property="time" pattern="MMddhhmm" />
+    </tstamp>
+	
+    <!-- 需要修改第1个：改成自己本地的 Jmeter 目录-->
+	
+    <property name="jmeter.home" value="E:\apache-jmeter-4.0" />
+	
+    <!-- 需要修改第2个：jmeter生成jtl格式的结果报告的路径-->
+	
+    <property name="jmeter.result.jtl.dir" value="E:\web-bitnei\resultlog\Test\jtl" />
+		
+    <!-- 需要修改第3个：jmeter生成html格式的结果报告的路径-->
+	
+    <property name="jmeter.result.html.dir" value="E:\web-bitnei\resultlog\Test\html" />
+	
+	  <!-- 需要修改第4个：jmeter要执行脚本的路径-->
+	
+	 <property name="jmeter.script.dir" value="E:\AutoFiles\PJ2.3Scripts"/>
+	
+    <!-- 生成的报告的前缀 -->
+    <property name="ReportName" value="TestReport" />
+    <property name="jmeter.result.jtlName" value="${jmeter.result.jtl.dir}/${ReportName}${time}.jtl" />
+    <property name="jmeter.result.htmlName" value="${jmeter.result.html.dir}/${ReportName}${time}.html" />
+    <target name="all">
+        <antcall target="test" />
+        <antcall target="report" />
+		<antcall target="sendEmail" />
+    </target>
+    <target name="test">
+        <taskdef name="jmeter" classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask" />
+        <jmeter jmeterhome="${jmeter.home}" resultlog="${jmeter.result.jtlName}">
+		
+            <!-- 需要修改第5个：声明要运行的脚本。"*.jmx"指包含此目录下的所有jmeter脚本 -->
+			
+		  <testplans dir="${jmeter.script.dir}" includes="**\**\*.jmx" />
+		   
+		   <property name="jmeter.save.saveservice.output_format" value="xml"/> 
+			
+        </jmeter>
+    </target>
+
+	<target name="report">
+    <tstamp> 
+	<format property="report.datestamp" pattern="yyyy/MM/dd HH:mm"/> 
+	</tstamp>
+	
+    <xslt 
+	in="${jmeter.result.jtlName}" 
+	out="${jmeter.result.htmlName}" 
+	style="${jmeter.home}/extras/jmeter-results-detail-report_21.xsl">
+	   <param 
+	 name="dateReport" 
+	 expression="${report.datestamp}"> 
+	   </param>
+	 </xslt>
+	<!-- 因为上面生成报告的时候，不会将相关的图片也一起拷贝至目标目录，所以，需要手动拷贝 -->
+        <copy todir="${jmeter.result.html.dir}">
+            <fileset dir="${jmeter.home}/extras">
+                <include name="collapse.png" />
+                <include name="expand.png" />
+            </fileset>
+        </copy>
+    </target>
+	
+	<!--将控制台输出到文本中-->
+  <record name="${jmeter.result.html.dir}/${ReportName}${time}.txt" loglevel="info" append="no" action="start"/>
+  
+
+    <!-- 发送邮件 -->
+	<!-- 需要修改第6个：发件人邮箱主机，端口号，邮箱用户名，邮箱密码，收件人名字和收件内容 -->
+   <target name="sendEmail">
+   
+	<!--读取输出的控制台日志文件并写入邮件正文-->
+	<loadfile property="email_content" srcFile="${jmeter.result.html.dir}/${ReportName}${time}.txt" encoding="UTF-8"/>
+	<loadfile property="output" srcFile="${jmeter.result.html.dir}/${ReportName}${time}.html" encoding="UTF-8"/>
+
+ 
+   <mail mailhost="smtp.139.com" 
+   mailport="25"
+   user="15992667873"   
+   password="951727" 
+   ssl="false"    
+   subject="2.3车联网web后台接口功能自动化回归测试报告${time}" 
+   messagemimetype="text/html">
+   <from address="15992667873@139.com"/>
+   <to address="huangyongxiong@nat-ev.cn"/> 
+ <!--  <to address="kongxiumei@bitnei.cn"/> 
+   <to address="youjiali@bitnei.cn"/> 
+   <to address="huangruichi@nat-ev.cn"/> 
+   <to address="denghuali@nat-ev.cn"/>
+   <to address="yuanpengxing@bitnei.cn"/>
+   <to address="pengmuxing@nat-ev.cn"/>
+   <to address="lixiaoxia@bitnei.cn"/>
+   <to address="licongcong@bitnei.cn"/>
+   <to address="anliping@bitnei.cn"/> -->
+   
+   
+   <fileset dir="${jmeter.result.html.dir}">   
+   <include name="${ReportName}${time}.html"/> 
+   <include name="collapse.png" />
+   <include name="expand.png" /> 
+   </fileset>
+   <message charset="gb2312"> 
+   Dear All：&lt;br /&gt;
+   
+     这是一封jenkins+ant定时触发的2.3车联网web后台接口功能自动化测试的邮件。&lt;br /&gt;
+	<!-- 回归模块如下：&lt;br /&gt;
+	 统计分析-车辆行驶情况统计。&lt;br /&gt;
+	 统计分析-车辆监控情况统计。&lt;br /&gt;
+	 统计分析-车辆闲置情况统计。&lt;br /&gt;
+	 统计分析-充耗电情况统计。&lt;br /&gt;
+	 统计分析-单日里程核算日报。&lt;br /&gt;
+	 统计分析-里程分布统计。&lt;br /&gt;
+	 统计分析-总里程统计。&lt;br /&gt;
+	 统计分析-区域里程统计。&lt;br /&gt;
+	 大屏展示-地图监控。&lt;br /&gt;
+	 大屏展示-轨迹热点。&lt;br /&gt;
+	 大屏展示-充电热点。&lt;br /&gt;
+	 大屏展示-大数据统计。&lt;br /&gt;
+	 远程升级-远程升级包管理。&lt;br /&gt;
+	 远程升级-升级任务管理。&lt;br /&gt;
+	 远程升级-远程升级日志。&lt;br /&gt;
+	 基础数据-sim卡管理。&lt;br /&gt;
+	 基础数据-车辆终端信息。&lt;br /&gt;
+	 基础数据-车辆销售信息。&lt;br /&gt;
+	 基础数据-单位联系人的新增与删除接口。&lt;br /&gt;
+	 基础数据-单位信息管理的新增与删除接口。&lt;br /&gt;
+	 基础数据-角色管理的新增与删除接口。&lt;br /&gt;
+	 基础数据-数据权限组的新增与删除接口。&lt;br /&gt;
+	 基础数据-账户管理的新增与删除接口。&lt;br /&gt;
+	 监控中心-无can车辆。&lt;br /&gt;
+	 监控中心-soc过低车辆。&lt;br /&gt;
+	 监控中心-异常定位车辆。&lt;br /&gt; 
+	                                                    &lt;br /&gt; -->
+     ----------------以下是测试结果--------------------&lt;br /&gt;
+	 
+	 ${output}
+	 
+	 详情测试报告附在附件，请将图片和报告文件都下载在同文件夹，再使用浏览器打开查看。&lt;br /&gt; 
+	 
+     谢谢。&lt;br /&gt; 
+	 
+   </message>
+  </mail>
+ </target>	
+</project>

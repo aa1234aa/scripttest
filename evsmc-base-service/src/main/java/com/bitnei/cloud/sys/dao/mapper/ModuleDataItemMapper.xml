@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.ModuleDataItemMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.ModuleDataItem" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+         mdc.id mdc.id,mdc.name mdc.id,mdc.field_name mdc.id,mdc.data_group_id mdc.id,mdc.note mdc.id,mdc.create_time mdc.id,mdc.create_by mdc.id,mdc.update_time mdc.id,mdc.update_by
+    </sql>
+    <sql id="moreColumns">
+         mdc.id mdc.id,mdc.name mdc.id,mdc.field_name mdc.id,mdc.data_group_id mdc.id,mdc.note mdc.id,mdc.create_time mdc.id,mdc.create_by mdc.id,mdc.update_time mdc.id,mdc.update_by
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.ModuleDataItem"  parameterType="java.util.HashMap">
+        select
+        mdc.*
+        from
+        sys_module_data_item mdc
+        <where>
+            mdc.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_module_data_item (id,name,field_name,data_group_id,note,is_enable,create_time,create_by)
+        values
+        (#{id},#{name},#{fieldName},#{dataGroupId},#{note},#{isEnable},#{createTime},#{createBy})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_module_data_item set
+        id=id,name=#{name},field_name=#{fieldName},data_group_id=#{dataGroupId},note=#{note},is_enable=#{isEnable},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+
+    <!-- 更新是否启用 -->
+    <update id="updateEnable" parameterType="java.util.HashMap">
+        update sys_module_data_item set
+        is_enable=#{isEnable}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        sys_module_data_item
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+          mdc.*,b.module_id
+        from
+        sys_module_data_item mdc
+        left join sys_module_data_lk b on mdc.id = b.module_data_id
+        <where>
+        <if test="authSQL != null">
+          <include refid="authSQL"/>
+        </if>
+        <if test="moduleId != null">
+            AND b.module_id=#{moduleId}
+        </if>
+        <if test="name != null ">
+            AND mdc.name LIKE CONCAT('%',#{name},'%')
+        </if>
+        <if test="fieldName != null ">
+            AND mdc.field_name LIKE CONCAT('%',#{fieldName},'%')
+        </if>
+        <if test="isEnable != null">
+            AND mdc.is_enable= #{isEnable}
+        </if>
+        </where>
+
+    </select>
+
+    <!-- 查询模块数据项 -->
+    <select id="queryModuleDataItem" resultMap="tailResults" parameterType="java.util.HashMap">
+        select a.* from sys_module_data_item a,sys_module_data_lk b
+        where a.id = b.module_data_id
+        and b.module_id=#{moduleId}
+    </select>
+
+    <!-- 增加sys_module_data_lk -->
+    <insert id="insertModuleDataLk" parameterType="java.util.HashMap">
+        insert into
+        sys_module_data_lk (id,module_id,module_data_id)
+        values
+        (#{id},#{moduleId},#{moduleDataId})
+    </insert>
+
+    <!-- 删除sys_module_data_lk -->
+    <delete id="deleteModuleDataLk" parameterType="java.util.HashMap">
+        delete from
+        sys_module_data_lk
+        where module_data_id = #{moduleDataItemId}
+    </delete>
+</mapper>

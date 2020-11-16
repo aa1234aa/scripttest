@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.veh.dao.DayreportDataQualityMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.veh.domain.DayreportDataQuality" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    vddq.id  ,vddq.vid ,vddq.vin ,vddq.report_date ,vddq.start_time ,vddq.end_time ,vddq.should_upload_num ,vddq.actual_upload_num ,vddq.abnormal_num ,vddq.anbormal_rate ,vddq.miss_rate ,vddq.exist_forward ,vddq.forward_num ,vddq.miss_forward_rate ,vddq.frequency
+    </sql>
+    <sql id="moreColumns">
+    vddq.id  ,vddq.vid ,vddq.vin ,vddq.report_date ,vddq.start_time ,vddq.end_time ,vddq.should_upload_num ,vddq.actual_upload_num ,vddq.abnormal_num ,vddq.anbormal_rate ,vddq.miss_rate ,vddq.exist_forward ,vddq.forward_num ,vddq.miss_forward_rate ,vddq.frequency
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.veh.domain.DayreportDataQuality"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        veh_dayreport_data_quality vddq
+        <where>
+            vddq.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        veh_dayreport_data_quality (id,vid,vin,report_date,start_time,end_time,should_upload_num,actual_upload_num,abnormal_num,anbormal_rate,miss_rate,exist_forward,forward_num,miss_forward_rate,frequency)
+        values
+        (#{id},#{vid},#{vin},#{reportDate},#{startTime},#{endTime},#{shouldUploadNum},#{actualUploadNum},#{abnormalNum},#{anbormalRate},#{missRate},#{existForward},#{forwardNum},#{missForwardRate},#{frequency})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update veh_dayreport_data_quality set
+        id=id,vid=#{vid},vin=#{vin},report_date=#{reportDate},start_time=#{startTime},end_time=#{endTime},should_upload_num=#{shouldUploadNum},actual_upload_num=#{actualUploadNum},abnormal_num=#{abnormalNum},anbormal_rate=#{anbormalRate},miss_rate=#{missRate},exist_forward=#{existForward},forward_num=#{forwardNum},miss_forward_rate=#{missForwardRate},frequency=#{frequency}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        veh_dayreport_data_quality
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap" resultOrdered="true">
+        select
+        <include refid="moreColumns"/>
+        from
+        veh_dayreport_data_quality vddq
+        inner join sys_vehicle sv on sv.uuid = vddq.vid and sv.is_delete = 0
+        <where>
+        <if test="authSQL != null">
+        <include refid="authSQL"/>
+        </if>
+            <if test="vin != null and vin != ''">
+                <bind name="pattern-vin" value="'%' + vin + '%'" />
+                and vddq.vin like #{pattern-vin}
+            </if>
+            <if test="startDate != null and startDate != ''">
+                and date_format(vddq.report_date, '%Y-%m-%d') <![CDATA[ >= ]]> date_format(#{startDate}, '%Y-%m-%d')
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and date_format(vddq.report_date, '%Y-%m-%d') <![CDATA[ <= ]]> date_format(#{endDate}, '%Y-%m-%d')
+            </if>
+        </where>
+        order by vddq.report_date desc,vddq.start_time desc
+    </select>
+</mapper>

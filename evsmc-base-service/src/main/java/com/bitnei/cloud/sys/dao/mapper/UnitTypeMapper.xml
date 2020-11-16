@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.UnitTypeMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.UnitType" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+    ut.id  ,ut.name ,ut.code ,ut.parent_id ,ut.path ,ut.notes ,ut.is_root ,ut.create_time ,ut.create_by ,ut.update_time ,ut.update_by
+    </sql>
+    <sql id="moreColumns">
+    ut.id  ,ut.name ,ut.code ,ut.parent_id ,ut.path ,ut.notes ,ut.is_root ,ut.create_time ,ut.create_by ,ut.update_time ,ut.update_by
+    </sql>
+
+    <!-- 查询root记录-->
+    <select id="findByRoot" resultType="com.bitnei.cloud.sys.domain.UnitType" >
+        select
+          <include refid="moreColumns"/>
+        from
+        sys_unit_type ut
+        where ut.is_root = 1
+        limit 1
+    </select>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.UnitType"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_unit_type ut
+        <where>
+            ut.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+     <!-- 根据名称查询 -->
+    <select id="findByName" resultType="com.bitnei.cloud.sys.domain.UnitType"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_unit_type ut
+        <where>
+            ut.name=#{name}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+     <!-- 根据编码查询 -->
+    <select id="findByCode" resultType="com.bitnei.cloud.sys.domain.UnitType"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_unit_type ut
+        <where>
+            ut.code=#{code}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_unit_type (id,name,code,parent_id,path,notes,is_root,create_time,create_by)
+        values
+        (#{id},#{name},#{code},#{parentId},#{path},#{notes},#{isRoot},#{createTime},#{createBy})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_unit_type set
+        id=id,name=#{name},code=#{code},parent_id=#{parentId},path=#{path},notes=#{notes},is_root=#{isRoot},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        sys_unit_type
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_unit_type ut
+        <where>
+        <if test="authSQL != null">
+        <include refid="authSQL"/>
+        </if>
+        <if test="name != null">
+        and ut.name like "%"#{name}"%"
+        </if>
+        <if test="code != null">
+        and ut.code like "%"#{code}"%"
+        </if>
+         <if test="excludeId != null">
+          and ut.path not like "%/"#{excludeId}"/%"
+         </if>
+
+            <if test="parentId != null">
+                and ut.parent_id= #{parentId}
+            </if>
+
+        </where>
+
+    </select>
+
+    <select id="findNext" parameterType="String" resultType="com.bitnei.cloud.sys.domain.UnitType">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_unit_type ut
+        <where>
+            ut.parent_id=#{id}
+
+        </where>
+    </select>
+
+    <select id="countChild" parameterType="String" resultType="int">
+        select COUNT(*)
+          from
+          sys_unit_type ut
+            <where>
+                ut.parent_id=#{id}
+            </where>
+    </select>
+
+    <update id="updateChildPath" >
+        update
+          sys_unit_type ut
+        set
+           path = replace(path,#{oldpath},#{newpath})
+          <where>
+             ut.path like "%"#{oldpath}"%"
+          </where>
+
+    </update>
+
+    <select id="findByUnitTypeIdCount" parameterType="java.util.HashMap" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM sys_unit_type_lk lk, sys_unit_type ut, sys_unit su
+        WHERE ut.id = lk.unit_type_id and su.id = lk.unit_id
+        AND  ut.path LIKE CONCAT('%',#{unitTypeId},'%')
+        AND su.is_delete = 0
+    </select>
+
+</mapper>

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.VehOwnerMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.VehOwner" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+        vo.*
+    </sql>
+
+    <sql id="moreColumns">
+        vo.*
+    </sql>
+
+    <!-- 查询所有的结果 -->
+    <select id="all" resultType="com.bitnei.cloud.sys.domain.VehOwner" parameterType="java.util.HashMap">
+        select
+        <include refid="baseColumns"/>
+        from
+        sys_veh_owner vo
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.VehOwner" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_veh_owner vo
+        <where>
+            vo.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据name查询 -->
+    <select id="findByOwnerName" resultType="com.bitnei.cloud.sys.domain.VehOwner" parameterType="java.lang.String">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_veh_owner vo
+        where vo.owner_name = #{ownerName}
+        limit 1
+    </select>
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_veh_owner
+        (id,owner_name,sex,tel_phone,address,email,card_type,card_no,card_address,front_card_img_id,back_card_img_id,face_card_img_id,create_time,create_by)
+        values
+        (#{id},#{ownerName},#{sex},#{telPhone},#{address},#{email},#{cardType},#{cardNo},#{cardAddress},#{frontCardImgId},#{backCardImgId},#{faceCardImgId},#{createTime},#{createBy})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_veh_owner set
+        id=id,owner_name=#{ownerName},sex=#{sex},tel_phone=#{telPhone},address=#{address},email=#{email},card_type=#{cardType},card_no=#{cardNo},card_address=#{cardAddress},front_card_img_id=#{frontCardImgId},back_card_img_id=#{backCardImgId},face_card_img_id=#{faceCardImgId},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="java.util.HashMap">
+        delete from
+        sys_veh_owner
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_veh_owner vo
+        <where>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+            <if test="id != null and id != ''">
+                AND vo.id = #{id}
+            </if>
+            <if test="ownerName != null and ownerName != ''">
+                AND vo.owner_name LIKE CONCAT('%',#{ownerName},'%')
+            </if>
+            <if test="unitName != null and unitName != ''">
+                AND vo.owner_name LIKE CONCAT('%',#{unitName},'%')
+            </if>
+            <if test="sex != null and sex != ''">
+                AND vo.sex = #{sex}
+            </if>
+            <if test="telPhone != null and telPhone != ''">
+                AND vo.tel_phone LIKE CONCAT('%',#{telPhone},'%')
+            </if>
+            <if test="address != null and address != ''">
+                AND vo.address LIKE CONCAT('%',#{address},'%')
+            </if>
+            <if test="email != null and email != ''">
+                AND vo.email LIKE CONCAT('%',#{email},'%')
+            </if>
+            <if test="cardType != null and cardType != ''">
+                AND vo.card_type = #{cardType}
+            </if>
+            <if test="cardNo != null and cardNo != ''">
+                AND vo.card_no LIKE CONCAT('%',#{cardNo},'%')
+            </if>
+            <if test="cardAddress != null and cardAddress != ''">
+                AND vo.card_address LIKE CONCAT('%',#{cardAddress},'%')
+            </if>
+            <if test="frontCardImgId != null and frontCardImgId != ''">
+                AND vo.front_card_img_id = #{frontCardImgId}
+            </if>
+            <if test="backCardImgId != null and backCardImgId != ''">
+                AND vo.back_card_img_id = #{backCardImgId}
+            </if>
+            <if test="faceCardImgId != null and faceCardImgId != ''">
+                AND vo.face_card_img_id = #{faceCardImgId}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                AND vo.create_by = #{createBy}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                AND vo.update_by = #{updateBy}
+            </if>
+            <if test="ids != null">
+                and vo.id in
+                <foreach collection="ids" index="index" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="importSearchValues != null and importSearchValues.size()>0">
+                and vo.tel_phone in
+                <foreach collection="importSearchValues" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+
+        </where>
+        ORDER BY vo.create_time DESC
+    </select>
+
+    <!--自定义参数查询车主-->
+    <select id="queryVehOwnerListByParam" parameterType="java.util.HashMap" resultType="com.bitnei.cloud.sys.domain.VehOwner">
+        SELECT
+            id,
+            owner_name AS ownerName,
+            sex,
+            tel_phone AS telPhone,
+            address,
+            email,
+            card_type AS cardType,
+            card_no AS cardNo,
+            card_address AS cardAddress,
+            front_card_img_id AS frontCardImgId,
+            back_card_img_id AS backCardImgId,
+            face_card_img_id AS faceCardImgId,
+            create_time AS createTime,
+            create_by AS createBy,
+            update_time AS updateTime,
+            update_by AS updateBy
+        FROM
+            sys_veh_owner
+        WHERE
+            1=1
+        <if test="id != null and id != ''">
+            AND id=#{id}
+        </if>
+        <if test="ownerName != null and ownerName != ''">
+            AND owner_name LIKE CONCAT('%',#{ownerName},'%')
+        </if>
+        <if test="telPhone != null and telPhone != ''">
+            AND tel_phone=#{telPhone}
+        </if>
+        <if test="address != null and address != ''">
+            AND address LIKE CONCAT('%',#{address},'%')
+        </if>
+        <if test="email != null and email != ''">
+            AND email LIKE CONCAT('%',#{email},'%')
+        </if>
+        <if test="cardType != null and cardType != ''">
+            AND card_type=#{cardType}
+        </if>
+        <if test="cardNo != null and cardNo != ''">
+            AND card_no LIKE CONCAT('%',#{cardNo},'%')
+        </if>
+        <if test="cardAddress != null and cardAddress != ''">
+            AND card_address LIKE CONCAT('%',#{cardAddress},'%')
+        </if>
+    </select>
+</mapper>

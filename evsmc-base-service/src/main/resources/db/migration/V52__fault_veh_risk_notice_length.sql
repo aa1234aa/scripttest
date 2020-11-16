@@ -1,0 +1,1 @@
+ALTER TABLE fault_veh_risk_notice CHANGE `vid` vid varchar(36) DEFAULT NULL COMMENT 'vid';

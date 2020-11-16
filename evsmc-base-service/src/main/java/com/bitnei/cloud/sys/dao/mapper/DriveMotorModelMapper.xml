@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bitnei.cloud.sys.dao.DriveMotorModelMapper">
+    <resultMap id="tailResults" type="com.bitnei.cloud.sys.domain.DriveMotorModel" autoMapping="true">
+        <association property="tails" javaType="java.util.HashMap">
+        </association>
+    </resultMap>
+
+    <!-- 权限sql -->
+    <sql id="authSQL">
+        and ${authSQL}
+    </sql>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumns">
+         dmm.id,dmm.name,dmm.drive_type,dmm.drive_cold_mode,dmm.rated_voltage,dmm.max_electricity,dmm.controller_model,dmm.rated_power,dmm.peak_power,dmm.rated_rotate_speed,dmm.peak_rotate_speed,dmm.rated_torque,dmm.peak_torque,dmm.valid_power,dmm.max_output_torque,dmm.max_rotate_speed,dmm.prod_unit_id,dmm.controller_prod_unit_id,dmm.create_time,dmm.create_by,dmm.update_time,dmm.update_by
+    </sql>
+    <sql id="moreColumns">
+         dmm.id,dmm.name,dmm.drive_type,dmm.drive_cold_mode,dmm.rated_voltage,dmm.max_electricity,dmm.controller_model,dmm.rated_power,dmm.peak_power,dmm.rated_rotate_speed,dmm.peak_rotate_speed,dmm.rated_torque,dmm.peak_torque,dmm.valid_power,dmm.max_output_torque,dmm.max_rotate_speed,dmm.prod_unit_id,dmm.controller_prod_unit_id,dmm.create_time,dmm.create_by,dmm.update_time,dmm.update_by
+    </sql>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultType="com.bitnei.cloud.sys.domain.DriveMotorModel"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_drive_motor_model dmm
+        <where>
+            dmm.id=#{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据name查询 -->
+    <select id="findByName" resultType="com.bitnei.cloud.sys.domain.DriveMotorModel"  parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_drive_motor_model dmm
+        <where>
+            dmm.name=#{name}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </select>
+
+    <!-- 增加 -->
+    <insert id="insert" parameterType="java.util.HashMap">
+        insert into
+        sys_drive_motor_model (id,name,drive_type,drive_cold_mode,rated_voltage,max_electricity,controller_model,rated_power,peak_power,rated_rotate_speed,peak_rotate_speed,rated_torque,peak_torque,valid_power,max_output_torque,max_rotate_speed,prod_unit_id,controller_prod_unit_id,create_time,create_by)
+        values
+        (#{id},#{name},#{driveType},#{driveColdMode},#{ratedVoltage},#{maxElectricity},#{controllerModel},#{ratedPower},#{peakPower},#{ratedRotateSpeed},#{peakRotateSpeed},#{ratedTorque},#{peakTorque},#{validPower},#{maxOutputTorque},#{maxRotateSpeed},#{prodUnitId},#{controllerProdUnitId},#{createTime},#{createBy})
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="java.util.HashMap">
+        update sys_drive_motor_model set
+        id=id,name=#{name},drive_type=#{driveType},drive_cold_mode=#{driveColdMode},rated_voltage=#{ratedVoltage},max_electricity=#{maxElectricity},controller_model=#{controllerModel},rated_power=#{ratedPower},peak_power=#{peakPower},rated_rotate_speed=#{ratedRotateSpeed},peak_rotate_speed=#{peakRotateSpeed},rated_torque=#{ratedTorque},peak_torque=#{peakTorque},valid_power=#{validPower},max_output_torque=#{maxOutputTorque},max_rotate_speed=#{maxRotateSpeed},prod_unit_id=#{prodUnitId},controller_prod_unit_id=#{controllerProdUnitId},update_time=#{updateTime},update_by=#{updateBy}
+        <where>
+            <choose>
+                <when test="id != null">
+                    id = #{id}
+                </when>
+                <otherwise>
+                    name = #{name}
+                </otherwise>
+            </choose>
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete"  parameterType="java.util.HashMap">
+        delete from
+        sys_drive_motor_model
+        <where>
+            id = #{id}
+            <if test="authSQL != null">
+                <include refid="authSQL"/>
+            </if>
+        </where>
+    </delete>
+
+    <!-- 分页查询 -->
+    <select id="pagerModel" resultMap="tailResults" parameterType="java.util.HashMap">
+        select
+        <include refid="moreColumns"/>
+        from
+        sys_drive_motor_model dmm
+        where
+        1=1
+        <if test="authSQL != null">
+            <include refid="authSQL"/>
+        </if>
+        <if test="name != null">
+            and dmm.name like "%"#{name}"%"
+        </if>
+        <if test="driveType != null">
+            and dmm.drive_type=#{driveType}
+        </if>
+        <if test="prodUnitId != null">
+            and dmm.prod_unit_id=#{prodUnitId}
+        </if>
+        <if test="controllerProdUnitId != null">
+            and dmm.controller_prod_unit_id=#{controllerProdUnitId}
+        </if>
+        <if test="driveColdMode != null">
+            and dmm.drive_cold_mode=#{driveColdMode}
+        </if>
+        <if test="peakPower != null">
+            and dmm.peak_power like "%"#{peakPower}"%"
+        </if>
+        <if test="peakTorque != null">
+            and dmm.peak_torque like "%"#{peakTorque}"%"
+        </if>
+        ORDER BY dmm.create_time DESC
+
+    </select>
+</mapper>

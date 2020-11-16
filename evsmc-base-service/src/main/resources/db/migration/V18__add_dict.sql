@@ -1,0 +1,9 @@
+
+INSERT IGNORE INTO `sys_dict_category`(`id`, `name`, `code`, `note`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('fd42dd2fba644986b3044ca2a6c2e8ba', '国标控制命令警报等级', 'RULE_ALARM_LEVEL', '国标控制命令-警报等级', '2019-06-10 10:05:27', 'admin', '2019-06-10 10:05:48', 'admin');
+INSERT IGNORE INTO `sys_dict`(`id`, `name`, `val`, `type`, `note`, `group_name`, `order_num`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('03736c4513f44215b56a8e7a2d362277', '无效数据', '9', 'RULE_ALARM_LEVEL', '', '', 5, '2019-06-10 10:08:25', 'admin', NULL, NULL);
+INSERT IGNORE INTO `sys_dict`(`id`, `name`, `val`, `type`, `note`, `group_name`, `order_num`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('42b481e754274f6ba19a968ef65b0c2d', '二级报警', '2', 'RULE_ALARM_LEVEL', '', '', 2, '2019-06-10 10:06:57', 'admin', '2019-06-10 10:07:37', 'admin');
+INSERT IGNORE INTO `sys_dict`(`id`, `name`, `val`, `type`, `note`, `group_name`, `order_num`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('7735c5da014c40acbbbc0764ccb9ff91', '一级报警', '1', 'RULE_ALARM_LEVEL', '', '', 1, '2019-06-10 10:06:39', 'admin', '2019-06-10 10:07:30', 'admin');
+INSERT IGNORE INTO `sys_dict`(`id`, `name`, `val`, `type`, `note`, `group_name`, `order_num`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('b5e84275cc964ac08026a03bccc9ebe6', '无报警', '0', 'RULE_ALARM_LEVEL', '', '', 4, '2019-06-10 10:08:08', 'admin', NULL, NULL);
+INSERT IGNORE INTO `sys_dict`(`id`, `name`, `val`, `type`, `note`, `group_name`, `order_num`, `create_time`, `create_by`, `update_time`, `update_by`) VALUES ('c00e55e326914de98c778258a5950b3a', '三级报警', '3', 'RULE_ALARM_LEVEL', '', '', 3, '2019-06-10 10:07:19', 'admin', NULL, NULL);
+
+alter table sys_engine_model modify column name varchar(100);

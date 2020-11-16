@@ -1,0 +1,31 @@
+server:
+  port: 8899
+spring:
+  application:
+    name: http-foward-kafka
+  kafka:
+    bootstrap-servers: kafka02.bitnei.cn:9092,kafka01.bitnei.cn:9092,kafka01.bitnei.cn:9092
+    producer:
+      batch-size: 100
+      retries: 3
+      acks: 1
+    consumer:
+      group-id: web_owner_lzwl
+      enable-auto-commit: true
+      auto-offset-reset: latest
+      max-poll-records: 1000
+    listener:
+      concurrency: 6
+
+  logging:
+    level:
+      root: debug
+
+  vin:
+    path: "D://vinFile.txt"
+
+  send:
+    frequency: 10000
+
+  msg:
+    format: ""
